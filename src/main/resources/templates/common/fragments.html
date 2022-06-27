@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+</head>
+<body>
+<div  th:fragment="langSwitch" class="dropdown-menu" aria-labelledby="navbarDropdown">
+    <a class="dropdown-item" th:href="@{${#httpServletRequest.getRequestURI()}(localeData='en_US')}">Eng</a>
+    <a class="dropdown-item" th:href="@{${#httpServletRequest.getRequestURI()}(localeData='uk_UA')}">Ukr</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="#">Something else here</a>
+</div>
+
+<form th:fragment="searchItems" class="form-inline my-2 my-lg-0" th:action="@{/index/search}" th:method="get">
+    <input class="form-control mr-sm-2" type="search" th:name="search" placeholder="Search" aria-label="Search">
+    <select class="selectpicker" th:name="selected">
+        <option th:value="theme">by theme</option>
+        <option th:value="date">by date</option>
+    </select>
+    <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
+</form>
+
+<div th:fragment="paginateAdmin">
+    <!--        Pagination expos-->
+    <div class="text-center">
+        <nav aria-label="">
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${(page.getPageNumber gt 1) ? '' : 'disabled'}">
+                    <a class="page-link" th:href="@{${'/admin/expos'}(page=${(page.getPageNumber)  - 1},size=${size},sortBy=${sortBy})}" tabindex="-1"
+                       aria-disabled="true">Previous</a>
+                </li>
+                <li class="page-item"><a class="page-link" th:href="@{${'/admin/expos'}(size=${size},sortBy=${sortBy})}">1</a></li>
+                <li class="page-item active" aria-current="page">
+                    <a class="page-link" th:href="@{${'/admin/expos'}(page=2,size=${size},sortBy=${sortBy})}">2</a>
+                </li>
+                <li class="page-item"><a class="page-link" th:href="@{${'/admin/expos'}(page=3,size=${size},sortBy=${sortBy})}">3</a></li>
+                <li class="page-item"
+                    th:classappend="${(page.getPageNumber lt numberOfPages) ? '' : 'disabled'}">
+                    <a class="page-link"
+                       th:href="@{${'/admin/expos'}(page=${page.getPageNumber + 1},size=${size},sortBy=${sortBy})}">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<div th:fragment="paginateUser">
+    <!--        Pagination expos-->
+    <div class="text-center">
+        <nav aria-label="">
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${(page.getPageNumber gt 1) ? '' : 'disabled'}">
+                    <a class="page-link" th:href="@{${'/user/expos'}(page=${(page.getPageNumber)  - 1},size=${size},sortBy=${sortBy})}" tabindex="-1"
+                       aria-disabled="true">Previous</a>
+                </li>
+                <li class="page-item"><a class="page-link" th:href="@{${'/index/expos'}(size=${size},sortBy=${sortBy})}">1</a></li>
+                <li class="page-item active" aria-current="page">
+                    <a class="page-link" th:href="@{${'/user/expos'}(page=2,size=${size},sortBy=${sortBy})}">2</a>
+                </li>
+                <li class="page-item"><a class="page-link" th:href="@{${'/user/expos'}(page=3,size=${size},sortBy=${sortBy})}">3</a></li>
+                <li class="page-item"
+                    th:classappend="${(page.getPageNumber lt numberOfPages) ? '' : 'disabled'}">
+                    <a class="page-link"
+                       th:href="@{${'/user/expos'}(page=${page.getPageNumber + 1},size=${size},sortBy=${sortBy})}">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<div th:fragment="paginateGuest">
+    <!--        Pagination expos-->
+
+        <nav aria-label="">
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${(page.getPageNumber gt 1) ? '' : 'disabled'}">
+                    <a class="page-link" th:href="@{${'/index/expos'}(page=${(page.getPageNumber)  - 1},size=${size},sortBy=${sortBy})}" tabindex="-1"
+                       aria-disabled="true">Previous</a>
+                </li>
+                <li class="page-item"><a class="page-link" th:href="@{${'/index/expos'}(size=${size},sortBy=${sortBy})}">1</a></li>
+                <li class="page-item active" aria-current="page">
+                    <a class="page-link" th:href="@{${'/index/expos'}(page=2,size=${size},sortBy=${sortBy})}">2</a>
+                </li>
+                <li class="page-item"><a class="page-link" th:href="@{${'/index/expos'}(page=3,size=${size},sortBy=${sortBy})}">3</a></li>
+                <li class="page-item"
+                    th:classappend="${(page.getPageNumber lt numberOfPages) ? '' : 'disabled'}">
+                    <a class="page-link"
+                       th:href="@{${'/index/expos'}(page=${page.getPageNumber + 1},size=${size},sortBy=${sortBy})}">Next</a>
+                </li>
+            </ul>
+        </nav>
+
+</div>
+
+
+<div class="dropdown col-4" th:fragment="sortGuest">
+    <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton1"
+            data-bs-toggle="dropdown" aria-expanded="false">
+        sort
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+        <li><a class="dropdown-item" th:href="@{${'/index/expos'}(page=${currPage},size=${size},sortBy='price')}">by price</a>
+        </li>
+        <li><a class="dropdown-item" th:href="@{${'/index/expos'}(page=${currPage},size=${size},sortBy='expoDate')}">by date</a>
+        </li>
+        <li><a class="dropdown-item" th:href="@{${'/index/expos'}(page=${currPage},size=${size},sortBy='theme_name')}">by theme</a>
+        </li>
+    </ul>
+</div>
+
+<div class="dropdown col-4" th:fragment="sortAdmin">
+    <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton2"
+            data-bs-toggle="dropdown" aria-expanded="false">
+        sort
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+        <li><a class="dropdown-item" th:href="@{${'/admin/expos'}(page=${currPage - 1},size=${size},sortBy='price')}">by price</a>
+        </li>
+        <li><a class="dropdown-item" th:href="@{${'/admin/expos'}(page=${currPage - 1},size=${size},sortBy='expoDate')}">by date</a>
+        </li>
+        <li><a class="dropdown-item" th:href="@{${'/admin/expos'}(page=${currPage - 1},size=${size},sortBy='theme_name')}">by theme</a>
+        </li>
+    </ul>
+</div>
+
+<div class="dropdown col-4" th:fragment="sortUser">
+    <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton3"
+            data-bs-toggle="dropdown" aria-expanded="false">
+        sort
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
+        <li><a class="dropdown-item" th:href="@{${'/user/expos'}(page=${currPage - 1},size=${size},sortBy='price')}">by price</a>
+        </li>
+        <li><a class="dropdown-item" th:href="@{${'/user/expos'}(page=${currPage - 1},size=${size},sortBy='expoDate')}">by date</a>
+        </li>
+        <li><a class="dropdown-item" th:href="@{${'/user/expos'}(page=${currPage - 1},size=${size},sortBy='theme_name')}">by theme</a>
+        </li>
+    </ul>
+</div>
+
+<div class="dropdown" th:fragment="amountGuest">
+    <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton4" data-bs-toggle="dropdown" aria-expanded="false">
+        amount
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton4">
+        <li><a class="dropdown-item" th:href="@{${'/index/expos'}(size=${2},sortBy=${sortBy})}">2</a></li>
+        <li><a class="dropdown-item" th:href="@{${'/index/expos'}(size=${10},sortBy=${sortBy})}">10</a></li>
+        <li><a class="dropdown-item" th:href="@{${'/index/expos'}(size=${25},sortBy=${sortBy})}">25</a></li>
+    </ul>
+</div>
+
+<div class="dropdown" th:fragment="amountUser">
+    <button class="btn btn-primary dropdown-toggle byn-sm" type="button" id="dropdownMenuButton5" data-bs-toggle="dropdown" aria-expanded="false">
+        amount
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton5">
+        <li><a class="dropdown-item" th:href="@{${'/user/expos'}(size=${2},sortBy=${sortBy})}">2</a></li>
+        <li><a class="dropdown-item" th:href="@{${'/user/expos'}(size=${10},sortBy=${sortBy})}">10</a></li>
+        <li><a class="dropdown-item" th:href="@{${'/user/expos'}(size=${25},sortBy=${sortBy})}">25</a></li>
+    </ul>
+</div>
+
+<div class="dropdown" th:fragment="amountAdmin">
+    <button class="btn btn-primary dropdown-toggle byn-sm" type="button" id="dropdownMenuButton6" data-bs-toggle="dropdown" aria-expanded="false">
+        amount
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton6">
+        <li><a class="dropdown-item" th:href="@{${'/admin/expos'}(size=${2},sortBy=${sortBy})}">2</a></li>
+        <li><a class="dropdown-item" th:href="@{${'/admin/expos'}(size=${10},sortBy=${sortBy})}">10</a></li>
+        <li><a class="dropdown-item" th:href="@{${'/admin/expos'}(size=${25},sortBy=${sortBy})}">25</a></li>
+    </ul>
+</div>
+
+
+</body>
+</html>

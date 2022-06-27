@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+                xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>User Page</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+<span sec:authentication="name">Username</span>
+<div class="container">
+    <div th:if="${session.infMsg}">
+        <div th:text="#{${session.infMsg}}"></div>
+    </div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Expositions</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:text="${balance}">
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <form method="post" th:action="@{/user/topup}">
+                            <input type="text" class="form-control" th:name="amount">
+                            <button type="submit" class="btn btn-info btn-sm">ok</button>
+                        </form>
+                    </div>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown3" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Lang
+                    </a>
+<!--                    <div class="dropdown-menu" aria-labelledby="navbarDropdown3">-->
+<!--                        <a class="dropdown-item" th:href="@{${#httpServletRequest.getRequestURI()}(localeData='en_US')}">Eng</a>-->
+<!--                        <a class="dropdown-item" th:href="@{${#httpServletRequest.getRequestURI()}(localeData='uk_UA')}">Ukr</a>-->
+<!--                        <div class="dropdown-divider"></div>-->
+<!--                        <a class="dropdown-item" href="#">Something else here</a>-->
+<!--                    </div>-->
+                    <div th:insert="common/fragments :: langSwitch"></div>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        More
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown2">
+                        <a class="dropdown-item" th:href="@{/user/expos}">expos</a>
+
+                        <a class="dropdown-item"
+                           th:href="@{${'/user/myExpos'}(status='canceled')}">my_canceled</a>
+
+                        <a class="dropdown-item"
+                         th:href="@{${'/user/myExpos'}(status='active')}">my active</a>
+
+                        <a class="dropdown-item" th:href="@{${'/user/expos'}(size=5,sortBy='statistic_sold')}">Statistics</a>
+                    </div>
+                </li>
+            </ul>
+            <form th:fragment="searchItems" class="form-inline my-2 my-lg-0" th:action="@{/user/search}" th:method="get">
+                <input class="form-control mr-sm-2" type="search" th:name="search" placeholder="Search" aria-label="Search">
+                <select class="selectpicker" th:name="selected">
+                    <option th:value="theme">by theme</option>
+                    <option th:value="date">by date</option>
+                </select>
+                <button class="btn btn-outline-primary my-2 my-sm-0" type="submit">Search</button>
+            </form>
+            <ul class="navbar-nav mr-auto"></ul>
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <form method="post" th:action="@{/logout}">
+                        <button type="submit" class="logout btn btn-link link-light">logout</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div th:if="${expos != null}">
+        <div th:insert="index/expos.html :: allExpos"></div>
+    </div>
+    <div th:if="${myExpos != null}">
+        <div th:insert="user/myExpos.html :: myExpos"></div>
+    </div>
+
+    <div th:if="${expo != null}">
+        <div th:insert="index/show.html :: showExpo"></div>
+    </div>
+    <div th:if="${searchedExpos != null}">
+        <div th:insert="index/searched.html :: searchedList"></div>
+    </div>
+
+    <h4 th:text="#{Login}"></h4>
+    <h5 th:text="#{Lang}"></h5>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>

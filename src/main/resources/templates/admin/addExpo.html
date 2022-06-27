@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Exposition</title>
+    <link href=https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+</head>
+<body>
+<div class="container" th:fragment="addExpo">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <div th:if="${errMsg}">
+                <div th:text="#{${errMsg}}"></div>
+            </div>
+            <form th:action="@{/admin/addExpo}" method="post" th:object="${expo}">
+                <!-- Expo name -->
+                <div class="form-outline mb-4">
+                    <input type="text" id="expoName" class="form-control" th:field="*{name}" placeholder="new expo name"/>
+                    <label class="form-label" for="expoName">Expo name</label>
+                </div>
+
+                <!-- Expo Date -->
+                <div class="form-outline mb-4">
+                    <input type="text" id="expoDate" class="form-control" th:field="*{expoDate}" placeholder="m/dd/yy"/>
+                    <label class="form-label" for="expoDate">Expo Date</label>
+                </div>
+<!--                    <div class='form-outline col-sm-6'>-->
+<!--                        <div class="form-group">-->
+<!--                            <label for="datetime">Date and Time</label>-->
+<!--                            <div class='input-group date' id='datetime'>-->
+<!--                                <input type='text' class="form-control" />-->
+<!--                                <span class="input-group-addon">-->
+<!--                                  <span class="glyphicon glyphicon-calendar"></span>-->
+<!--                              </span>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+
+                <!-- Expo Time -->
+                <div class="form-outline mb-4">
+                    <input type="text" id="expoTime" class="form-control" th:field="*{expoTime}" placeholder="9:00 AM"/>
+                    <label class="form-label" for="expoTime">Expo time</label>
+                </div>
+
+                <!-- Expo Price -->
+                <div class="form-outline mb-4">
+                    <input type="text" id="expoPrice" class="form-control" th:field="*{price}" placeholder="100.00"/>
+                    <label class="form-label" for="expoPrice">Expo price</label>
+                </div>
+
+                <!-- Expo Sold -->
+                <div class="form-outline mb-4">
+                    <input type="text" id="expoSold" class="form-control"
+                           th:field="*{statistic.sold}" placeholder="0"/>
+                    <label class="form-label" for="expoSold">ExpoSold</label>
+                </div>
+                <!-- Expo Tickets -->
+                <div class="form-outline mb-4">
+                    <input type="text" id="expoTickets" class="form-control"
+                           th:field="*{statistic.tickets}" placeholder="100"/>
+                    <label class="form-label" for="expoTickets">Amount of tickets</label>
+                </div>
+
+
+
+                <%--               All  Halls--%>
+                <div class="dropdown col-4">
+                    <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton1"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        choose hall
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <th:block th:each="hall : ${halls}">
+                                <input type="checkbox" th:name="hal" th:value="${hall.idHall}"/>
+                                <label th:text="${hall.name}"></label>
+                            </th:block>
+<!--                            <li th:each="hall : ${halls}">-->
+<!--                                <input type="checkbox" name="hal" th:text="${hall.name}" th:field="*{halls}">-->
+<!--&lt;!&ndash;                                <p th:text="${hall.name}"></p>&ndash;&gt;-->
+<!--                            </li>-->
+                    </ul>
+                </div>
+                <div class="dropdown col-4">
+                    <label class="form-label">Choose hall(s)</label>
+                </div>
+
+                <!-- Expo Theme name -->
+<!--                <div class="form-outline mb-4">-->
+<!--                    <select class="form-select" aria-label="Default select example" name="idTheme" th:each="themeItem : ${themes}">-->
+<!--                        <option th:value="${themeItem.idTheme}" name="theme" th:field="*{id}">-->
+<!--                            <p th:text="${themeItem.name}" th:field="*{name}"></p>-->
+<!--                        </option>-->
+<!--                    </select>-->
+<!--                    <label class="form-label">Choose theme</label>-->
+<!--                </div>-->
+
+
+
+<!--                    <tr th:each="currTheme, stat : *{themes}">-->
+<!--                        <td><input type="checkbox"-->
+<!--                                   th:field="*{themes[__${stat.index}__].idTheme}"-->
+<!--                                   th:value="${currTheme.getIdTheme()}"-->
+<!--                                   th:checked="${currTheme.getName()}" >-->
+<!--                        </td>-->
+<!--                    </tr>-->
+                    <select th:field="*{theme.idTheme}">
+                        <option th:each="item : ${themes}"
+                                th:value="${item.idTheme}"
+                                th:text="${item.name}">
+                        </option>
+                    </select>
+
+                <button type="submit" class="btn btn-primary btn-sm">add</button>
+            </form>
+        </div>
+    </nav>
+</div>
+
+<script>
+    $(function () {
+        $('#datetime').datetimepicker();
+    });
+</script>
+<script type="text/javascript">
+    $(function () {
+        $('#dateformat').datetimepicker({
+            format:'M/dd/yy'
+        });
+    });
+</script>
+
+<script src=https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js referrerpolicy="no-referrer"></script>
+<script src=https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js integrity="sha384-W8fXfP3gkOKtndU4JGtKDvXbO53Wy8SZCQHczT5FMiiqmQfUpWbYdTil/SxwZgAN" crossorigin="anonymous"></script>
+<script src=https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js integrity="sha384-skAcpIdS7UcVUC05LJ9Dxay8AXcDYfBJqt1CJ85S/CFujBsIzCIv+l9liuYLaMQ/" crossorigin="anonymous"></script>
+</body>
+</html>
