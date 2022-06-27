@@ -16,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,20 +25,24 @@ import java.util.Arrays;
 
 @Service
 @Slf4j
+@Qualifier("userServiceLogic")
 public class UserServiceLogic implements UserService {
     private final UserRepo userRepo;
     private final ExpoRepo expoRepo;
     private final Build<ExpoDto, Exposition> buildExpos;
     private final UserServiceFacade userServiceFacade;
+    private final Build<UserDto, User> build;
 
     @Autowired
     public UserServiceLogic(UserRepo userRepo, ExpoRepo expoRepo,
                             @Qualifier("expoBuild") Build<ExpoDto, Exposition> buildExpos,
-                            UserServiceFacade userServiceFacade) {
+                            UserServiceFacade userServiceFacade,
+                            @Qualifier("getUserBuild") Build<UserDto, User> build) {
         this.userRepo = userRepo;
         this.expoRepo = expoRepo;
         this.buildExpos = buildExpos;
         this.userServiceFacade = userServiceFacade;
+        this.build = build;
     }
 
     @Override
@@ -54,7 +57,8 @@ public class UserServiceLogic implements UserService {
 
     @Override
     public Page<UserDto> getAll(Pageable pageable) {
-        return userServiceFacade.getAll(pageable);
+        Page<User> all = userRepo.findAll(pageable);
+        return all.map(build::toDto);
     }
 
     @Override
@@ -75,15 +79,19 @@ public class UserServiceLogic implements UserService {
 
     @Transactional
     @Override
-    public boolean buyExpo(User user, Long id) {
-        Exposition expo = expoRepo.getById(id);
+    public boolean buyExpo(User user, Exposition expo) {
         checkCaseExpoStatusCanceledUserBalanceNotOk(user, expo);
-        try{
+        try {
             userServiceFacade.buyExposition(expo, user);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new ExpoException("err.buy_expo");
         }
         return true;
+    }
+
+    @Override
+    public Exposition getExpoById(Long id) {
+        return expoRepo.getById(id);
     }
 
     private void checkCaseExpoStatusCanceledUserBalanceNotOk(User user, Exposition expo) {
@@ -96,13 +104,16 @@ public class UserServiceLogic implements UserService {
     }
 
     @Override
-    public Page<ExpoDto> getUserExpos(int offset, int size, Integer statusId, User user) {
-        Pageable pageable = PageRequest.of(offset, size);
-        Page<Exposition> resList = expoRepo.getAllByStatusIdAndUsers(statusId, user, pageable);
+    public Page<ExpoDto> getUserExpos(Page<Exposition> resList) {
         if (resList.getSize() == 0) {
             throw new UserException("err.user_dont_have_expos");
         }
         return resList.map(buildExpos::toDto);
+    }
+
+    @Override
+    public Page<Exposition> getAllExposByStatusIdAndUser(Integer statusId, User user, Pageable pageable) {
+        return expoRepo.getAllByStatusIdAndUsers(statusId, user, pageable);
     }
 
     @Override

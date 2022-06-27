@@ -7,6 +7,7 @@ import com.myproject.expo.expositions.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -38,12 +39,13 @@ public class UserUtilController implements ControllerUtils {
     }
 
     public boolean buyExpo(User user, Long id) {
-        return userService.buyExpo(user, id);
+        return userService.buyExpo(user, userService.getExpoById(id));
     }
 
     public Page<ExpoDto> getUserExpos(User user, String status) {
         log.info("input   status {}", status);
         Integer statusId = defineStatusId(status);
-        return userService.getUserExpos(0, 5, statusId, user);
+         return userService.getUserExpos(userService
+                 .getAllExposByStatusIdAndUser(statusId,user, PageRequest.of(0,5)));
     }
 }

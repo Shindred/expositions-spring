@@ -4,6 +4,7 @@ import com.myproject.expo.expositions.dto.UserDto;
 import com.myproject.expo.expositions.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +32,7 @@ public class AdminUtilController implements ControllerUtils {
                                @RequestParam("status") String status) {
         log.info("Id to change status " + id + " todo status " + status);
         userService.blockUnblock(id, status);
-        return "redirect:/admin/users";
+        return "redirect:/admin/home";
     }
 
 }

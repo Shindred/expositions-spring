@@ -19,12 +19,12 @@ import java.util.List;
 public class HallUtilController implements ControllerUtils {
     private final HallService hallService;
     private final String URL_BACK = "/admin/halls";
-    private List<Hall> list;
+   // private List<Hall> list;
 
     @Autowired
-    public HallUtilController(HallService hallService,List<Hall> list) {
+    public HallUtilController(HallService hallService) {
         this.hallService = hallService;
-        this.list = list;
+      //  this.list = list;
     }
 
     public Page<Hall> getHalls(Pageable pageable) {
@@ -42,18 +42,18 @@ public class HallUtilController implements ControllerUtils {
     public List<Hall> getAllHalls(){
         return hallService.getAll();
     }
-    public int countTotalNoOfRequiredPages(Pageable pageable){
-        List<Hall> allHalls = getAllHalls();
+
+    public int countTotalNoOfRequiredPages(List<Hall> allHalls,Pageable pageable){
         System.out.println("all halls size " + allHalls.size());
         return countNoOfRequiredPagesForPage(allHalls.size(),pageable.getPageSize());
     }
 
-    private void setAllDataToTheModelGetAllHallsMethod(Model model, Pageable pageable, Page<Hall> allHalls) {
-        model.addAttribute("numberOfPages",countNoOfRequiredPagesForPage(list.size(), pageable.getPageSize()));
-        model.addAttribute("halls", allHalls);
-        model.addAttribute("hallObj", new HallDto());
-        model.addAttribute("page", pageable);
-    }
+//    private void setAllDataToTheModelGetAllHallsMethod(Model model, Pageable pageable, Page<Hall> allHalls) {
+//        model.addAttribute("numberOfPages",countNoOfRequiredPagesForPage(list.size(), pageable.getPageSize()));
+//        model.addAttribute("halls", allHalls);
+//        model.addAttribute("hallObj", new HallDto());
+//        model.addAttribute("page", pageable);
+//    }
 
     public Hall saveHall(HallDto hallDto,
                            BindingResult bindingResult, Model model,Pageable pageable) {

@@ -29,7 +29,8 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class HallServiceLogicTest {
-    private static Pageable PAGEABLE = PageRequest.of(0, 5, Sort.by("idHall"));
+    private static final Pageable PAGEABLE = PageRequest.of(0, 5, Sort.by("idHall"));
+    private final List<Hall> hallList = new ArrayList<>();
     @MockBean
     private HallRepo hallRepo;
     @MockBean
@@ -37,7 +38,6 @@ public class HallServiceLogicTest {
     private Build<HallDto,Hall> build;
     @Autowired
     private HallService hallservice;
-    private final List<Hall> hallList = new ArrayList<>();
 
     @Before
     public void init(){

@@ -9,7 +9,7 @@
 <div class="container wrapper" >
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">Expositions</a>
+        <a class="navbar-brand" href="#" th:text="#{Expos}"></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -23,23 +23,21 @@
                     <a class="nav-link" href="#">Link</a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Lang
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:text="#{Lang}">
+<!--                        Lang-->
                     </a>
                     <div th:insert="common/fragments::langSwitch"></div>
                 </li>
 
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        More
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:text="#{More}">
+<!--                        More-->
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown2">
                     <a class="dropdown-item"
-                      th:href="@{/index/expos}">Expos</a>
+                      th:href="@{/index/expos}" th:text="#{Expos}"></a>
                     <a class="dropdown-item"
-                       th:href="@{${'/index/expos'}(size=2,sortBy='statistic_sold')}">Statistic</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">Something else here</a>
+                       th:href="@{${'/index/expos'}(size=2,sortBy='statistic_sold')}" th:text="#{Statistic}"></a>
                     </div>
                 </li>
             </ul>
@@ -47,11 +45,11 @@
             <ul class="navbar-nav mr-auto"></ul>
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="/login">Login</a>
+                    <a class="nav-link" href="/login" th:text="#{Login}"></a>
                 </li>
                 <li class="nav-item active">
                     <a class="nav-link btn btn-primary btn-sm" role="button"
-                       href="/register">Register</a>
+                       href="/register" th:text="#{Register}"></a>
                 </li>
             </ul>
         </div>

@@ -3,13 +3,18 @@ package com.myproject.expo.expositions.service.impl;
 import com.myproject.expo.expositions.build.Build;
 import com.myproject.expo.expositions.dto.ExpoDto;
 import com.myproject.expo.expositions.dto.UserDto;
-import com.myproject.expo.expositions.entity.*;
+import com.myproject.expo.expositions.entity.Exposition;
+import com.myproject.expo.expositions.entity.Statistic;
+import com.myproject.expo.expositions.entity.User;
 import com.myproject.expo.expositions.generator.TestEntity;
 import com.myproject.expo.expositions.repository.ExpoRepo;
 import com.myproject.expo.expositions.repository.UserRepo;
 import com.myproject.expo.expositions.service.UserService;
+import com.myproject.expo.expositions.service.facade.UserServiceFacade;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,22 +22,25 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.Month;
 import java.util.Collections;
-import java.util.List;
 
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class UserServiceLogicTest {
     private static final BigDecimal TOP_UP_BALANCE = new BigDecimal(100);
+    private final Exposition exposition = new Exposition();
     @MockBean
     private UserRepo userRepo;
     @MockBean
@@ -44,84 +52,94 @@ public class UserServiceLogicTest {
     private Build<UserDto, User> build;
     @MockBean
     @Qualifier("expoBuild")
-    private Build<ExpoDto,Exposition> buildExpo;
+    private Build<ExpoDto, Exposition> buildExpo;
     @MockBean
     private Pageable pageable;
     @MockBean
-    @Qualifier("expoBuild")
-    private Build<ExpoDto, Exposition> buildExpos;
+    @Qualifier("userServiceFacade")
+    private UserServiceFacade userServiceFacade;
     @Autowired
     private UserService userService;
-    private final Exposition expo = new Exposition();
 
+    @Before
+    public void init() {
+        exposition.setIdExpo(17L);
+        exposition.setName("sky-champions");
+        exposition.setExpoDate(LocalDate.of(2022, Month.AUGUST, 12));
+        exposition.setExpoTime(LocalTime.of(13, 30));
+        exposition.setPrice(new BigDecimal(300));
+        exposition.setStatusId(1);
+        exposition.setStatistic(new Statistic(1L, 20L, 450L));
+        exposition.setHalls(Collections.singleton(TestEntity.HallTest.hall1));
+        exposition.setTheme(TestEntity.ThemeTest.theme1);
+    }
 
     @Test
-    public void findByEmail() {
+    public void testFindUserByEmail() {
         when(userRepo.findByEmail("some@gmail.com")).thenReturn(TestEntity.UserTest.user);
         Assert.assertEquals(10L, userService.findByEmail("some@gmail.com").getId(), 0.00001);
     }
 
     @Test
-    public void save() {
-        when(build.toModel(TestEntity.UserTest.userDto)).thenReturn(TestEntity.UserTest.saveUser);
+    public void testSaveUser() {
+        User user = TestEntity.UserTest.user;
+        when(build.toModel(TestEntity.UserTest.userDto)).thenReturn(user);
         when(passwordEncoder.encode(anyString())).thenReturn(anyString());
-        when(userRepo.save(TestEntity.UserTest.saveUser)).thenReturn(TestEntity.UserTest.saveUser);
-        Assert.assertEquals(12L, userService.save(TestEntity.UserTest.userDto).getId(), 0.00001);
+        when(userRepo.save(user)).thenReturn(user);
+        when(userServiceFacade.save(TestEntity.UserTest.userDto)).thenReturn(TestEntity.UserTest.user);
+        Assertions.assertNotNull(userService.save(TestEntity.UserTest.userDto));
     }
 
     @Test
-    public void getAll() {
-        when(userRepo.findAll(pageable)).thenReturn(Page.empty(pageable));
-        Assert.assertEquals(0, userService.getAll(pageable).getSize());
+    public void testFindAllUsers() {
+        when(userRepo.findAll(pageable)).thenReturn(new PageImpl<>(Collections.singletonList(TestEntity.UserTest.user)));
+        when(build.toDto(any())).thenReturn(TestEntity.UserTest.userDto);
+        Assert.assertEquals(1, userService.getAll(pageable).getSize());
     }
 
     @Test
-    public void blockUnblock() {
+    public void testBlockUnblockUser() {
         when(userRepo.changeStatus(1L, 12L)).thenReturn(1);
         Assert.assertTrue(userService.blockUnblock(12L, "active"));
     }
 
     @Test
-    public void topUpBalance() {
-        when(userRepo.changeBalance(10L, TOP_UP_BALANCE)).thenReturn(1);
-        when(build.toDto(TestEntity.UserTest.user)).thenReturn(TestEntity.UserTest.userDto);
-        when(userRepo.getBalance(10L)).thenReturn(TestEntity.UserTest.NEW_BALANCE);
-        when(build.toModel(TestEntity.UserTest.userDto)).thenReturn(TestEntity.UserTest.user);
-
-        Assert.assertEquals(TestEntity.UserTest.NEW_BALANCE, userService.topUpBalance(TestEntity.UserTest.user, TOP_UP_BALANCE).getBalance());
-
+    public void testUserTopUpBalance() {
+        User user = TestEntity.UserTest.user;
+        when(userServiceFacade.topUpBalance(user, TOP_UP_BALANCE)).thenReturn(user);
+        when(userRepo.changeBalance(17L, TOP_UP_BALANCE)).thenReturn(1);
+        when(build.toDto(user)).thenReturn(TestEntity.UserTest.userDto);
+        when(userRepo.getBalance(anyLong())).thenReturn(new BigDecimal(600));
+        when(build.toModel(TestEntity.UserTest.userDto)).thenReturn(user);
+        Assertions.assertNotNull(userService.topUpBalance(user, TOP_UP_BALANCE));
+        Assertions.assertNotEquals(BigDecimal.ZERO, userService.topUpBalance(user, TOP_UP_BALANCE).getBalance());
     }
 
     @Test
-    public void buyExpo() {
-        expo.setIdExpo(1L);
-        expo.setPrice(new BigDecimal(300));
-        Statistic statistic = new Statistic();
-        statistic.setId(1L);
-        statistic.setSold(10L);
-        statistic.setTickets(300L);
-        expo.setStatistic(statistic);
-        expo.setStatusId(1);
-
-
-        when(expoRepo.getById(1L)).thenReturn(expo);
-        TestEntity.UserTest.user.setExposForUser(expo);
-        when(expoRepo.save(expo)).thenReturn(expo);
+    public void testUserBuyExpo() {
+        when(expoRepo.save(exposition)).thenReturn(exposition);
         when(userRepo.save(TestEntity.UserTest.user)).thenReturn(TestEntity.UserTest.user);
-
-        Assert.assertTrue(userService.buyExpo(TestEntity.UserTest.user,1L));
+        when(userServiceFacade.buyExposition(exposition, TestEntity.UserTest.user)).thenReturn(true);
+        Assertions.assertTrue(userService.buyExpo(TestEntity.UserTest.user, exposition));
     }
 
     @Test
-    public void getUserExpos() {
-        List<Exposition> list = new ArrayList<>();
-        List<ExpoDto> list2 = new ArrayList<>();
-        list.add(expo);
-        list2.add(buildExpo.toDto(expo));
-        Page<Exposition> page = new PageImpl<>(list);
-        Page<ExpoDto> page2 = new PageImpl<>(list2);
-        when(expoRepo.getAllByStatusIdAndUsers(1,TestEntity.UserTest.user,pageable)).thenReturn(page);
-        when(page.map(buildExpo::toDto)).thenReturn(page2);
-        System.out.println(userService.getUserExpos(1,2,1,TestEntity.UserTest.user));
+    public void testGetUserExpos() {
+        when((buildExpo.toDto(any()))).thenReturn(TestEntity.ExpoTest.expoDto1);
+        Page<ExpoDto> userExpos = userService.getUserExpos(new PageImpl<>(TestEntity.UserTest.user.getExpos()));
+        Assertions.assertNotNull(userExpos);
+        Assertions.assertEquals(1, userExpos.getSize());
+
     }
+
+    @Test
+    public void testGetAllExposByStatusIdAndUser() {
+        when(expoRepo.getAllByStatusIdAndUsers(1, TestEntity.UserTest.user, PageRequest.of(1, 5)))
+                .thenReturn(new PageImpl<>(TestEntity.UserTest.user.getExpos()));
+        Page<Exposition> result = userService.getAllExposByStatusIdAndUser(1, TestEntity.UserTest.user, PageRequest.of(1, 5));
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(1, result.getSize());
+
+    }
+
 }

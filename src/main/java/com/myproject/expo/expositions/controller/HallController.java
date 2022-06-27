@@ -34,7 +34,8 @@ public class HallController implements ControllerUtils {
     public String getHalls(Model model,
                            @PageableDefault(sort = {"idHall"},page = 1,direction = Sort.Direction.DESC) Pageable pageable) {
         model.addAttribute("hallObj", new HallDto());
-        model.addAttribute("numberOfPages",hallUtilController.countTotalNoOfRequiredPages(pageable));
+        model.addAttribute("numberOfPages",
+                hallUtilController.countTotalNoOfRequiredPages(hallUtilController.getAllHalls(),pageable));
         model.addAttribute("page", pageable);
         try{
             model.addAttribute("halls", hallUtilController.getHalls(pageable));

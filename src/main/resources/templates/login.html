@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head >
     <meta charset="UTF-8">
-    <title>Login Page</title>
+    <title th:text="#{Login}"></title>
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
           integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
@@ -17,11 +17,11 @@
 
             <li class="nav-item" role="presentation">
                 <a class="nav-link active" id="tab-login" data-mdb-toggle="pill" th:href="@{/login}" role="tab"
-                   aria-controls="pills-login" aria-selected="true">Login</a>
+                   aria-controls="pills-login" aria-selected="true" th:text="#{Login}"></a>
             </li>
             <li class="nav-item" role="presentation">
                 <a class="nav-link" id="tab-register" data-mdb-toggle="pill" th:href="@{/register}" role="tab"
-                   aria-controls="pills-register" aria-selected="false">Register</a>
+                   aria-controls="pills-register" aria-selected="false" th:text="#{Register}"></a>
             </li>
         </ul>
         <!-- Pills navs -->
@@ -37,13 +37,13 @@
                     <!-- Email input -->
                     <div class="form-outline mb-4">
                         <input type="text" id="loginName" th:name="username" class="form-control" />
-                        <label class="form-label" for="loginName">your_email</label>
+                        <label class="form-label" for="loginName" th:text="#{your_email}">your_email</label>
                     </div>
 
                     <!-- Password input -->
                     <div class="form-outline mb-4">
                         <input type="password" id="loginPassword" th:name="password" class="form-control" />
-                        <label class="form-label" for="loginPassword">Password</label>
+                        <label class="form-label" for="loginPassword" th:text="#{password}"></label>
                     </div>
 
                     <!-- 2 column grid layout -->
@@ -51,20 +51,20 @@
 
                         <div class="col-md-6 d-flex justify-content-center">
                             <!-- Simple link -->
-                            <a href="/change_email">change_email</a>
+                            <a href="/change_email" th:text="#{change_email}"></a>
                         </div>
                         <div class="col-md-6 d-flex justify-content-center">
                             <!-- Simple link -->
-                            <a href="/change_pass">forgot_pass?</a>
+                            <a href="/change_pass" th:text="#{forgot_pass}">?</a>
                         </div>
                     </div>
 
                     <!-- Submit button -->
-                    <button type="submit" class="btn btn-primary btn-block mb-4">sign_in</button>
+                    <button type="submit" class="btn btn-primary btn-block mb-4" th:text="#{sign_in}"></button>
 
                     <!-- Register buttons -->
                     <div class="text-center">
-                        <p>Not a member ? <a th:href="@{/register}">Register</a></p>
+                        <p th:text="#{not_a_member}">? <a th:href="@{/register}" th:text="#{Register}"></a></p>
                     </div>
                 </form>
             </div>
@@ -74,29 +74,29 @@
                     <!-- Name input -->
                     <div class="form-outline mb-4">
                         <input type="text" id="registerName" class="form-control" />
-                        <label class="form-label" for="registerName">${sessionScope.language['your_name']}</label>
+                        <label class="form-label" for="registerName">your_name</label>
                     </div>
 
                     <!-- Username input -->
                     <div class="form-outline mb-4">
                         <input type="text" id="registerUsername" class="form-control" />
-                        <label class="form-label" for="registerUsername">${sessionScope.language['your_surname']}</label>
+                        <label class="form-label" for="registerUsername">your_surname}</label>
                     </div>
 
                     <!-- Email input -->
                     <div class="form-outline mb-4">
                         <input type="email" id="registerEmail" class="form-control" />
-                        <label class="form-label" for="registerEmail">${sessionScope.language['your_email']}</label>
+                        <label class="form-label" for="registerEmail">your_email</label>
                     </div>
 
                     <!-- Password input -->
                     <div class="form-outline mb-4">
                         <input type="password" id="registerPassword" class="form-control" />
-                        <label class="form-label" for="registerPassword">${sessionScope.language['Password']}</label>
+                        <label class="form-label" for="registerPassword">Password</label>
                     </div>
 
                     <!-- Submit button -->
-                    <button type="submit" class="btn btn-primary btn-block mb-3">${sessionScope.language['sign_in']}</button>
+                    <button type="submit" class="btn btn-primary btn-block mb-3" th:text="#{sign_in}"></button>
                 </form>
             </div>
         </div>

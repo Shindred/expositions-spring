@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@Qualifier("userServiceLogic")
 public class ExpoServiceLogic implements ExpoService {
     private final ExpoRepo expoRepo;
     private final ThemeService themeService;
@@ -61,25 +63,19 @@ public class ExpoServiceLogic implements ExpoService {
     @Transactional
     @Override
     public Exposition addExpo(ExpoDto expoDto, List<Long> hallsIds) {
-//        setThemeToDto(expoDto);
-//        setStatisticToDto(expoDto, addStatisticFirst(expoDto));
-//        expoDto.setHalls(buildSetHalls(hallsIds));
-//
-//
-//        expoDto.setTheme(themeService.getById(expoDto.getTheme().getIdTheme()));
-//        expoDto.getStatistic().setId(savedStat.getId());
-//        expoDto.getStatistic().setSold(savedStat.getSold());
-//        expoDto.getStatistic().setTickets(savedStat.getTickets());
-//        expoDto.setHalls(buildSetHalls(hallsIds));
 
-        setRequiredFieldsForExpo(expoDto, hallsIds);
+        //setRequiredFieldsForExpo(expoDto, hallsIds);
         Exposition expo;
         try {
+            System.out.println("1");
             expo = build.toModel(expoDto);
+            System.out.println("2");
+            expo = expoRepo.save(expo);
         } catch (Exception e) {
             throw new RuntimeException("{err.add_expo}");
         }
-        return expoRepo.save(expo);
+        System.out.println("3");
+        return expo;
     }
 
     private void setRequiredFieldsForExpo(ExpoDto expoDto, List<Long> hallsIds) {
@@ -102,7 +98,8 @@ public class ExpoServiceLogic implements ExpoService {
     }
 
     private void setThemeToDto(ExpoDto expoDto) {
-        expoDto.setTheme(themeService.getById(expoDto.getTheme().getIdTheme()));
+        Theme theme = themeService.getById(expoDto.getTheme().getIdTheme());
+        expoDto.setTheme(theme);
     }
 
     private void setStatisticToDto(ExpoDto expoDto, Statistic savedStat) {
@@ -120,14 +117,10 @@ public class ExpoServiceLogic implements ExpoService {
     @Override
     public boolean update(Long id, Exposition expo) {
         expo.setIdExpo(id);
-        System.out.println("1");
         Theme theme = themeService.getById(expo.getTheme().getIdTheme());
-        System.out.println("2");
         expo.setTheme(theme);
-        System.out.println("3");
         try {
             expoRepo.save(expo);
-            System.out.println("4");
         } catch (Exception e) {
             throw new RuntimeException("{err.update_expo}");
         }

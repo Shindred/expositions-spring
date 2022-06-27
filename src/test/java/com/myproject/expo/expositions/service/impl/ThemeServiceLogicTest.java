@@ -31,6 +31,7 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 public class ThemeServiceLogicTest {
     private static final Pageable PAGEABLE = PageRequest.of(0, 3, Sort.by("idTheme"));
+    private final List<Theme> themeList = new ArrayList<>();
     @MockBean
     private ThemeRepo themeRepo;
     @MockBean
@@ -38,7 +39,6 @@ public class ThemeServiceLogicTest {
     private Build<ThemeDto, Theme> build;
     @Autowired
     private ThemeServiceLogic themeService;
-    private final List<Theme> themeList = new ArrayList<>();
 
     @Before
     public void init() {

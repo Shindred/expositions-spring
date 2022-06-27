@@ -5,7 +5,6 @@ import com.myproject.expo.expositions.exception.custom.UserException;
 import com.myproject.expo.expositions.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,12 +17,10 @@ import java.math.BigDecimal;
 @Slf4j
 public class MainUtilController implements ControllerUtils {
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public MainUtilController(UserService userService, PasswordEncoder passwordEncoder) {
+    public MainUtilController(UserService userService) {
         this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     public String register(@ModelAttribute("user") @Valid UserDto user,
@@ -45,16 +42,6 @@ public class MainUtilController implements ControllerUtils {
         }
         return "";
     }
-
-//    public String changePassword(String email, String password, Model model) {
-//        try {
-//            userService.changePassword(email, passwordEncoder.encode(password));
-//        } catch (Exception e) {
-//            model.addAttribute("errMsg", "Cannot change the password. Such user doesnt exist!");
-//            return "/change_password";
-//        }
-//        return "redirect:/login";
-//    }
 
     public int changeEmail(String oldEmail, String newEmail) {
         return userService.changeEmail(oldEmail, newEmail);

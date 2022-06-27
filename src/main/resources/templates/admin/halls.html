@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Halls</title>
+    <title th:text="#{halls}"></title>
 <!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">-->
     <link href=https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
 </head>
@@ -11,18 +11,17 @@
 <div class="container" th:fragment="halls">
     <span th:if="${errMsg}"  th:text="#{${errMsg}}">Error</span>
     <table class="table table-info table-hover">
-        <h4 class="text-center">All Halls</h4>
+        <h4 class="text-center" th:text="#{halls}"></h4>
         <thead>
         <tr>
-            <th scope="col">Hall</th>
+            <th scope="col" th:text="#{hall}"></th>
             <th scope="col">
                 <div class="input-group mb-3" th:object="${hallObj}">
                     <h6 style="color: red" class="text-center"
                         th:if="${#fields.hasErrors('name')}" th:errorclass="error" th:errors="*{name}"></h6>
                 </div>
 <!--                 Add hall -->
-                <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#addHall" aria-expanded="false" aria-controls="addHall">
-                    add hall
+                <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#addHall" aria-expanded="false" aria-controls="addHall" th:text="#{add_hall}">
                 </button>
                 <div class="collapse" id="addHall">
                     <div class="card card-body">
@@ -30,7 +29,7 @@
                             <div class="input-group mb-3">
                                 <input type="text" th:field="*{name}" class="form-control" placeholder="theme"
                                        aria-label="new theme">
-                                <button class="btn btn-info btn-sm" type="submit">add</button>
+                                <button class="btn btn-info btn-sm" type="submit" th:text="#{add}"></button>
                             </div>
                         </form>
                     </div>
@@ -45,8 +44,7 @@
                 <div class="accordion accordion-flush" id="accordionFlushExample">
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
 <!--                        Update hall -->
-                        <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse"  th:attr="data-bs-target='#updateHall'+${hall.idHall}"  aria-expanded="false"  >
-                            update
+                        <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse"  th:attr="data-bs-target='#updateHall'+${hall.idHall}"  aria-expanded="false" th:text="#{update_me}"  >
                         </button>
                         <div class="collapse" th:attr="id='updateHall'+${hall.idHall}" >
                             <div class="card card-body">
@@ -54,7 +52,7 @@
                                     <div class="input-group mb-3">
                                         <input type="text" th:field="*{name}" class="form-control" placeholder="hal"
                                                aria-label="new hall">
-                                        <button class="btn btn-info btn-sm" type="submit">update</button>
+                                        <button class="btn btn-info btn-sm" type="submit" th:text="#{update}"></button>
                                     </div>
                                 </form>
                             </div>
@@ -62,7 +60,7 @@
 <!--                        Delete hall-->
                         <div>
                             <form th:method="DELETE" th:action="@{/admin/halls/{id}(id=${hall.idHall})}">
-                                <button type="submit" class="btn btn-danger btn-sm">delete</button>
+                                <button type="submit" class="btn btn-danger btn-sm" th:text="#{delete}"></button>
                             </form>
                         </div>
                     </div>
@@ -71,13 +69,12 @@
         </tr>
         </tbody>
     </table>
-    <p th:text="${page.getPageNumber()}"></p>
     <!--        Pagination halls-->
     <div class="text-center">
         <nav aria-label="...">
             <ul class="pagination">
                 <li class="page-item" th:if="${page.getPageNumber() gt 1}">
-                    <a class="page-link" th:href="@{${'/admin/halls'}(page=${(page.getPageNumber()) - 1},size=${page.getPageSize()})}" tabindex="-1" aria-disabled="true">Previous</a>
+                    <a class="page-link" th:href="@{${'/admin/halls'}(page=${(page.getPageNumber()) - 1},size=${page.getPageSize()})}" tabindex="-1" aria-disabled="true" th:text="#{Prev}"></a>
                 </li>
                 <li class="page-item"><a class="page-link" th:href="@{${'/admin/halls'}(size=2)}">1</a></li>
                 <li class="page-item active" aria-current="page">
@@ -85,7 +82,7 @@
                 </li>
                 <li class="page-item"><a class="page-link" th:href="@{${'/admin/halls'}(page=3,size=2)}">3</a></li>
                 <li class="page-item" th:classappend="${(page.getPageNumber lt numberOfPages) ? '' : 'disabled'}">
-                    <a class="page-link" th:href="@{${'/admin/halls'}(page=${page.getPageNumber() + 1},size=${page.getPageSize()})}">Next</a>
+                    <a class="page-link" th:href="@{${'/admin/halls'}(page=${page.getPageNumber() + 1},size=${page.getPageSize()})}" th:text="#{Next}"></a>
                 </li>
             </ul>
         </nav>
