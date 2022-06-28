@@ -9,7 +9,6 @@
 <body>
 
 <div class="container" th:fragment="halls">
-    <span th:if="${errMsg}"  th:text="#{${errMsg}}">Error</span>
     <table class="table table-info table-hover">
         <h4 class="text-center" th:text="#{halls}"></h4>
         <thead>
@@ -20,6 +19,8 @@
                     <h6 style="color: red" class="text-center"
                         th:if="${#fields.hasErrors('name')}" th:errorclass="error" th:errors="*{name}"></h6>
                 </div>
+                <div th:insert="common/fragments.html :: informMsg"></div>
+                <div th:insert="common/fragments.html :: errMsg"></div>
 <!--                 Add hall -->
                 <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#addHall" aria-expanded="false" aria-controls="addHall" th:text="#{add_hall}">
                 </button>

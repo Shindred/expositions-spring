@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -116,5 +117,15 @@ public interface ControllerUtils {
 
     default Pageable getPageable(int page, int size) {
         return PageRequest.of(page, size);
+    }
+
+    default String getPathBackForUser(HttpServletRequest req) {
+        if (req.getServletPath().contains("admin")) {
+            return "/admin/home";
+        } else if (req.getServletPath().contains("user")) {
+            return "/user/home";
+        } else {
+            return "/index";
+        }
     }
 }

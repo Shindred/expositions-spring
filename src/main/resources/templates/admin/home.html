@@ -18,12 +18,6 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li>
                 <li class="nav-item">
                     <a class="nav-link active" th:href="@{${'/admin/expos'}(size=5,sortBy='statistic_sold')}" th:text="#{Statistic}"></a>
                 </li>
@@ -65,8 +59,8 @@
             </ul>
         </div>
     </nav>
-    <div th:if="${errMSg}" th:text="#{${errMSg}}" style="color: red">
-    </div>
+    <div th:insert="common/fragments.html :: informMsg"></div>
+    <div th:insert="common/fragments.html :: errMsg"></div>
 <!--    <a th:href="@{/admin/addExpo}">add expo</a>-->
 
     <div th:if="${expos != null}">

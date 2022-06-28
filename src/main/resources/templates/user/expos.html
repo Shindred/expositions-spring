@@ -16,21 +16,6 @@
 
 </div>
 <div class="row justify-content-center">
-
-<!--    <div class="alert alert-success alert-dismissible fade-show text-center" th:if="${session.containsKey('errMsg')}">-->
-<!--        <h5 class="text-center" th:text="${session.errMsg}"></h5>-->
-<!--        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"-->
-<!--                th:text="${session.remove('errMsg')}">-->
-<!--        </button>-->
-<!--    </div>-->
-    <!--    <jsp:include page="/WEB-INF/views/general/sorting.jsp"/>-->
-    <!--    <jsp:include page="/WEB-INF/views/general/itemsAmount.jsp"/>-->
-    <!--    <c:if test="${role.equals('admin')}">-->
-<!--    <div class="col-4">-->
-<!--        <form method="get" th:href="@{/admin/addExpo}">-->
-<!--            <button type="submit" class="btn btn-success btn-sm">add expo</button>-->
-<!--        </form>-->
-<!--    </div>-->
     <div class="dropdown col-4">
         <button class="btn btn-primary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton1"
                 data-bs-toggle="dropdown" aria-expanded="false">
@@ -55,7 +40,6 @@
             <li><a class="dropdown-item" th:href="@{${'/user/expos'}(size=${25},sortBy=${sortBy})}">25</a></li>
         </ul>
     </div>
-    <!--    </c:if>-->
 </div>
 <table class="table table-light table-hover">
     <h4 class="text-center">Expositions</h4>

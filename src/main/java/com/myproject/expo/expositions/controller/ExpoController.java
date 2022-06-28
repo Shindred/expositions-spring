@@ -61,7 +61,6 @@ public class ExpoController implements ControllerUtils {
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
     @GetMapping(value = {"*/expos/{id}","*/search/{id}"})
     public String show(@PathVariable("id") Long id, Model model) {
-        System.out.println("Showw one expo");
        expoUtilController.show(id, model);
        return "/admin/home";
     }

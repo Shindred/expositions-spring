@@ -7,13 +7,14 @@
 </head>
 <body>
 <div class="container" th:fragment="themes">
-    <span th:if="${errMsg}"  th:text="#{${errMsg}}">Error</span>
     <table class="table table-info table-hover">
         <h4 class="text-center" th:text="#{themes}"></h4>
         <div class="input-group mb-3" th:object="${themeObj}">
             <h6 style="color: red" class="text-center"
                 th:if="${#fields.hasErrors('name')}" th:errorclass="error" th:errors="*{name}"></h6>
         </div>
+        <div th:insert="common/fragments.html :: informMsg"></div>
+        <div th:insert="common/fragments.html :: errMsg"></div>
         <thead>
         <tr>
             <th scope="col" th:text="#{theme}"></th>

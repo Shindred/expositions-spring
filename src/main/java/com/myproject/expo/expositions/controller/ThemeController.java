@@ -52,10 +52,11 @@ public class ThemeController implements ControllerUtils {
     public String saveTheme(@ModelAttribute("themeObj") @Valid ThemeDto themeDto, BindingResult bindingResult,
                             Model model, @PageableDefault(sort = {"idTheme"}, page = 0,
                                     direction = Sort.Direction.DESC) Pageable pageable) {
+        setDataToTheModelAfterCrud(themeDto, model, pageable);
         if (inputHasErrors(bindingResult)) {
+            log.info("theme name was input incorrect");
             return "/admin/home";
         }
-        setDataToTheModelAfterCrud(themeDto, model, pageable);
         try{
             themeUtilController.saveTheTheme(themeDto);
         }catch (ThemeException e){

@@ -9,9 +9,7 @@
 <body>
 <span sec:authentication="name">Username</span>
 <div class="container">
-    <div th:if="${session.infMsg}">
-        <div th:text="#{${session.infMsg}}"></div>
-    </div>
+
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="#" th:text="#{Expos}"></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -20,12 +18,6 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:text="${balance}">
                     </a>
@@ -40,12 +32,6 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown3" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:text="#{Lang}">
                     </a>
-<!--                    <div class="dropdown-menu" aria-labelledby="navbarDropdown3">-->
-<!--                        <a class="dropdown-item" th:href="@{${#httpServletRequest.getRequestURI()}(localeData='en_US')}">Eng</a>-->
-<!--                        <a class="dropdown-item" th:href="@{${#httpServletRequest.getRequestURI()}(localeData='uk_UA')}">Ukr</a>-->
-<!--                        <div class="dropdown-divider"></div>-->
-<!--                        <a class="dropdown-item" href="#">Something else here</a>-->
-<!--                    </div>-->
                     <div th:insert="common/fragments :: langSwitch"></div>
                 </li>
 
@@ -83,6 +69,8 @@
             </ul>
         </div>
     </nav>
+    <div th:insert="common/fragments.html :: informMsg"></div>
+    <div th:insert="common/fragments.html :: errMsg"></div>
     <div th:if="${expos != null}">
         <div th:insert="index/expos.html :: allExpos"></div>
     </div>

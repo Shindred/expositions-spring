@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html th:lang="${#locale}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Index</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,12 +16,6 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" th:text="#{Lang}">
 <!--                        Lang-->
@@ -54,7 +48,8 @@
             </ul>
         </div>
     </nav>
-
+    <div th:insert="common/fragments.html :: informMsg"></div>
+    <div th:insert="common/fragments.html :: errMsg"></div>
     <div th:if="${expos != null}">
         <div th:insert="index/expos.html::allExpos"></div>
     </div>
@@ -65,11 +60,22 @@
     <div th:if="${errMSg}" th:text="#{${errMSg}}" style="color: red">
     </div>
 
-<!--    <footer id="sticky-footer" class="flex-shrink-0 py-3 bg-dark text-white-50">-->
-<!--        <div class="container text-center">-->
-<!--            <small>Copyright &copy; Author here</small>-->
-<!--        </div>-->
-<!--    </footer>-->
+<!--    <input type="date" name="date">-->
+
+
+<!--    <input type="date" id="start" name="trip-start"-->
+<!--           value="2018-07-22">-->
+
+
+<!--    <label for="appt">Choose a time for your meeting:</label>-->
+
+<!--    <input type="time" id="appt" name="appt"-->
+<!--           min="09:00" max="18:00" required>-->
+
+<!--    <small>Office hours are 9am to 6pm</small>-->
+<!--    <div th:text="${#locale}"></div>-->
+
+<div th:insert="common/fragments.html :: footer"></div>
 </div>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>

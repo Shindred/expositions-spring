@@ -134,7 +134,7 @@
 </div>
 
 <div class="dropdown" th:fragment="amountGuest">
-    <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton4" data-bs-toggle="dropdown" aria-expanded="false" th:text="#{amount}">
+    <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton4" data-bs-toggle="dropdown" aria-expanded="false" th:text="#{amount}" style="margin-left: 15%">
     </button>
     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton4">
         <li><a class="dropdown-item" th:href="@{${'/index/expos'}(size=${2},sortBy=${sortBy})}">2</a></li>
@@ -144,7 +144,7 @@
 </div>
 
 <div class="dropdown" th:fragment="amountUser">
-    <button class="btn btn-primary dropdown-toggle byn-sm" type="button" id="dropdownMenuButton5" data-bs-toggle="dropdown" aria-expanded="false" th:text="#{amount}">
+    <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton5" data-bs-toggle="dropdown" aria-expanded="false" th:text="#{amount}" style="margin-left: 15%">
     </button>
     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton5">
         <li><a class="dropdown-item" th:href="@{${'/user/expos'}(size=${2},sortBy=${sortBy})}">2</a></li>
@@ -154,7 +154,7 @@
 </div>
 
 <div class="dropdown" th:fragment="amountAdmin">
-    <button class="btn btn-primary dropdown-toggle byn-sm" type="button" id="dropdownMenuButton6" data-bs-toggle="dropdown" aria-expanded="false" th:text="#{amount}">
+    <button class="btn btn-primary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton6" data-bs-toggle="dropdown" aria-expanded="false" th:text="#{amount}" style="margin-left: 15%">
     </button>
     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton6">
         <li><a class="dropdown-item" th:href="@{${'/admin/expos'}(size=${2},sortBy=${sortBy})}">2</a></li>
@@ -199,6 +199,26 @@
             integrity="sha384-skAcpIdS7UcVUC05LJ9Dxay8AXcDYfBJqt1CJ85S/CFujBsIzCIv+l9liuYLaMQ/"
             crossorigin="anonymous"></script>
 </div>
+
+<div  th:fragment="informMsg" class="alert alert-success alert-dismissible fade show" role="alert" th:if="${infMsg}">
+    <div th:text="#{${infMsg}}"></div>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<
+<div th:fragment="errMsg" class="alert alert-danger alert-dismissible fade show" role="alert" th:if="${errMsg}">
+    <div th:text="#{${errMsg}}"></div>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+</div>
+
+<footer th:fragment="footer" id="sticky-footer" class="flex-shrink-0 py-3 bg-dark text-white-50">
+    <div class="container text-center">
+        <small>Copyright &copy; Author Alexandra Bushmelova</small>
+    </div>
+</footer>
 
 </body>
 </html>

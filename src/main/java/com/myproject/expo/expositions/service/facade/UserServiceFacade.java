@@ -51,7 +51,7 @@ public class UserServiceFacade {
             userRepo.save(user);
         } catch (RuntimeException e) {
             log.warn("User duplicate entry email");
-            throw new UserException("{err.user_exists_already}");
+            throw new UserException("err.user_exists_already");
         }
         return user;
     }

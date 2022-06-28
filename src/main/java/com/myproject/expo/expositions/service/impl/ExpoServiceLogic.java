@@ -55,7 +55,6 @@ public class ExpoServiceLogic implements ExpoService {
         log.info("Into service expo");
      //   Pageable pageable1 = PageRequest.of(pageable.getPageNumber(),pageable.getPageSize(), Sort.by("price"));
         Page<Exposition> all = expoRepo.findAll(pageable);
-        System.out.println("expos from service");
         all.forEach(System.out::println);
         return all.map(build::toDto);
     }
@@ -63,18 +62,14 @@ public class ExpoServiceLogic implements ExpoService {
     @Transactional
     @Override
     public Exposition addExpo(ExpoDto expoDto, List<Long> hallsIds) {
-
-        //setRequiredFieldsForExpo(expoDto, hallsIds);
+        setRequiredFieldsForExpo(expoDto, hallsIds);
         Exposition expo;
         try {
-            System.out.println("1");
             expo = build.toModel(expoDto);
-            System.out.println("2");
             expo = expoRepo.save(expo);
         } catch (Exception e) {
             throw new RuntimeException("{err.add_expo}");
         }
-        System.out.println("3");
         return expo;
     }
 

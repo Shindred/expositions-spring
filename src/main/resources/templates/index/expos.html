@@ -11,7 +11,6 @@
     <span th:text="${session.infMsg}"></span>
 </div>
 <div class="row justify-content-center" th:fragment="exps">
-    <a th:href="@{/index}">Home</a>
     <div sec:authorize="hasAuthority('ADMIN')" class="row">
         <div th:insert="common/fragments :: sortAdmin" class="col-md-4"></div>
         <div th:insert="common/fragments.html :: amountAdmin" class="col-md-8"></div>
@@ -21,14 +20,13 @@
         <div th:insert="common/fragments.html :: amountUser" class="col-md-8"></div>
 
     </div>
-
     <div sec:authorize="hasAuthority('ROLE_ANONYMOUS')" class="row">
             <div th:insert="common/fragments :: sortGuest" class="col-md-4"></div>
             <div th:insert="common/fragments.html :: amountGuest" class="col-md-8"></div>
     </div>
 </div>
 <table class="table table-light table-hover">
-    <h4 class="text-center">Expositions</h4>
+    <h4 class="text-center" th:text="#{Expos}"></h4>
     <thead>
     <tr>
         <th scope="col" th:text="#{expo_name}"></th>

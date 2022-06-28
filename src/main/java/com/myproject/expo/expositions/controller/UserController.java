@@ -65,10 +65,11 @@ public class UserController implements ControllerUtils {
             userUtilController.buyExpo(user,id);
         }catch (UserException e){
             log.warn("Cannot buy expo");
-            session.setAttribute("errMsg",e.getMessage());
-            return "redirect:/user/home";
+            //session.setAttribute("errMsg",e.getMessage());
+            model.addAttribute("errMsg",e.getMessage());
+            return "/user/home";
         }
-        session.setAttribute("infMsg", "inf.thanks_for_purchase");
+       // session.setAttribute("infMsg", "inf.thanks_for_purchase");
         return "redirect:/user/home";
     }
 
