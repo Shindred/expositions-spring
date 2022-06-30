@@ -117,7 +117,7 @@ public class ExpoServiceLogic implements ExpoService {
         try {
             expoRepo.save(expo);
         } catch (Exception e) {
-            throw new RuntimeException("{err.update_expo}");
+            throw new RuntimeException("err.update_expo");
         }
         return true;
     }

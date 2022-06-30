@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{update}"></title>
+</head>
+<body>
+<div th:insert="common/fragments.html :: scriptUpdateHead"></div>
+<div th:if="${errMsg}" th:text="#{${errMsg}}"></div>
+<form method="post" th:action="@{/admin/update/{id}(id=${expo.id})}" th:object="${expo}">
+    <div class="card-body">
+        <h5 class="card-title" th:text="#{expo_name}"></h5>
+        <input type="hidden" th:field="*{id}" th:value="${expo.id}">
+        <input type="text" class="form-control" th:field="*{name}"/>
+        <h6 style="color: red" class="text-center"
+            th:if="${#fields.hasErrors('name')}" th:errorclass="error" th:errors="*{name}"></h6>
+        <h5 class="card-title" th:text="#{expo_date}"></h5>
+
+        <input type="text" id="datepick"  class="form-control" th:field="*{expoDateStr}"/>
+        <h6 style="color: red" class="text-center"
+            th:if="${#fields.hasErrors('expoDateStr')}" th:errorclass="error" th:errors="*{expoDateStr}"></h6>
+        <h5 class="card-title" th:text="#{expo_time}"></h5>
+        <input type="time" class="form-control" th:field="*{expoTimeStr}"/>
+        <h6 style="color: red" class="text-center"
+            th:if="${#fields.hasErrors('expoTimeStr')}" th:errorclass="error" th:errors="*{expoTimeStr}"></h6>
+        <h5 class="card-title" th:text="#{expo_price}"></h5>
+        <input type="number" class="form-control" th:text="${expo.price}" th:field="*{price}"/>
+        <h6 style="color: red" class="text-center"
+            th:if="${#fields.hasErrors('price')}" th:errorclass="error" th:errors="*{price}"></h6>
+        <h5 class="card-title" th:text="#{sold_tickets}"></h5>
+        <input type="number" class="form-control" th:field="*{statistic.sold}"/>c
+        <h6 style="color: red" class="text-center"
+            th:if="${#fields.hasErrors('statistic.sold')}" th:errorclass="error" th:errors="*{statistic.sold}"></h6>
+        <h5 class="card-title" th:text="#{choose_halls}"></h5>
+
+        <div class="form-group">
+            <ul>
+                <li th:each="hall:${hallsShow}">
+                    <div class="ui checkbox">
+                        <input type="checkbox" th:field="*{halls}" th:value="${hall.idHall}">
+                        <label th:text="${hall.name}"></label>
+                    </div>
+
+                </li>
+            </ul>
+        </div>
+        <h5 class="card-title" th:text="#{choose_theme}"></h5>
+        <div class="form-group">
+            <select class="form-control selectpicker" th:field="*{theme.idTheme}" id="theme">
+                <option th:each="item : ${themesShow}"
+                        th:value="${item.idTheme}"
+                        th:text="${item.name}">
+                </option>
+            </select>
+            <h5 class="card-title" th:text="#{available_tickets}"></h5>
+            <input type="hidden" th:field="*{statistic.id}" th:value="${expo.statistic.id}">
+            <input type="number" class="form-control" th:field="*{statistic.tickets}"></p>
+            <h6 style="color: red" class="text-center"
+                th:if="${#fields.hasErrors('statistic.tickets')}" th:errorclass="error" th:errors="*{statistic.tickets}"></h6>
+        </div>
+        <button type="submit" class="btn btn-primary" th:text="#{update}"></button>
+    </div>
+</form>
+</body>
+</html>

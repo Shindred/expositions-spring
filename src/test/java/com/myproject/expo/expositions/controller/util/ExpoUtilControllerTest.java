@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
@@ -32,6 +33,8 @@ public class ExpoUtilControllerTest {
     private HallService hallService;
     @Mock
     private ThemeService themeService;
+    @Mock
+    private BindingResult bindingResult;
     @Mock
     @Qualifier("validateInput")
     private Validate validate;
@@ -57,7 +60,7 @@ public class ExpoUtilControllerTest {
         when(validate.validateProperTime(expoDto1.getExpoTime())).thenReturn(true);
         when(expoService.getAll()).thenReturn(List.of(build.toModel(expoDto1)));
         when(expoService.addExpo(expoDto1, List.of(1L, 2L))).thenReturn(build.toModel(expoDto1));
-        assertThat(expoUtilController.addExpo(expoDto1, List.of(1L, 2L), model)).isNotEmpty();
+        assertThat(expoUtilController.addExpo(expoDto1, List.of(1L, 2L),bindingResult, model)).isNotEmpty();
     }
 
     @Test

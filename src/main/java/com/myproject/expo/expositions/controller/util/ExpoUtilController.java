@@ -17,10 +17,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +31,10 @@ import java.util.Objects;
 @Component
 @Slf4j
 public class ExpoUtilController implements ControllerUtils {
-    private final static String ADMIN_SHOW_URL = "/admin/show";
-    private final static String REDIRECT_ADMIN_EXPOS = "redirect:/admin/expos";
+    private static final String ADMIN_SHOW_URL = "/admin/show";
+    private static final String ADMIN_UPDATE_URL = "/admin/update";
+    private static final String ADMIN_ADD_EXPO_URL = "/admin/addExpo";
+    private static final  String REDIRECT_ADMIN_EXPOS = "redirect:/admin/expos";
     private final ExpoService expoService;
     private final HallService hallService;
     private final ThemeService themeService;
@@ -49,6 +53,7 @@ public class ExpoUtilController implements ControllerUtils {
     }
 
     public String getPageToAddExpo(Model model) {
+        System.out.println("get page to add eepo");
         List<Hall> halls = hallService.getAll();
         List<Theme> themes = themeService.getAll();
         addExpoSetRequiredDataToTheModel(model, halls, themes);
@@ -65,11 +70,25 @@ public class ExpoUtilController implements ControllerUtils {
         model.addAttribute("themes", themes);
     }
 
-    public String addExpo(@ModelAttribute("expo") ExpoDto expoDto,
-                          @RequestParam("hal") @NotNull List<Long> halls, Model model) {
+    public String addExpo(@ModelAttribute("expo") @Valid ExpoDto expoDto,
+                          @RequestParam("hal") @NotNull List<Long> halls, BindingResult bindingResult,
+                          Model model) {
         log.info("Expo income {}", expoDto);
-        validate.validateProperDate(expoDto.getExpoDate());
-        validate.validateProperTime(expoDto.getExpoTime());
+        if (inputHasErrors(bindingResult)){
+            return ADMIN_ADD_EXPO_URL;
+        }
+        Exposition exposition = parseDateTimeToLocalDateTimeExpo(expoDto);
+
+        if (!returnBackThemeOrHallNotValid(expoDto, model, ADMIN_ADD_EXPO_URL).isEmpty()) {
+            return returnBackThemeOrHallNotValid(expoDto, model, ADMIN_ADD_EXPO_URL);
+        }
+        if (!validateDateTime(exposition)) {
+            return setErrMsgAndPathBack(model, "err.date_time_input", ADMIN_ADD_EXPO_URL);
+        }
+
+     //TODO ME
+//        validate.validateProperDate(expoDto.getExpoDate());
+//        validate.validateProperTime(expoDto.getExpoTime());
         if (isHallBusyAtTheTimeAndDate(expoService.getAll(), expoDto, halls)) {
             log.info("HALL IS BUSY ALREADY");
             throw new ExpoException("err.already_busy_hall");
@@ -87,6 +106,7 @@ public class ExpoUtilController implements ControllerUtils {
         showOneExpoSetDataToTheModel(id, model, hallService.getAll(), themeService.getAll());
         return ADMIN_SHOW_URL;
     }
+
 
     private void showOneExpoSetDataToTheModel(Long id, Model model, List<Hall> halls, List<Theme> themes) {
         ExpoDto expoDto = expoService.getById(id);
@@ -111,39 +131,46 @@ public class ExpoUtilController implements ControllerUtils {
         setPageableAndExposToTheModel(model, pageable, expoDto);
         ExpoDto foundExpoFromDb = expoService.getById(expoDto.getId());
         try {
-            Exposition exposition = build.toModel(expoDto);
+            Exposition exposition = parseDateTimeToLocalDateTimeExpo(expoDto);
             setAllExposToTheModel(model, pageable, "");
-            if (!returnBackThemeOrHallNotValid(expoDto, model, pageable).isEmpty()) {
-                return returnBackThemeOrHallNotValid(expoDto, model, pageable);
+            if (!returnBackThemeOrHallNotValid(expoDto, model, ADMIN_UPDATE_URL).isEmpty()) {
+                return returnBackThemeOrHallNotValid(expoDto, model, ADMIN_UPDATE_URL);
             }
-            if (!validateDateTime(id, exposition)) {
-                return setErrMsgAndPathBack(model, "err.date_time_input", "/admin/home");
+            if (validateDateTime(exposition)) {
+                expoService.update(id, exposition);
+            }else {
+                return setErrMsgAndPathBack(model, "err.date_time_input", ADMIN_UPDATE_URL);
             }
         } catch (Exception e) {
             log.warn("Cannot update the expo with id {}", expoDto.getId());
             return setErrMsgAndPathBack(model,
-                    setExpoToTheModel(foundExpoFromDb, model, "err.expo_update"), "/admin/home");
+                    setExpoToTheModel(foundExpoFromDb, model, "err.expo_update"), ADMIN_UPDATE_URL);
         }
-        return "redirect:/admin/home";
+        return "redirect:/admin/expos";
     }
 
-    private String returnBackThemeOrHallNotValid(ExpoDto expo, Model model, Pageable pageable) {
+    private Exposition parseDateTimeToLocalDateTimeExpo(ExpoDto expoDto) {
+        expoDto.setExpoDate(parseStrToLocalDate(expoDto.getExpoDateStr()));
+        expoDto.setExpoTime(parseStrToLocalTime(expoDto.getExpoTimeStr()));
+        return build.toModel(expoDto);
+    }
+
+    private String returnBackThemeOrHallNotValid(ExpoDto expo, Model model, String pathBack) {
         if (!validate.validateThemeHasIdFromInput(expo)) {
             return setErrMsgAndPathBack(model,
-                    setExpoToTheModel(expo, model, "err.theme_input_expo_update"), ADMIN_SHOW_URL);
+                    setExpoToTheModel(expo, model, "err.theme_input_expo_update"), pathBack);
         }
         if (validate.validateHallNotEmpty(expo)) {
             log.info("Hall empty");
             return setErrMsgAndPathBack(model,
-                    setExpoToTheModel(expo, model, "err.hall_input_expo_update"), ADMIN_SHOW_URL);
+                    setExpoToTheModel(expo, model, "err.hall_input_expo_update"), pathBack);
         }
         return "";
     }
 
-    private boolean validateDateTime(Long id, Exposition exposition) {
+    private boolean validateDateTime(Exposition exposition) {
         if ((validate.isDateValid(exposition.getExpoDate()) && validate.isTimeInReqDiapason(exposition.getExpoTime()))) {
             log.warn("CHECK DATE AND TIME");
-            expoService.update(id, exposition);
             return true;
         }
         return false;

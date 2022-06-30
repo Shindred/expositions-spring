@@ -3,10 +3,6 @@
 <head >
     <meta charset="UTF-8">
     <title th:text="#{show_expo}"></title>
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
-          integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
-          crossorigin="anonymous"/>
 </head>
 <body>
 <div class="container">
@@ -16,14 +12,12 @@
         <h6 style="color: red" class="text-center"
             th:if="${#fields.hasErrors('name')}" th:errorclass="error" th:errors="*{name}"></h6>
         <h6 style="color: red" class="text-center"
-            th:if="${#fields.hasErrors('expoDate')}" th:errorclass="error" th:errors="*{expoDate}"></h6>
+            th:if="${#fields.hasErrors('expoDateStr')}" th:errorclass="error" th:errors="*{expoDateStr}"></h6>
         <h6 style="color: red" class="text-center"
-            th:if="${#fields.hasErrors('expoTime')}" th:errorclass="error" th:errors="*{expoTime}"></h6>
+            th:if="${#fields.hasErrors('expoTimeStr')}" th:errorclass="error" th:errors="*{expoTimeStr}"></h6>
         <h6 style="color: red" class="text-center"
             th:if="${#fields.hasErrors('price')}" th:errorclass="error" th:errors="*{price}"></h6>
     </div>
-
-
     <div class="card text-center">
         <div class="card-header" th:text="#{show_expo}">
         </div>
@@ -83,30 +77,7 @@
                             <input type="text" class="form-control" th:field="*{statistic.sold}"/>
                             <h5 class="card-title" th:text="#{choose_halls}"></h5>
 
-
-<!--                        <div class="dropdown col-4">-->
-<!--                                <button class="btn btn-info btn-sm dropdown-toggle" type="button" id="dropdownMenuButton6"-->
-<!--                                        data-bs-toggle="dropdown" aria-expanded="false">-->
-<!--                                  choose hall-->
-<!--                                </button>-->
-<!--                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton6">-->
-<!--                                    <div th:each="hall : ${halls}">-->
-<!--                                        <li>-->
-<!--                                            <input type="checkbox" class="card-text" th:text="${hall.name}"/>-->
-<!--                                        </li>-->
-<!--                                    </div>-->
-<!--                                </ul>-->
-<!--                            </div>-->
-
-
-
-
-
-
-
-
                             <div class="form-group">
-<!--                                <label for="halls">Choose halls</label>-->
                                 <ul>
                                     <li th:each="hall:${halls}">
                                         <div class="ui checkbox">
@@ -117,28 +88,12 @@
                                     </li>
                                 </ul>
 
-
-<!--                                <select class="form-control selectpicker" th:name="someName" id="halls">-->
-<!--&lt;!&ndash;                                    <option value="">Nothing selected</option>&ndash;&gt;-->
-<!--                                    <option th:each="hall : ${halls}"-->
-<!--                                            th:value="${hall.idHall}"-->
-<!--                                            th:text="${hall.name}">-->
-<!--                                    </option>-->
-
-<!--                                </select>-->
                             </div>
-
-
-<!--                            <div th:each="hall : ${expo.halls}" class="alert alert-warning alert-dismissible fade show" role="alert">-->
-<!--                                <input type="checkbox" class="card-text" th:text="${hall.name}"/>-->
-<!--                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">X</button>-->
-<!--                            </div>-->
 
                             <h5 class="card-title">Choose name</h5>
                             <div class="form-group">
                                 <label for="theme" th:text="#{choose_theme}"></label>
                                 <select class="form-control selectpicker" th:field="*{theme.idTheme}" id="theme">
-<!--                                    <option value="">Nothing selected</option>-->
                                     <option th:each="item : ${themes}"
                                             th:value="${item.idTheme}"
                                             th:text="${item.name}">
@@ -165,17 +120,5 @@
     </div>
 </div>
 
-<script>
-    jQuery("a.list-group-item").click(function (e) {
-        jQuery(this).addClass('active').siblings().removeClass('active');
-    });
-</script>
-<script src=https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js referrerpolicy="no-referrer"></script>
-<script src=https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js
-        integrity="sha384-W8fXfP3gkOKtndU4JGtKDvXbO53Wy8SZCQHczT5FMiiqmQfUpWbYdTil/SxwZgAN"
-        crossorigin="anonymous"></script>
-<script src=https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js
-        integrity="sha384-skAcpIdS7UcVUC05LJ9Dxay8AXcDYfBJqt1CJ85S/CFujBsIzCIv+l9liuYLaMQ/"
-        crossorigin="anonymous"></script>
 </body>
 </html>

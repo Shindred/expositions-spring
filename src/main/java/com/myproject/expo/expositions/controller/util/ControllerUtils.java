@@ -14,7 +14,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Arrays;
 import java.util.Locale;
-import java.util.regex.Pattern;
 
 public interface ControllerUtils {
     default boolean inputHasErrors(BindingResult bindingResult) {
@@ -55,13 +54,11 @@ public interface ControllerUtils {
     default Pageable getResPageable(Pageable pageable, String sortBy) {
         Pageable pageableRes = null;
         if (pageable.getPageNumber() >= 2) {
-            System.out.println(" more > 0 pageable");
             pageableRes = PageRequest
                     .of(pageable.getPageNumber() - 1, pageable.getPageSize(), defineSortingOrder(sortBy));
             System.out.println(pageableRes);
         } else if (pageable.getPageNumber() == 1) {
             pageableRes = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize(), defineSortingOrder(sortBy));
-            System.out.println("else pageres  " + pageableRes);
         } else {
             pageableRes = PageRequest.of(0, pageable.getPageSize(), defineSortingOrder(sortBy));
         }
@@ -84,16 +81,16 @@ public interface ControllerUtils {
     default Pageable getPageableFromPageSize(Pageable pageable) {
         Pageable res;
         if (pageable.getPageNumber() > 0) {
-            res = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize(),pageable.getSort());
+            res = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize(), pageable.getSort());
         } else {
-            res = PageRequest.of(0, pageable.getPageSize(),pageable.getSort());
+            res = PageRequest.of(0, pageable.getPageSize(), pageable.getSort());
         }
         return res;
     }
 
     default int countNoOfRequiredPagesForPage(int totalRecords, int noOfRecordsPerPage) {
         if (totalRecords % 2 == 0) {
-            return  (totalRecords / noOfRecordsPerPage);
+            return (totalRecords / noOfRecordsPerPage);
         } else {
             double result = ((totalRecords * 0.1) / noOfRecordsPerPage);
             return (result % noOfRecordsPerPage > 0)
@@ -102,17 +99,13 @@ public interface ControllerUtils {
     }
 
     default LocalDate parseStrToLocalDate(String date) {
-        final DateTimeFormatter datePatternEng = DateTimeFormatter.ofPattern("M/d/yy");
-        final DateTimeFormatter datePatternUkr = DateTimeFormatter.ofPattern("dd.MM.yy");
-        return LocalDate.parse(date, Pattern.compile("\\d{1,2}/\\d{1,2}/\\d{2}").matcher(date).matches()
-                ? datePatternEng : datePatternUkr);
+        final DateTimeFormatter datePatternEng = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return LocalDate.parse(date, datePatternEng);
     }
 
     default LocalTime parseStrToLocalTime(String time) {
-        final DateTimeFormatter timePatternEng = DateTimeFormatter.ofPattern("h:mm a");
         final DateTimeFormatter timePatternUkr = DateTimeFormatter.ofPattern("HH:mm");
-        return LocalTime.parse(time, Pattern.compile("\\d{1,2}:\\d{2}\\W[A-Z]{2}").matcher(time).matches()
-                ? timePatternEng : timePatternUkr);
+        return LocalTime.parse(time, timePatternUkr);
     }
 
     default Pageable getPageable(int page, int size) {

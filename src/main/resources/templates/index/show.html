@@ -8,12 +8,18 @@
 <!--          href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"-->
 <!--          integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"-->
 <!--          crossorigin="anonymous"/>-->
+    <link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet"/>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+
 </head>
 <body>
-<div th:insert="common/fragments.html :: headerShowExpo"></div>
+<!--<div th:insert="common/fragments.html :: headerShowExpo"></div>-->
 <div class="container" th:fragment="showExpo">
     <span th:if="${errMsg}"  th:text="#{${errMsg}}">Error</span>
 
+<!--    <div th:insert="common/fragments.html :: informMsg"></div>-->
+<!--    <div th:insert="common/fragments.html :: errMsg"></div>-->
     <div class="input-group mb-3" th:object="${expo}">
         <h6 style="color: red" class="text-center"
             th:if="${#fields.hasErrors('name')}" th:errorclass="error" th:errors="*{name}"></h6>
@@ -23,6 +29,10 @@
             th:if="${#fields.hasErrors('expoTime')}" th:errorclass="error" th:errors="*{expoTime}"></h6>
         <h6 style="color: red" class="text-center"
             th:if="${#fields.hasErrors('price')}" th:errorclass="error" th:errors="*{price}"></h6>
+        <h6 style="color: red" class="text-center"
+            th:if="${#fields.hasErrors('sold')}" th:errorclass="error" th:errors="*{sold}"></h6>
+        <h6 style="color: red" class="text-center"
+            th:if="${#fields.hasErrors('tickets')}" th:errorclass="error" th:errors="*{tickets}"></h6>
     </div>
 
     <div class="card text-center">
@@ -60,10 +70,11 @@
                 </form>
             </div>
             <div sec:authorize="hasAuthority('ADMIN')">
-            <a href="#flush" class="btn btn-primary" data-bs-toggle="collapse"
-               data-bs-target="#flush" aria-expanded="false" aria-controls="flush-collapseOne" th:text="#{update_me}"></a>
+                <a th:href="@{/admin/update/{id}(id=${expo.id})}">update</a>
+<!--            <a href="#flush" class="btn btn-primary" data-bs-toggle="collapse"-->
+<!--               data-bs-target="#flush" aria-expanded="false" aria-controls="flush-collapseOne" th:text="#{update_me}"></a>-->
 
-            <div id="flush" class="accordion-collapse collapse" aria-labelledby="flush-headingOne"
+            <div id="u" class="accordion-collapse collapse" aria-labelledby="flush-headingOne"
                  data-bs-parent="#accordionFlushExample">
                     <div class="accordion-body">
                         <form method="post" th:action="@{/admin/update/{id}(id=${expo.id})}" th:object="${expo}">
@@ -72,6 +83,30 @@
                                 <input type="hidden" th:field="*{id}" th:value="${expo.id}">
                                 <input type="text" class="form-control" th:field="*{name}"/>
                                 <h5 class="card-title" th:text="#{expo_date}"></h5>
+
+                                <!--    <input type="date" id="start" name="trip-start"-->
+                                <!--           value="2018-07-22">-->
+
+
+                                <!--    <label for="appt">Choose a time for your meeting:</label>-->
+
+                                <!--    <input type="time" id="appt" name="appt"-->
+                                <!--           min="09:00" max="18:00" required>-->
+
+                                <!--    <small>Office hours are 9am to 6pm</small>-->
+                                <!--    <div th:text="${#locale}"></div>-->
+<!--                                <input type="date" name="date">-->
+
+                                <script>
+                                    $(function () {
+                                        $("#datepick").datepicker();
+                                    });
+                                </script>
+
+                                <div id="divstyle">
+                                    <p style="font-weight: bold;">Date: <input type="text" id="datepick" /></p>
+                                </div>
+
                                 <input type="text" class="form-control" th:field="*{expoDate}"/>
                                 <h5 class="card-title" th:text="#{expo_time}"></h5>
                                 <input type="text" class="form-control" th:field="*{expoTime}"/>
@@ -121,11 +156,11 @@
     </div>
 </div>
 
-<script>
-    jQuery("a.list-group-item").click(function (e) {
-        jQuery(this).addClass('active').siblings().removeClass('active');
-    });
-</script>
+<!--<script>-->
+<!--    jQuery("a.list-group-item").click(function (e) {-->
+<!--        jQuery(this).addClass('active').siblings().removeClass('active');-->
+<!--    });-->
+<!--</script>-->
 
 <div th:insert="common/fragments.html :: scriptsShowExpo"></div>
 </body>

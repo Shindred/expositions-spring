@@ -5,6 +5,8 @@ import com.myproject.expo.expositions.controller.util.MainUtilController;
 import com.myproject.expo.expositions.dto.UserDto;
 import com.myproject.expo.expositions.exception.custom.UserException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,8 +18,8 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @Controller
-@Slf4j
 public class MainController implements ControllerUtils {
+    private static final Logger log = LogManager.getLogger(MainController.class);
     private final MainUtilController mainUtilController;
 
     @Autowired
@@ -79,12 +81,6 @@ public class MainController implements ControllerUtils {
         return "redirect:/login";
     }
 
-//    @RequestMapping(value = "/change_pass", method = RequestMethod.POST)
-//    public String changePassForUser(@RequestParam("email")String email,
-//             @RequestParam("password") String password, Model model) {
-//        return mainUtilController.changePassword(email, password, model);
-//    }
-
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public String getIndexPage() {
         return "/index";
@@ -93,5 +89,10 @@ public class MainController implements ControllerUtils {
     @GetMapping("*/home")
     public String getBackPage(HttpServletRequest req) {
         return getPathBackForUser(req);
+    }
+
+    @GetMapping("/test")
+    public String test(){
+        return "test";
     }
 }

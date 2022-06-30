@@ -4,6 +4,8 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -18,7 +20,11 @@ public class Statistic implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ColumnDefault("0")
+    @Digits(integer = 15, fraction = 0, message = "{err.sold_input}")
+    @NotNull(message = "{err.sold_input}")
     private Long sold;
+    @Digits(integer = 15, fraction = 0, message = "{err.tickets_input}")
+    @NotNull(message = "{err.tickets_input}")
     private Long tickets;
 
     @Override

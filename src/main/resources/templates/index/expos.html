@@ -7,6 +7,9 @@
 </head>
 <div th:insert="common/fragments.html :: headerExpos"></div>
 <body th:fragment="allExpos">
+<div class="col-4">
+    <a th:href="@{/admin/addExpo}" th:text="#{add_expo}"></a>
+</div>
 <div th:if="${session.infMsg != null}">
     <span th:text="${session.infMsg}"></span>
 </div>
