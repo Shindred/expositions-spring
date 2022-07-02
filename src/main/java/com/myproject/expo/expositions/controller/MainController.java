@@ -17,6 +17,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+/**
+ * The MainController class
+ */
 @Controller
 public class MainController implements ControllerUtils {
     private static final Logger log = LogManager.getLogger(MainController.class);

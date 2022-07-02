@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * The ServerErrorController class handle errors and redirects to the desired endpoint, depend on the error status
+ */
 @Controller
 public class ServerErrorController implements ErrorController {
 

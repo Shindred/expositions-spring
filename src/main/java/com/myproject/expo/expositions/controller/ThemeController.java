@@ -19,12 +19,16 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static com.myproject.expo.expositions.util.Constant.*;
+
+/**
+ * The ThemeController class do CRUD operations with Theme Dto
+ */
 @Controller
 @RequestMapping("/admin")
 @PreAuthorize("hasAuthority('ADMIN')")
 @Slf4j
 public class ThemeController implements ControllerUtils {
-    private static final String PATH_BACK = "/admin/themes";
     private final ThemeUtilController themeUtilController;
 
     @Autowired
@@ -33,89 +37,91 @@ public class ThemeController implements ControllerUtils {
     }
 
     @GetMapping("/themes")
-    public String getThemes(Model model, @PageableDefault(sort = {"idTheme"},page = 1,direction = Sort.Direction.DESC) Pageable pageable) {
-        model.addAttribute("themeObj", new ThemeDto());
-        model.addAttribute("numberOfPages", themeUtilController.countNoRequiredPages(pageable));
+    public String getThemes(Model model, @PageableDefault(sort = {ID_THEME},page = 1,direction = Sort.Direction.DESC) Pageable pageable) {
+        model.addAttribute(THEME_OBJ, new ThemeDto());
+        model.addAttribute(NUMBER_OF_PAGES, themeUtilController.countNoRequiredPages(pageable));
         log.info("PAGE {} number pages {} ",pageable,themeUtilController.countNoRequiredPages(pageable));
-        model.addAttribute("page", pageable);
+        model.addAttribute(PAGE, pageable);
 
         try {
-            model.addAttribute("themes", themeUtilController.getAllThemes(pageable));
+            model.addAttribute(THEMES, themeUtilController.getAllThemes(pageable));
         } catch (Exception e) {
-            model.addAttribute("err.Msg",e.getMessage());
-            return "/admin/home";
+            log.warn("Cannot get all themes for admin");
+            model.addAttribute(ERR_MSG,e.getMessage());
+            return URL.ADMIN_HOME_SLASH;
         }
-        return "admin/home";
+        return URL.ADMIN_HOME_SLASH;
     }
 
     @PostMapping("/themes")
-    public String saveTheme(@ModelAttribute("themeObj") @Valid ThemeDto themeDto, BindingResult bindingResult,
-                            Model model, @PageableDefault(sort = {"idTheme"}, page = 0,
+    public String saveTheme(@ModelAttribute(THEME_OBJ) @Valid ThemeDto themeDto, BindingResult bindingResult,
+                            Model model, @PageableDefault(sort = {ID_THEME}, page = 0,
                                     direction = Sort.Direction.DESC) Pageable pageable) {
         setDataToTheModelAfterCrud(themeDto, model, pageable);
         if (inputHasErrors(bindingResult)) {
-            log.info("theme name was input incorrect");
-            return "/admin/home";
+            log.warn("theme name was input incorrect");
+            return URL.ADMIN_HOME_SLASH;
         }
         try{
             themeUtilController.saveTheTheme(themeDto);
         }catch (ThemeException e){
-            model.addAttribute("errMsg",e.getMessage());
-            return "/admin/home";
+            log.warn("cannot save the theme with name {}",themeDto.getName());
+            model.addAttribute(ERR_MSG,e.getMessage());
+            return URL.ADMIN_HOME_SLASH;
         }
-        return "redirect:/admin/home";
+        return URL.REDIRECT_ADMIN_HOME;
     }
 
     private void setDataToTheModelAfterCrud(ThemeDto themeDto, Model model, Pageable pageable) {
-        model.addAttribute("page", pageable);
-        model.addAttribute("themeObj", themeDto);
-        model.addAttribute("themes",themeUtilController.getAllThemes(pageable));
+        model.addAttribute(PAGE, pageable);
+        model.addAttribute(THEME_OBJ, themeDto);
+        model.addAttribute(THEMES,themeUtilController.getAllThemes(pageable));
     }
 
     @PostMapping("/themes/cancel")
     public String cancelAddTHeme(@RequestParam(value = "cancel", required = false) String cancel) {
-        return cancel != null ? Constant.REDIRECT + "/admin/home" : "/admin/home";
+        return cancel != null ? REDIRECT + URL.ADMIN_HOME_SLASH : URL.ADMIN_HOME_SLASH;
     }
 
     @PatchMapping("/themes/{id}")
-    public String updateTheme(@PathVariable("id") Long id,
-                              @ModelAttribute("themeObj") @Valid ThemeDto themeDto,
+    public String updateTheme(@PathVariable(ID) Long id,
+                              @ModelAttribute(THEME_OBJ) @Valid ThemeDto themeDto,
                               BindingResult bindingResult, Model model,
-                              @PageableDefault(sort = {"idTheme"},
+                              @PageableDefault(sort = {ID_THEME},
                                       direction = Sort.Direction.DESC) Pageable pageable) {
 
         if (inputHasErrors(bindingResult)) {
-            return "/admin/home";
+            return URL.ADMIN_HOME_SLASH;
         }
         setDataToTheModelAfterCrud(themeDto, model, pageable);
         try{
             themeUtilController.updateTheTheme(id, themeDto);
         }catch (ThemeException e){
             log.warn("CONTROLLER FAILED UPDATE THEME");
-            model.addAttribute("errMsg",e.getMessage());
-            return "/admin/home";
+            model.addAttribute(ERR_MSG,e.getMessage());
+            return URL.ADMIN_HOME_SLASH;
         }
-        return "redirect:/admin/home";
+        return URL.REDIRECT_ADMIN_HOME;
     }
 
     private void setDataToTheModel(ThemeDto themeDto, Model model, Pageable pageable) {
-        model.addAttribute("page", pageable);
-        model.addAttribute("themeObj", themeDto);
-        model.addAttribute("themes",themeUtilController.getAllThemes(pageable));
+        model.addAttribute(PAGE, pageable);
+        model.addAttribute(THEME_OBJ, themeDto);
+        model.addAttribute(THEMES,themeUtilController.getAllThemes(pageable));
     }
 
     @DeleteMapping("/themes/{id}")
-    public String delete(@PathVariable("id") Long id, Model model,
-                         @PageableDefault(sort = {"idTheme"},
+    public String delete(@PathVariable(ID) Long id, Model model,
+                         @PageableDefault(sort = {ID_THEME},
                                  direction = Sort.Direction.DESC) Pageable pageable) {
         setDataToTheModelAfterCrud(new ThemeDto(),model,pageable);
         try{
             themeUtilController.deleteTheme(id);
         }catch (ThemeException e){
-            model.addAttribute("errMsg",e.getMessage());
-            return "/admin/home";
+            model.addAttribute(ERR_MSG,e.getMessage());
+            return URL.ADMIN_HOME_SLASH;
         }
-        return "redirect:/admin/home";
+        return URL.REDIRECT_ADMIN_HOME;
     }
 
 }

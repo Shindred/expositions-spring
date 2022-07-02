@@ -16,6 +16,8 @@ import java.time.format.FormatStyle;
 import java.util.Arrays;
 import java.util.Locale;
 
+import static com.myproject.expo.expositions.util.Constant.*;
+
 public interface ControllerUtils {
     default boolean inputHasErrors(BindingResult bindingResult) {
         return bindingResult.hasErrors();
@@ -48,7 +50,7 @@ public interface ControllerUtils {
     }
 
     default String setErrMsgAndPathBack(Model model, String e, String url) {
-        model.addAttribute("errMsg", e);
+        model.addAttribute(ERR_MSG, e);
         return url;
     }
 
@@ -114,18 +116,18 @@ public interface ControllerUtils {
     }
 
     default String getPathBackForUser(HttpServletRequest req) {
-        if (req.getServletPath().contains("admin")) {
-            return "/admin/home";
-        } else if (req.getServletPath().contains("user")) {
-            return "/user/home";
+        if (req.getServletPath().contains(ADMIN)) {
+            return URL.ADMIN_HOME_SLASH;
+        } else if (req.getServletPath().contains(USER)) {
+            return URL.USER_HOME;
         } else {
-            return "/index";
+            return URL.INDEX;
         }
     }
 
     default void setDateTimeFormatterToModel(Model model) {
         Locale locale = LocaleContextHolder.getLocale();
-        model.addAttribute("dateFormat", setDateFormat(locale));
-        model.addAttribute("timeFormat", setTimeFormat(locale));
+        model.addAttribute(DATE_FORMAT, setDateFormat(locale));
+        model.addAttribute(TIME_FORMAT, setTimeFormat(locale));
     }
 }

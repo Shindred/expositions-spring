@@ -41,5 +41,4 @@ public class AdminController {
         return adminUtilController.changeStatus(id, status);
     }
 
-
 }

@@ -7,7 +7,8 @@ import com.myproject.expo.expositions.entity.Hall;
 import com.myproject.expo.expositions.entity.Theme;
 import com.myproject.expo.expositions.exception.custom.ExpoException;
 import com.myproject.expo.expositions.service.ExpoService;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -17,18 +18,18 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
+import static com.myproject.expo.expositions.util.Constant.*;
+
+/**
+ * The ExpoController class do CRUD operations with exposition
+ */
 @Controller
-@Slf4j
 public class ExpoController implements ControllerUtils {
-    private static final String ADMIN = "/admin/";
-    private final static String ADMIN_SHOW_URL = "/admin/show";
-    private final static String REDIRECT_ADMIN_EXPOS = "redirect:/admin/expos";
+    private static final Logger log = LogManager.getLogger(ExpoController.class);
     private final ExpoUtilController expoUtilController;
     private final ExpoService expoService;
-
 
     @Autowired
     public ExpoController(ExpoUtilController expoUtilController,
@@ -41,23 +42,21 @@ public class ExpoController implements ControllerUtils {
     @GetMapping("/admin/addExpo")
     public String addExposition(Model model) {
         log.info("add Exposition method works");
-        model.addAttribute("expo",new ExpoDto());
+        model.addAttribute(EXPO, new ExpoDto());
         return expoUtilController.getPageToAddExpo(model);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @PostMapping( "/admin/addExpo")
+    @PostMapping("/admin/addExpo")
     public String addExpo(@ModelAttribute("expo") @Valid ExpoDto expo,
-                         BindingResult bindingResult,
-                          Model model, HttpSession session) {
+                          BindingResult bindingResult, Model model) {
         String url = "/admin/addExpo";
         try {
-           url =  expoUtilController.addExpo(expo,bindingResult, model);
+            url = expoUtilController.addExpo(expo, bindingResult, model);
         } catch (ExpoException e) {
             log.info("cannot add the expo in controller");
-//            session.setAttribute("errMsg", e.getMessage());
-            model.addAttribute("errMsg",e.getMessage());
-            return "/admin/addExpo";
+            model.addAttribute(ERR_MSG, e.getMessage());
+            return URL.ADMIN_ADD_EXPO;
         }
         return url;
     }
@@ -66,7 +65,7 @@ public class ExpoController implements ControllerUtils {
     @GetMapping(value = {"*/expos/{id}", "*/search/{id}"})
     public String show(@PathVariable("id") Long id, Model model) {
         expoUtilController.show(id, model);
-        return "/admin/home";
+        return URL.ADMIN_HOME_SLASH;
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -74,12 +73,12 @@ public class ExpoController implements ControllerUtils {
     public String getUpdatePage(@PathVariable("id") Long id, Model model) {
         ExpoDto expoDto = expoService.getById(id);
         log.info("Show exposition " + expoDto);
-        model.addAttribute("hallsShow", expoUtilController.getAllHalls());
-        model.addAttribute("themesShow", expoUtilController.getAllThemes());
-        model.addAttribute("expo", expoDto);
-        model.addAttribute("form", new ExpoDto());
+        model.addAttribute(HALLS_SHOW, expoUtilController.getAllHalls());
+        model.addAttribute(THEMES_SHOW, expoUtilController.getAllThemes());
+        model.addAttribute(EXPO, expoDto);
+        model.addAttribute(FORM, new ExpoDto());
         setDateTimeFormatterToModel(model);
-        return "/admin/update";
+        return URL.ADMIN_UPDATE;
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -88,14 +87,14 @@ public class ExpoController implements ControllerUtils {
                          BindingResult bindingResult, Model model) {
         List<Hall> halls = expoUtilController.getAllHalls();
         List<Theme> themes = expoUtilController.getAllThemes();
-        model.addAttribute("hallsShow", halls);
-        model.addAttribute("themesShow", themes);
-        log.warn("Updating exposition");
+        model.addAttribute(HALLS_SHOW, halls);
+        model.addAttribute(THEMES_SHOW, themes);
         if (inputHasErrors(bindingResult)) {
-            return "/admin/update";
+            log.info("Updating the exposition {} was failed",expoDto.getId());
+            return URL.ADMIN_UPDATE;
         }
-        model.addAttribute("halls", halls);
-        model.addAttribute("themes", themes);
+        model.addAttribute(HALLS, halls);
+        model.addAttribute(THEMES, themes);
         return expoUtilController.update(id, expoDto, model);
 
     }
@@ -107,7 +106,7 @@ public class ExpoController implements ControllerUtils {
         log.info("change status id {}  status {}", id, status);
         Integer statusId = defineStatusId(status);
         expoService.changeStatus(id, statusId);
-        return "redirect:/admin/home";
+        return URL.REDIRECT_ADMIN_HOME;
 
     }
 }
