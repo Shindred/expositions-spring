@@ -27,7 +27,7 @@
                        aria-disabled="true" th:text="#{Prev}"></a>
                 </li>
                 <li class="page-item"><a class="page-link" th:href="@{${'/admin/expos'}(size=${size},sortBy=${sortBy})}">1</a></li>
-                <li class="page-item active" aria-current="page">
+                <li class="page-item" aria-current="page">
                     <a class="page-link" th:href="@{${'/admin/expos'}(page=2,size=${size},sortBy=${sortBy})}">2</a>
                 </li>
                 <li class="page-item"><a class="page-link" th:href="@{${'/admin/expos'}(page=3,size=${size},sortBy=${sortBy})}">3</a></li>
@@ -51,7 +51,7 @@
                        aria-disabled="true" th:text="#{Prev}"></a>
                 </li>
                 <li class="page-item"><a class="page-link" th:href="@{${'/index/expos'}(size=${size},sortBy=${sortBy})}">1</a></li>
-                <li class="page-item active" aria-current="page">
+                <li class="page-item" aria-current="page">
                     <a class="page-link" th:href="@{${'/user/expos'}(page=2,size=${size},sortBy=${sortBy})}">2</a>
                 </li>
                 <li class="page-item"><a class="page-link" th:href="@{${'/user/expos'}(page=3,size=${size},sortBy=${sortBy})}">3</a></li>
@@ -68,14 +68,14 @@
 <div th:fragment="paginateGuest">
     <!--        Pagination expos-->
 
-        <nav aria-label="">
-            <ul class="pagination">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
                 <li class="page-item" th:classappend="${(page.getPageNumber gt 1) ? '' : 'disabled'}">
                     <a class="page-link" th:href="@{${'/index/expos'}(page=${(page.getPageNumber)  - 1},size=${size},sortBy=${sortBy})}" tabindex="-1"
                        aria-disabled="true" th:text="#{Prev}"></a>
                 </li>
                 <li class="page-item"><a class="page-link" th:href="@{${'/index/expos'}(size=${size},sortBy=${sortBy})}">1</a></li>
-                <li class="page-item active" aria-current="page">
+                <li class="page-item" aria-current="page">
                     <a class="page-link" th:href="@{${'/index/expos'}(page=2,size=${size},sortBy=${sortBy})}">2</a>
                 </li>
                 <li class="page-item"><a class="page-link" th:href="@{${'/index/expos'}(page=3,size=${size},sortBy=${sortBy})}">3</a></li>
@@ -229,6 +229,27 @@
             $("#datepick").datepicker({ dateFormat: 'yy-mm-dd' });
         });
     </script>
+</div>
+<div th:fragment="indexScriptsHeader">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel= "stylesheet" href= "https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+    <script type= "text/javascript" src= "https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+</div>
+<div th:fragment="indexScripts">
+    <script>
+        AJS.$(document).ready(function() {
+            AJS.$('#demo-range-2').datePicker({'overrideBrowserDefault': false});
+        });
+    </script>
+
+    <link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet"/>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</div>
+<div th:fragment="addExpo" class="col-6">
+        <a class="btn btn-primary btn-sm" role="button" th:href="@{/admin/addExpo}" th:text="#{add_expo}"></a>
 </div>
 
 <footer th:fragment="footer" id="sticky-footer" class="flex-shrink-0 py-3 bg-dark text-white-50">

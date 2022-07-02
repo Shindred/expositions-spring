@@ -118,7 +118,7 @@
 
 <div th:insert="common/fragments.html :: scriptUpdateHead"></div>
 <div th:if="${errMsg}" th:text="#{${errMsg}}"></div>
-<form method="post" th:action="@{/admin/update/{id}(id=${expo.id})}" th:object="${expo}">
+<form th:method="post" th:action="@{/admin/addExpo}" th:object="${expo}">
     <div class="card-body">
         <h5 class="card-title" th:text="#{expo_name}"></h5>
         <input type="hidden" th:field="*{id}" th:value="${expo.id}">
@@ -146,7 +146,7 @@
 
         <div class="form-group">
             <ul>
-                <li th:each="hall:${hallsShow}">
+                <li th:each="hall:${halls}">
                     <div class="ui checkbox">
                         <input type="checkbox" th:field="*{halls}" th:value="${hall.idHall}">
                         <label th:text="${hall.name}"></label>
@@ -158,7 +158,7 @@
         <h5 class="card-title" th:text="#{choose_theme}"></h5>
         <div class="form-group">
             <select class="form-control selectpicker" th:field="*{theme.idTheme}" id="theme">
-                <option th:each="item : ${themesShow}"
+                <option th:each="item : ${themes}"
                         th:value="${item.idTheme}"
                         th:text="${item.name}">
                 </option>
@@ -169,7 +169,7 @@
             <h6 style="color: red" class="text-center"
                 th:if="${#fields.hasErrors('statistic.tickets')}" th:errorclass="error" th:errors="*{statistic.tickets}"></h6>
         </div>
-        <button type="submit" class="btn btn-primary" th:text="#{update}"></button>
+        <button type="submit" class="btn btn-primary" th:text="#{add}"></button>
     </div>
 </form>
 

@@ -15,14 +15,17 @@
         <h6 style="color: red" class="text-center"
             th:if="${#fields.hasErrors('name')}" th:errorclass="error" th:errors="*{name}"></h6>
         <h5 class="card-title" th:text="#{expo_date}"></h5>
+         <p  th:text="${expo.expoDate.format(dateFormat)}"></p>
 
         <input type="text" id="datepick"  class="form-control" th:field="*{expoDateStr}"/>
         <h6 style="color: red" class="text-center"
             th:if="${#fields.hasErrors('expoDateStr')}" th:errorclass="error" th:errors="*{expoDateStr}"></h6>
         <h5 class="card-title" th:text="#{expo_time}"></h5>
+        <p  th:text="${expo.expoTime.format(timeFormat)}"></p>
+
         <input type="time" class="form-control" th:field="*{expoTimeStr}"/>
         <h6 style="color: red" class="text-center"
-            th:if="${#fields.hasErrors('expoTimeStr')}" th:errorclass="error" th:errors="*{expoTimeStr}"></h6>
+            th:if="${#fields.hasErrors('expoTimeStr')}" th:errorclass="error" th:errors="*{expoTimeStr}" ></h6>
         <h5 class="card-title" th:text="#{expo_price}"></h5>
         <input type="number" class="form-control" th:text="${expo.price}" th:field="*{price}"/>
         <h6 style="color: red" class="text-center"

@@ -1,7 +1,9 @@
 package com.myproject.expo.expositions.entity;
 
-import com.myproject.expo.expositions.dto.ThemeDto;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
@@ -15,6 +17,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Theme implements Serializable {
+    private static final long serialVersionUID = 3020521383107171828L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idTheme;

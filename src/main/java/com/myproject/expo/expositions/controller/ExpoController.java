@@ -41,22 +41,25 @@ public class ExpoController implements ControllerUtils {
     @GetMapping("/admin/addExpo")
     public String addExposition(Model model) {
         log.info("add Exposition method works");
+        model.addAttribute("expo",new ExpoDto());
         return expoUtilController.getPageToAddExpo(model);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping( "/admin/addExpo")
-    public String addExpo(@ModelAttribute("expo") @Valid ExpoDto expoDto,
-                          @RequestParam("hal") @NotNull List<Long> halls,BindingResult bindingResult,
+    public String addExpo(@ModelAttribute("expo") @Valid ExpoDto expo,
+                         BindingResult bindingResult,
                           Model model, HttpSession session) {
+        String url = "/admin/addExpo";
         try {
-            expoUtilController.addExpo(expoDto, halls,bindingResult, model);
+           url =  expoUtilController.addExpo(expo,bindingResult, model);
         } catch (ExpoException e) {
             log.info("cannot add the expo in controller");
-            session.setAttribute("infMsg", e.getMessage());
-            return "redirect:/admin/home";
+//            session.setAttribute("errMsg", e.getMessage());
+            model.addAttribute("errMsg",e.getMessage());
+            return "/admin/addExpo";
         }
-        return "redirect:/admin/home";
+        return url;
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
@@ -75,6 +78,7 @@ public class ExpoController implements ControllerUtils {
         model.addAttribute("themesShow", expoUtilController.getAllThemes());
         model.addAttribute("expo", expoDto);
         model.addAttribute("form", new ExpoDto());
+        setDateTimeFormatterToModel(model);
         return "/admin/update";
     }
 

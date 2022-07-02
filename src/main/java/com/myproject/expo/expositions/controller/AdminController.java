@@ -1,6 +1,7 @@
 package com.myproject.expo.expositions.controller;
 
 import com.myproject.expo.expositions.controller.util.AdminUtilController;
+import com.myproject.expo.expositions.util.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -10,6 +11,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+/**
+ * The AdminUtilController class do transient operations and transport data to the service layer
+ */
 @Controller
 @PreAuthorize("hasAuthority('ADMIN')")
 public class AdminController {
@@ -22,13 +26,13 @@ public class AdminController {
 
     @GetMapping("/admin/home")
     public String adminPage() {
-        return "admin/home";
+        return Constant.URL.ADMIN_HOME_NO_1_SLASH;
     }
 
     @GetMapping("/admin/users")
     public String users(Model model) {
         model.addAttribute("users", adminUtilController.getAllUsers( 1, 5));
-        return "admin/users";
+        return Constant.URL.ADMIN_USERS;
     }
 
     @PostMapping("/admin/users/{id}")

@@ -7,16 +7,15 @@
 </head>
 <div th:insert="common/fragments.html :: headerExpos"></div>
 <body th:fragment="allExpos">
-<div class="col-4">
-    <a th:href="@{/admin/addExpo}" th:text="#{add_expo}"></a>
-</div>
+
 <div th:if="${session.infMsg != null}">
     <span th:text="${session.infMsg}"></span>
 </div>
 <div class="row justify-content-center" th:fragment="exps">
-    <div sec:authorize="hasAuthority('ADMIN')" class="row">
+    <div sec:authorize="hasAuthority('ADMIN')" class="d-flex flex-row">
         <div th:insert="common/fragments :: sortAdmin" class="col-md-4"></div>
         <div th:insert="common/fragments.html :: amountAdmin" class="col-md-8"></div>
+        <div th:insert="common/fragments.html :: addExpo" class="col-md-10"></div>
     </div>
     <div sec:authorize="hasAuthority('USER')" class="row">
         <div th:insert="common/fragments :: sortUser" class="col-md-4"></div>

@@ -87,9 +87,7 @@ public class GetAllExposController implements ControllerUtils {
         model.addAttribute("currPage", offset);
         model.addAttribute("size", size);
         model.addAttribute("sortBy", sortBy);
-        Locale locale = LocaleContextHolder.getLocale();
-        model.addAttribute("dateFormat", setDateFormat(locale));
-        model.addAttribute("timeFormat", setTimeFormat(locale));
+        setDateTimeFormatterToModel(model);
         model.addAttribute("expoObj", new ExpoDto());
     }
 

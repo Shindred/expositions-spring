@@ -1,5 +1,6 @@
 package com.myproject.expo.expositions.config;
 
+import com.myproject.expo.expositions.config.userdetails.CustomUserDetails;
 import com.myproject.expo.expositions.entity.User;
 import com.myproject.expo.expositions.handler.SimpleAuthenticationSuccessHandler;
 import com.myproject.expo.expositions.service.UserService;
@@ -42,7 +43,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return email -> {
             User user = userService.findByEmail(email);
             return Optional.ofNullable(user)
-                   .orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
+                    .map(CustomUserDetails::new)
+                    .orElseThrow(() -> new UsernameNotFoundException("User Not Found"));
         };
     }
 
@@ -61,24 +63,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                    .antMatchers("/", "/register","/change_email","/change_pass",
-                            "/index","/index/**").permitAll()
-                    .antMatchers("/admin/**").hasAuthority("ADMIN")
-                    .antMatchers("/user/**").hasAuthority("USER")
-                    .anyRequest().authenticated()
+                .antMatchers("/", "/register", "/change_email", "/change_pass",
+                        "/index", "/index/**").permitAll()
+                .antMatchers("/admin/**").hasAuthority("ADMIN")
+                .antMatchers("/user/**").hasAuthority("USER")
+                .anyRequest().authenticated()
                 .and()
-                    .formLogin()
-                        .loginPage("/login")
-                        .loginProcessingUrl("/login")
-                        .successHandler(successHandler)
-                        .failureUrl("/login?error=true")
-                        .permitAll()
+                .formLogin()
+                .loginPage("/login")
+                .loginProcessingUrl("/login")
+                .successHandler(successHandler)
+                .failureUrl("/login?error=true")
+                .permitAll()
                 .and()
-                    .logout()
-                        .logoutUrl("/logout")
-                        .clearAuthentication(true)
-                        .invalidateHttpSession(true)
-                        .logoutSuccessUrl("/index")
-                        .permitAll();
+                .logout()
+                .logoutUrl("/logout")
+                .clearAuthentication(true)
+                .invalidateHttpSession(true)
+                .logoutSuccessUrl("/index")
+                .permitAll();
     }
 }

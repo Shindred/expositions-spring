@@ -8,6 +8,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 
+/**
+ * The UserBuild class converts User DTO to entity and vice versa
+ */
 @Component
 public class UserBuild implements Build<UserDto, User> {
     @Override

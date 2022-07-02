@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * The CleanCacheFilter class cleans up the cache
+ */
 @Component
 public class CleanCacheFilter implements Filter {
     private static final Logger logger = LogManager.getLogger(CleanCacheFilter.class);

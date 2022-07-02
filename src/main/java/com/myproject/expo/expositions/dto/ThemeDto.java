@@ -14,5 +14,4 @@ public class ThemeDto implements DTO{
     @Pattern(regexp = "^[a-zA-Z]+$",message = "{err.input}")
     private String name;
 
-
 }

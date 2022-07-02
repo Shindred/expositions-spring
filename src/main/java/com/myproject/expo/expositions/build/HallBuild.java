@@ -4,6 +4,9 @@ import com.myproject.expo.expositions.dto.HallDto;
 import com.myproject.expo.expositions.entity.Hall;
 import org.springframework.stereotype.Component;
 
+/**
+ *The HallBuild class converts Hall DTO to entity and vice versa
+ */
 @Component
 public class HallBuild implements Build<HallDto, Hall> {
     @Override

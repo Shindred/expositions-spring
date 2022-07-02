@@ -1,6 +1,7 @@
 package com.myproject.expo.expositions.controller.util;
 
 import com.myproject.expo.expositions.entity.Status;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -120,5 +121,11 @@ public interface ControllerUtils {
         } else {
             return "/index";
         }
+    }
+
+    default void setDateTimeFormatterToModel(Model model) {
+        Locale locale = LocaleContextHolder.getLocale();
+        model.addAttribute("dateFormat", setDateFormat(locale));
+        model.addAttribute("timeFormat", setTimeFormat(locale));
     }
 }

@@ -3,7 +3,10 @@ package com.myproject.expo.expositions.entity;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -16,6 +19,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @Builder
 public class Statistic implements Serializable {
+    private static final long serialVersionUID = 3020921373107106828L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

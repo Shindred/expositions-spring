@@ -4,6 +4,9 @@ import com.myproject.expo.expositions.dto.ThemeDto;
 import com.myproject.expo.expositions.entity.Theme;
 import org.springframework.stereotype.Component;
 
+/**
+ * The ThemeBuild class converts Theme DTO to entity and vice versa
+ */
 @Component
 public class ThemeBuild implements Build<ThemeDto, Theme>{
     @Override

@@ -60,7 +60,7 @@ public class ExpoUtilControllerTest {
         when(validate.validateProperTime(expoDto1.getExpoTime())).thenReturn(true);
         when(expoService.getAll()).thenReturn(List.of(build.toModel(expoDto1)));
         when(expoService.addExpo(expoDto1, List.of(1L, 2L))).thenReturn(build.toModel(expoDto1));
-        assertThat(expoUtilController.addExpo(expoDto1, List.of(1L, 2L),bindingResult, model)).isNotEmpty();
+        assertThat(expoUtilController.addExpo(expoDto1,bindingResult, model)).isNotEmpty();
     }
 
     @Test

@@ -12,14 +12,12 @@ import com.myproject.expo.expositions.entity.Hall;
 import com.myproject.expo.expositions.entity.Theme;
 import com.myproject.expo.expositions.entity.User;
 import com.myproject.expo.expositions.repository.ExpoRepo;
-import com.myproject.expo.expositions.repository.StatisticRepo;
 import com.myproject.expo.expositions.repository.UserRepo;
 import com.myproject.expo.expositions.service.ExpoService;
 import com.myproject.expo.expositions.service.HallService;
 import com.myproject.expo.expositions.service.ThemeService;
 import com.myproject.expo.expositions.service.UserService;
 import com.myproject.expo.expositions.service.facade.UserServiceFacade;
-import com.myproject.expo.expositions.service.impl.UserServiceLogic;
 import com.myproject.expo.expositions.validator.Validate;
 import com.myproject.expo.expositions.validator.ValidateInput;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,17 +116,10 @@ public class BeansConfig {
         return registrationBean;
     }
 
-
     @Bean
     public LocalValidatorFactoryBean getValidator() {
         LocalValidatorFactoryBean bean = new LocalValidatorFactoryBean();
         bean.setValidationMessageSource(messageSource);
         return bean;
     }
-
-//    @Bean
-//    public UserServiceLogic getUserServiceLogic(UserRepo userRepo,ExpoRepo expoRepo,@Qualifier("expoBuild") Build<ExpoDto, Exposition> buildExpos,
-//                                      UserServiceFacade userServiceFacade,@Qualifier("userBuild") Build<UserDto, User> build){
-//        return new UserServiceLogic(userRepo,expoRepo,buildExpos,userServiceFacade,build);
-  //  }
 }

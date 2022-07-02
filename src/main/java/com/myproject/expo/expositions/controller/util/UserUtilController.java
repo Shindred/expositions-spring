@@ -1,5 +1,6 @@
 package com.myproject.expo.expositions.controller.util;
 
+import com.myproject.expo.expositions.config.userdetails.CustomUserDetails;
 import com.myproject.expo.expositions.dto.ExpoDto;
 import com.myproject.expo.expositions.entity.User;
 import com.myproject.expo.expositions.exception.custom.UserException;
@@ -14,6 +15,9 @@ import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
+/**
+ * The UserUtilController class validates the income data and transmits the data to the service layer
+ */
 @Component
 @Slf4j
 public class UserUtilController implements ControllerUtils {
@@ -32,10 +36,10 @@ public class UserUtilController implements ControllerUtils {
                 .orElseThrow(() -> new UserException("err.incorrect_amount"));
     }
 
-    public User topUpBalance(User user, BigDecimal amount) {
-        BigDecimal balance = userService.topUpBalance(user, amount).getBalance();
-        user.setBalance(balance);
-        return user;
+    public User topUpBalance(CustomUserDetails user, BigDecimal amount) {
+        BigDecimal balance = userService.topUpBalance(user.getUser(), amount).getBalance();
+        user.getUser().setBalance(balance);
+        return user.getUser();
     }
 
     public boolean buyExpo(User user, Long id) {

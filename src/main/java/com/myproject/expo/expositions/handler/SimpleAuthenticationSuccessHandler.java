@@ -1,5 +1,7 @@
 package com.myproject.expo.expositions.handler;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.DefaultRedirectStrategy;
@@ -13,8 +15,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collection;
 
+/**
+ * The SimpleAuthenticationSuccessHandler class
+ * defines the user authorities and redirect user to the desired url
+ */
 @Component
 public class SimpleAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+    private static final Logger log = LogManager.getLogger(SimpleAuthenticationSuccessHandler.class);
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
     private final String ACCOUNT = "/home";
     private final String ROLE_ADMIN = "ADMIN";
@@ -37,7 +44,7 @@ public class SimpleAuthenticationSuccessHandler implements AuthenticationSuccess
         try {
             redirectStrategy.sendRedirect(req, resp, url);
         } catch (IOException e) {
-            //TODO handle exception!!! ??
+            log.warn("User cannot get it`s route url. User authentication issue");
             e.printStackTrace();
         }
     }

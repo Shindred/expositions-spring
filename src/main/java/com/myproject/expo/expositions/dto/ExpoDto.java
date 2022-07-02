@@ -19,7 +19,6 @@ import java.util.Set;
 @Setter
 @Builder
 public class ExpoDto implements DTO {
-    private static final String CHECK_DATE_TIME_INPUT = "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$";
     private static final String TIME_CHECK = "^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$";
     private static final String DATE_CHECK = "^([0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]))$";
     private static final String PRICE_REGEX = "\\d+\\.\\d{2}";
@@ -47,9 +46,6 @@ public class ExpoDto implements DTO {
     private Set<Hall> halls;
     private Long sold;
     private Long tickets;
-    private Long idTheme;
-    private String themeName;
-    private ExpoDto expoDto;
 
     @Override
     public String toString() {
@@ -67,9 +63,6 @@ public class ExpoDto implements DTO {
                 ", halls=" + halls +
                 ", sold=" + sold +
                 ", tickets=" + tickets +
-                ", idTheme=" + idTheme +
-                ", themeName='" + themeName + '\'' +
-                ", expoDto=" + expoDto +
                 '}';
     }
 }

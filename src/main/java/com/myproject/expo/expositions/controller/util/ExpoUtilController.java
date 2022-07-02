@@ -14,6 +14,7 @@ import com.myproject.expo.expositions.validator.Validate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
@@ -26,6 +27,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 @Component
@@ -34,7 +36,7 @@ public class ExpoUtilController implements ControllerUtils {
     private static final String ADMIN_SHOW_URL = "/admin/show";
     private static final String ADMIN_UPDATE_URL = "/admin/update";
     private static final String ADMIN_ADD_EXPO_URL = "/admin/addExpo";
-    private static final  String REDIRECT_ADMIN_EXPOS = "redirect:/admin/expos";
+    private static final String REDIRECT_ADMIN_EXPOS = "redirect:/admin/expos";
     private final ExpoService expoService;
     private final HallService hallService;
     private final ThemeService themeService;
@@ -53,11 +55,9 @@ public class ExpoUtilController implements ControllerUtils {
     }
 
     public String getPageToAddExpo(Model model) {
-        System.out.println("get page to add eepo");
         List<Hall> halls = hallService.getAll();
         List<Theme> themes = themeService.getAll();
         addExpoSetRequiredDataToTheModel(model, halls, themes);
-        log.info("returning to the client from expo util get page to add expo");
         return "/admin/addExpo";
     }
 
@@ -70,31 +70,35 @@ public class ExpoUtilController implements ControllerUtils {
         model.addAttribute("themes", themes);
     }
 
-    public String addExpo(@ModelAttribute("expo") @Valid ExpoDto expoDto,
-                          @RequestParam("hal") @NotNull List<Long> halls, BindingResult bindingResult,
-                          Model model) {
+    public String addExpo(@ModelAttribute("expo") @Valid ExpoDto expoDto, BindingResult bindingResult, Model model) {
         log.info("Expo income {}", expoDto);
-        if (inputHasErrors(bindingResult)){
+        model.addAttribute("halls", hallService.getAll());
+        model.addAttribute("themes", themeService.getAll());
+        if (inputHasErrors(bindingResult)) {
+            log.info("has errors add expo 1 ");
             return ADMIN_ADD_EXPO_URL;
         }
         Exposition exposition = parseDateTimeToLocalDateTimeExpo(expoDto);
 
         if (!returnBackThemeOrHallNotValid(expoDto, model, ADMIN_ADD_EXPO_URL).isEmpty()) {
+            log.info("has errors add expo 2");
             return returnBackThemeOrHallNotValid(expoDto, model, ADMIN_ADD_EXPO_URL);
         }
         if (!validateDateTime(exposition)) {
+            log.info("has errors add expo 3");
             return setErrMsgAndPathBack(model, "err.date_time_input", ADMIN_ADD_EXPO_URL);
         }
 
-     //TODO ME
+        //TODO ME
 //        validate.validateProperDate(expoDto.getExpoDate());
 //        validate.validateProperTime(expoDto.getExpoTime());
-        if (isHallBusyAtTheTimeAndDate(expoService.getAll(), expoDto, halls)) {
+
+        if (isHallBusyAtTheTimeAndDate(expoService.getAll(), expoDto)) {
             log.info("HALL IS BUSY ALREADY");
             throw new ExpoException("err.already_busy_hall");
         }
         try {
-            expoService.addExpo(expoDto, halls);
+            expoService.addExpo(expoDto, new ArrayList<>());
         } catch (Exception e) {
             log.warn("Cannot add Exposition with name {}", expoDto.getName());
             setErrMsgAndPathBack(model, e.getMessage(), "/admin/addExpo");
@@ -104,6 +108,7 @@ public class ExpoUtilController implements ControllerUtils {
 
     public String show(@PathVariable("id") Long id, Model model) {
         showOneExpoSetDataToTheModel(id, model, hallService.getAll(), themeService.getAll());
+        setDateTimeFormatterToModel(model);
         return ADMIN_SHOW_URL;
     }
 
@@ -136,9 +141,9 @@ public class ExpoUtilController implements ControllerUtils {
             if (!returnBackThemeOrHallNotValid(expoDto, model, ADMIN_UPDATE_URL).isEmpty()) {
                 return returnBackThemeOrHallNotValid(expoDto, model, ADMIN_UPDATE_URL);
             }
-            if (validateDateTime(exposition)) {
+            if (validateDateTime(exposition, foundExpoFromDb)) {
                 expoService.update(id, exposition);
-            }else {
+            } else {
                 return setErrMsgAndPathBack(model, "err.date_time_input", ADMIN_UPDATE_URL);
             }
         } catch (Exception e) {
@@ -168,8 +173,18 @@ public class ExpoUtilController implements ControllerUtils {
         return "";
     }
 
-    private boolean validateDateTime(Exposition exposition) {
-        if ((validate.isDateValid(exposition.getExpoDate()) && validate.isTimeInReqDiapason(exposition.getExpoTime()))) {
+    private boolean validateDateTime(Exposition expoFromClient, ExpoDto expoFromDB) {
+        if ((validate.isDateValid(expoFromClient.getExpoDate()) && validate.isTimeInReqDiapason(expoFromClient.getExpoTime()))
+                || (expoFromClient.getExpoDate().isEqual(expoFromDB.getExpoDate())
+                && expoFromClient.getExpoTime().compareTo(expoFromDB.getExpoTime()) == 0)) {
+            log.warn("CHECK DATE AND TIME");
+            return true;
+        }
+        return false;
+    }
+
+    private boolean validateDateTime(Exposition expoFromClient) {
+        if ((validate.isDateValid(expoFromClient.getExpoDate()) && validate.isTimeInReqDiapason(expoFromClient.getExpoTime()))) {
             log.warn("CHECK DATE AND TIME");
             return true;
         }
@@ -192,12 +207,12 @@ public class ExpoUtilController implements ControllerUtils {
         return errMsg;
     }
 
-    private boolean isHallBusyAtTheTimeAndDate(List<Exposition> list, ExpoDto expo, List<Long> halls) {
+    private boolean isHallBusyAtTheTimeAndDate(List<Exposition> list, ExpoDto expo) {
         return list.stream()
                 .filter(e -> e.getExpoTime().compareTo(expo.getExpoTime()) == 0)
                 .filter(e -> e.getHalls().stream()
-                        .anyMatch(elem -> halls.stream()
-                                .anyMatch(val -> Objects.equals(val, elem.getIdHall()))))
+                        .anyMatch(elem -> expo.getHalls().stream()
+                                .anyMatch(val -> Objects.equals(val.getIdHall(), elem.getIdHall()))))
                 .anyMatch(exposition -> expo.getExpoDate().compareTo(exposition.getExpoDate()) == 0);
     }
 }

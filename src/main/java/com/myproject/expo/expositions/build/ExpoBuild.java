@@ -4,6 +4,9 @@ import com.myproject.expo.expositions.dto.ExpoDto;
 import com.myproject.expo.expositions.entity.Exposition;
 import org.springframework.stereotype.Component;
 
+/**
+ * The ExpoBuild class converts Exposition DTO to entity and vice versa
+ */
 @Component
 public class ExpoBuild implements Build<ExpoDto, Exposition> {
     @Override
@@ -37,7 +40,7 @@ public class ExpoBuild implements Build<ExpoDto, Exposition> {
         return expo;
     }
 
-    private int defineStatus(ExpoDto dto){
+    private int defineStatus(ExpoDto dto) {
         return dto.getStatusId() != 0 ? dto.getStatusId() : 1;
     }
 }

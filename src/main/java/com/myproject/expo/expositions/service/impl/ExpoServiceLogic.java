@@ -62,6 +62,7 @@ public class ExpoServiceLogic implements ExpoService {
     @Transactional
     @Override
     public Exposition addExpo(ExpoDto expoDto, List<Long> hallsIds) {
+        log.info("INTO SERVICE EXPO ADD");
         setRequiredFieldsForExpo(expoDto, hallsIds);
         Exposition expo;
         try {
@@ -76,7 +77,7 @@ public class ExpoServiceLogic implements ExpoService {
     private void setRequiredFieldsForExpo(ExpoDto expoDto, List<Long> hallsIds) {
         setThemeToDto(expoDto);
         setStatisticToDto(expoDto, addStatisticFirst(expoDto));
-        expoDto.setHalls(buildSetHalls(hallsIds));
+       // expoDto.setHalls(buildSetHalls(hallsIds));
     }
 
     private Statistic addStatisticFirst(ExpoDto expoDto) {

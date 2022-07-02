@@ -21,6 +21,7 @@ import java.util.*;
 @AllArgsConstructor
 @Setter
 public class Exposition implements Serializable {
+    private static final long serialVersionUID = 2030881313107176828L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_expo")
@@ -36,13 +37,13 @@ public class Exposition implements Serializable {
     private int statusId;
     @ManyToMany
     @JoinTable(name = "expo_hall",
-        joinColumns = @JoinColumn(name = "exp_id",referencedColumnName = "id_expo"),
-       inverseJoinColumns = @JoinColumn(name = "hall_id",referencedColumnName = "id_hall"))
+            joinColumns = @JoinColumn(name = "exp_id", referencedColumnName = "id_expo"),
+            inverseJoinColumns = @JoinColumn(name = "hall_id", referencedColumnName = "id_hall"))
     private Set<Hall> halls = new HashSet<>();
     @OneToOne(targetEntity = Theme.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "theme_id")
     private Theme theme;
-    @ManyToMany(mappedBy = "expos",fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "expos", fetch = FetchType.EAGER)
     private List<User> users = new ArrayList<>();
     @OneToOne(targetEntity = Statistic.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "statistic_id", referencedColumnName = "id")

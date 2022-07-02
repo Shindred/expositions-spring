@@ -1,10 +1,14 @@
 package com.myproject.expo.expositions.controller;
 
+import com.myproject.expo.expositions.config.userdetails.CustomUserDetails;
 import com.myproject.expo.expositions.controller.util.ControllerUtils;
 import com.myproject.expo.expositions.controller.util.UserUtilController;
 import com.myproject.expo.expositions.entity.User;
 import com.myproject.expo.expositions.exception.custom.UserException;
+import com.myproject.expo.expositions.util.Constant;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,11 +23,15 @@ import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.util.Locale;
 
+/**
+ * The UserController class receives requests from the client and send response to required endpoints.
+ * Get requests related to user actions
+ */
 @Controller
 @RequestMapping("/user")
-@Slf4j
 @PreAuthorize("hasAuthority('USER')")
 public class UserController implements ControllerUtils {
+    private static final Logger log = LogManager.getLogger(UserController.class);
     private final UserUtilController userUtilController;
 
     @Autowired
@@ -34,28 +42,28 @@ public class UserController implements ControllerUtils {
     @GetMapping("/home")
     public String userPage(Model model) {
         setDataForJustLoggedUser(model);
-        return "/user/home";
+        return Constant.URL.USER_HOME;
     }
 
     private void setDataForJustLoggedUser(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
-        model.addAttribute("balance", user.getBalance());
-        model.addAttribute("userId", user.getId());
-        model.addAttribute("email", user.getEmail());
+        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+        model.addAttribute(Constant.Common.BALANCE, user.getBalance());
+        model.addAttribute(Constant.Common.USER_ID, user.getId());
+        model.addAttribute(Constant.Common.EMAIL, user.getUsername());
     }
 
     @PostMapping("/topup")
-    public String topUpBalance(@AuthenticationPrincipal User user,
+    public String topUpBalance(@AuthenticationPrincipal CustomUserDetails user,
                                @RequestParam("amount") String amount,HttpSession session) {
         try{
             userUtilController.containsOnlyDigits(amount);
         }catch (UserException e){
             session.setAttribute("infMsg",e.getMessage());
-            return "redirect:/user/home";
+            return Constant.URL.USER_REDIRECT_HOME_PAGE;
         }
         userUtilController.topUpBalance(user, new BigDecimal(amount));
-        return "redirect:/user/home";
+        return Constant.URL.USER_REDIRECT_HOME_PAGE;
     }
 
     @PostMapping("/expos/buy/{id}")
@@ -65,12 +73,10 @@ public class UserController implements ControllerUtils {
             userUtilController.buyExpo(user,id);
         }catch (UserException e){
             log.warn("Cannot buy expo");
-            //session.setAttribute("errMsg",e.getMessage());
-            model.addAttribute("errMsg",e.getMessage());
-            return "/user/home";
+            model.addAttribute(Constant.ERR_MSG,e.getMessage());
+            return Constant.URL.USER_HOME;
         }
-       // session.setAttribute("infMsg", "inf.thanks_for_purchase");
-        return "redirect:/user/home";
+        return Constant.URL.USER_REDIRECT_HOME_PAGE;
     }
 
     @GetMapping("/myExpos")
@@ -78,10 +84,10 @@ public class UserController implements ControllerUtils {
                                @RequestParam(defaultValue = "active") String status,
                                Model model) {
         Locale locale = LocaleContextHolder.getLocale();
-        model.addAttribute("dateFormat", setDateFormat(locale));
-        model.addAttribute("timeFormat", setTimeFormat(locale));
-        model.addAttribute("myExpos",userUtilController.getUserExpos(user,status));
-        return "/user/home";
+        model.addAttribute(Constant.Common.DATE_FORMAT, setDateFormat(locale));
+        model.addAttribute(Constant.Common.TIME_FORMAT, setTimeFormat(locale));
+        model.addAttribute(Constant.Common.MY_EXPOS,userUtilController.getUserExpos(user,status));
+        return Constant.URL.USER_HOME;
     }
 
 }

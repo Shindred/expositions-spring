@@ -67,6 +67,8 @@ public  class TestEntity {
                 .price(new BigDecimal(300))
                 .statusId(1)
                 .statistic(new Statistic(1L, 20L, 450L))
+                .expoDateStr("2022-08-09")
+                .expoTimeStr("13:00")
                 .halls(Collections.singleton(TestEntity.HallTest.hall1))
                 .theme(TestEntity.ThemeTest.theme1)
                 .build();
