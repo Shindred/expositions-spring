@@ -62,15 +62,15 @@ public  class TestEntity {
         public static final  ExpoDto expoDto1 = ExpoDto.builder()
                 .id(17L)
                 .name("sky-champions")
-                .expoDate(LocalDate.of(2022, Month.AUGUST, 12))
-                .expoTime(LocalTime.of(13, 30))
+                .expoDate(LocalDate.of(2022, Month.AUGUST, 9))
+                .expoTime(LocalTime.of(13, 00))
                 .price(new BigDecimal(300))
                 .statusId(1)
                 .statistic(new Statistic(1L, 20L, 450L))
                 .expoDateStr("2022-08-09")
                 .expoTimeStr("13:00")
                 .halls(Collections.singleton(TestEntity.HallTest.hall1))
-                .theme(TestEntity.ThemeTest.theme1)
+                .theme(new Theme(1L, "weather"))
                 .build();
 
         public static final ExpoDto expoDto2 = ExpoDto.builder()

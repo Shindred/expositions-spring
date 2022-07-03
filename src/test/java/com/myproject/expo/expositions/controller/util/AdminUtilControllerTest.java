@@ -1,14 +1,16 @@
 package com.myproject.expo.expositions.controller.util;
 
-import com.myproject.expo.expositions.TestRunner;
 import com.myproject.expo.expositions.dto.UserDto;
 import com.myproject.expo.expositions.service.UserService;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Collections;
 
@@ -17,7 +19,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
-public class AdminUtilControllerTest extends TestRunner {
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class AdminUtilControllerTest {
     @Mock
     private UserService userService;
     @Autowired

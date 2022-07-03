@@ -1,6 +1,8 @@
 package com.myproject.expo.expositions.validator;
 
 import com.myproject.expo.expositions.TestRunner;
+import com.myproject.expo.expositions.dto.ExpoDto;
+import com.myproject.expo.expositions.entity.Theme;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -45,11 +47,7 @@ public class ValidateInputTest extends TestRunner {
 
     @Test
     public void validateThemeHasIdFromInput() {
-        assertTrue(validate.validateThemeHasIdFromInput(ExpoTest.expoDto1));
-    }
-
-    @Test
-    public void validateHallNotEmpty() {
-        assertFalse(validate.validateHallNotEmpty(ExpoTest.expoDto1));
+        ExpoDto expoDto = ExpoDto.builder(). theme(new Theme(12L,"name")).build();
+        assertTrue(validate.validateThemeHasIdFromInput(expoDto));
     }
 }
