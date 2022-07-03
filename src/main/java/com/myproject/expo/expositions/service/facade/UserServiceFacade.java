@@ -7,7 +7,8 @@ import com.myproject.expo.expositions.entity.User;
 import com.myproject.expo.expositions.exception.custom.UserException;
 import com.myproject.expo.expositions.repository.ExpoRepo;
 import com.myproject.expo.expositions.repository.UserRepo;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -18,8 +19,8 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 
 @Component
-@Slf4j
 public class UserServiceFacade {
+    private static final Logger log = LogManager.getLogger(UserServiceFacade.class);
     private final UserRepo userRepo;
     private final ExpoRepo expoRepo;
     private final PasswordEncoder passwordEncoder;
@@ -27,7 +28,7 @@ public class UserServiceFacade {
 
     @Autowired
     public UserServiceFacade(UserRepo userRepo, ExpoRepo expoRepo,
-                             PasswordEncoder passwordEncoder,@Qualifier("userBuild") Build<UserDto, User> build) {
+                             PasswordEncoder passwordEncoder, @Qualifier("userBuild") Build<UserDto, User> build) {
         this.userRepo = userRepo;
         this.expoRepo = expoRepo;
         this.passwordEncoder = passwordEncoder;
