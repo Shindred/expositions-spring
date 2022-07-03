@@ -1,23 +1,20 @@
 package com.myproject.expo.expositions.controller.util;
 
+import com.myproject.expo.expositions.TestRunner;
 import com.myproject.expo.expositions.exception.custom.UserException;
-import com.myproject.expo.expositions.generator.TestEntity;
 import com.myproject.expo.expositions.service.UserService;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
-import static org.junit.Assert.*;
+import static com.myproject.expo.expositions.generator.TestEntity.UserTest;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-public class MainUtilControllerTest {
+public class MainUtilControllerTest extends TestRunner {
     private static final String OLD_EMAIL = "some@gmail.com";
     private static final String NEW_EMAIL = "new@gmail.com";
     @Autowired
@@ -29,15 +26,19 @@ public class MainUtilControllerTest {
     @Mock
     private BindingResult bindingResult;
 
+    @Before
+    public void init(){
+        when(userService.save(UserTest.userDto)).thenReturn(UserTest.user);
+        when(userService.changeEmail(OLD_EMAIL, NEW_EMAIL)).thenReturn(1);
+
+    }
     @Test
     public void register() {
-        when(userService.save(TestEntity.UserTest.userDto)).thenReturn(TestEntity.UserTest.user);
-        assertEquals("/register",mainUtilController.register(TestEntity.UserTest.userDto,model,bindingResult));
+        assertEquals("/register", mainUtilController.register(UserTest.userDto, model, bindingResult));
     }
 
     @Test(expected = UserException.class)
     public void changeEmail() {
-        when(userService.changeEmail(OLD_EMAIL,NEW_EMAIL)).thenReturn(1);
-        mainUtilController.changeEmail(OLD_EMAIL,NEW_EMAIL);
+        mainUtilController.changeEmail(OLD_EMAIL, NEW_EMAIL);
     }
 }

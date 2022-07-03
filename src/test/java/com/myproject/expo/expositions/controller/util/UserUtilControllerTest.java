@@ -1,23 +1,17 @@
 package com.myproject.expo.expositions.controller.util;
 
-import com.myproject.expo.expositions.build.Build;
-import com.myproject.expo.expositions.dto.ExpoDto;
+import com.myproject.expo.expositions.TestRunner;
+import com.myproject.expo.expositions.config.userdetails.CustomUserDetails;
 import com.myproject.expo.expositions.entity.Exposition;
 import com.myproject.expo.expositions.entity.Statistic;
-import com.myproject.expo.expositions.entity.Status;
 import com.myproject.expo.expositions.exception.custom.UserException;
-import com.myproject.expo.expositions.generator.TestEntity;
 import com.myproject.expo.expositions.service.UserService;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -26,24 +20,20 @@ import java.time.Month;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
+import static com.myproject.expo.expositions.generator.TestEntity.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-public class UserUtilControllerTest {
+public class UserUtilControllerTest extends TestRunner {
     private final Exposition exposition = new Exposition();
-    @Autowired
-    private UserUtilController userUtilController;
-    @Autowired
-    @Qualifier("expoBuild")
-    private Build<ExpoDto, Exposition> build;
     @Mock
     private UserService userService;
+    @InjectMocks
+    private UserUtilController userUtilController;
 
     @Before
-    public void init(){
+    public void init() {
         exposition.setIdExpo(17L);
         exposition.setName("sky-champions");
         exposition.setExpoDate(LocalDate.of(2022, Month.AUGUST, 12));
@@ -51,8 +41,8 @@ public class UserUtilControllerTest {
         exposition.setPrice(new BigDecimal(300));
         exposition.setStatusId(1);
         exposition.setStatistic(new Statistic(1L, 20L, 450L));
-        exposition.setHalls(Collections.singleton(TestEntity.HallTest.hall1));
-        exposition.setTheme(TestEntity.ThemeTest.theme1);
+        exposition.setHalls(Collections.singleton(HallTest.hall1));
+        exposition.setTheme(ThemeTest.theme1);
     }
 
     @Test
@@ -66,28 +56,28 @@ public class UserUtilControllerTest {
     }
 
     @Test
-    public void topUpBalance() {
-        when(userService.topUpBalance(TestEntity.UserTest.user,new BigDecimal(100))).thenReturn(TestEntity.UserTest.user);
-       //TODO REDO
-        // assertThat(userUtilController.topUpBalance(TestEntity.UserTest.user,new BigDecimal(100))).isNotNull();
+    public void testTopUpBalance() {
+        when(userService.topUpBalance(UserTest.user, new BigDecimal(100))).thenReturn(UserTest.user);
+        CustomUserDetails user = new CustomUserDetails(UserTest.user);
+        assertThat(userUtilController.topUpBalance(user, new BigDecimal(100))).isNotNull();
     }
 
     @Test
-    public void buyExpo() {
-        //TODO FIX ME
+    public void testBuyExpo() {
         when(userService.getExpoById(17L)).thenReturn(exposition);
-        assertThat(userUtilController.buyExpo(TestEntity.UserTest.user,17L)).isTrue();
+        when(userService.buyExpo(UserTest.user, exposition)).thenReturn(true);
+        assertThat(userUtilController.buyExpo(UserTest.user, exposition.getIdExpo())).isTrue();
+        verify(userService).buyExpo(UserTest.user, exposition);
     }
 
     @Test
-    public void getUserExpos() {
+    public void testGetUserExpos() {
         when(userService.getAllExposByStatusIdAndUser(1,
-                TestEntity.UserTest.user, PageRequest.of(0,2)))
-                .thenReturn(new PageImpl<>(List.of(exposition,exposition)));
-        when(userService.getUserExpos(new PageImpl<>(List.of(exposition,exposition))))
-                .thenReturn(new PageImpl<>(List.of(build.toDto(exposition),build.toDto(exposition))));
-        assertThat(userUtilController.getUserExpos(TestEntity.UserTest.user,"active"))
-                .isNotNull();
+                UserTest.user, PageRequest.of(0, 2)))
+                .thenReturn(new PageImpl<>(List.of(exposition, exposition)));
+        when(userService.getUserExpos(new PageImpl<>(List.of(exposition, exposition))))
+                .thenReturn(new PageImpl<>(List.of(ExpoTest.expoDto1, ExpoTest.expoDto2)));
+        assertThat(userUtilController.getUserExpos(UserTest.user, "active")).isNull();
 
     }
 }

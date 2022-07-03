@@ -1,25 +1,22 @@
 package com.myproject.expo.expositions.service.impl;
 
+import com.myproject.expo.expositions.TestRunner;
 import com.myproject.expo.expositions.build.Build;
 import com.myproject.expo.expositions.dto.ExpoDto;
 import com.myproject.expo.expositions.entity.Exposition;
 import com.myproject.expo.expositions.entity.Statistic;
-import com.myproject.expo.expositions.generator.TestEntity;
 import com.myproject.expo.expositions.repository.ExpoRepo;
 import com.myproject.expo.expositions.service.ThemeService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -29,11 +26,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.mockito.Mockito.*;
+import static com.myproject.expo.expositions.generator.TestEntity.*;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.when;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-public class ExpoServiceLogicTest {
+public class ExpoServiceLogicTest extends TestRunner {
     private static final Pageable PAGEABLE = PageRequest.of(0, 4, Sort.by("idExpo"));
     private final List<Exposition> exposList = new ArrayList<>();
     private final Exposition exposition = new Exposition();
@@ -47,16 +44,18 @@ public class ExpoServiceLogicTest {
     @MockBean
     private ThemeService themeService;
     @MockBean
-    private Statistic statistic;
-    @MockBean
     @Qualifier("expoBuild")
     private Build<ExpoDto, Exposition> build;
 
     @Before
     public void init() {
-        exposList.add(buildExpo.toModel(TestEntity.ExpoTest.expoDto1));
-        exposList.add(buildExpo.toModel(TestEntity.ExpoTest.expoDto2));
+        exposList.add(buildExpo.toModel(ExpoTest.expoDto1));
+        exposList.add(buildExpo.toModel(ExpoTest.expoDto2));
+        initializeExpo();
 
+    }
+
+    private void initializeExpo() {
         exposition.setIdExpo(17L);
         exposition.setName("sky-champions");
         exposition.setExpoDate(LocalDate.of(2022, Month.AUGUST, 12));
@@ -64,9 +63,8 @@ public class ExpoServiceLogicTest {
         exposition.setPrice(new BigDecimal(300));
         exposition.setStatusId(1);
         exposition.setStatistic(new Statistic(1L, 20L, 450L));
-        exposition.setHalls(Collections.singleton(TestEntity.HallTest.hall1));
-        exposition.setTheme(TestEntity.ThemeTest.theme1);
-
+        exposition.setHalls(Collections.singleton(HallTest.hall1));
+        exposition.setTheme(ThemeTest.theme1);
     }
 
     @Test
@@ -83,15 +81,15 @@ public class ExpoServiceLogicTest {
 
     @Test
     public void testGetExpositionById() {
-        when(build.toDto(exposList.get(0))).thenReturn(TestEntity.ExpoTest.expoDto1);
+        when(build.toDto(exposList.get(0))).thenReturn(ExpoTest.expoDto1);
         when(expoRepo.getById(17L)).thenReturn(exposList.get(0));
 
     }
 
     @Test
     public void testUpdateExpo() {
-        when(build.toModel(TestEntity.ExpoTest.expoDto1)).thenReturn(exposition);
-        when(themeService.getById(anyLong())).thenReturn(TestEntity.ThemeTest.theme1);
+        when(build.toModel(ExpoTest.expoDto1)).thenReturn(exposition);
+        when(themeService.getById(anyLong())).thenReturn(ThemeTest.theme1);
         when(expoRepo.save(exposition)).thenReturn(exposition);
         Assertions.assertTrue(expoService.update(17L, exposition));
     }
@@ -104,19 +102,9 @@ public class ExpoServiceLogicTest {
 
     @Test
     public void testAddExposition() {
-        //TODO FIX ME
-        when(build.toModel(TestEntity.ExpoTest.expoDto1)).thenReturn(exposList.get(0));
-//        when(expoRepo.save(exposList.get(0))).thenReturn(exposList.get(0));
-
-//        when(build.toModel(expoDto1)).thenReturn(exposition);
-        verify(build).toModel(TestEntity.ExpoTest.expoDto1);
+        when(build.toModel(ExpoTest.expoDto1)).thenReturn(exposition);
         when(expoRepo.save(exposition)).thenReturn(exposition);
-        verify(expoRepo).save(exposition);
-        Exposition exposition = expoService.addExpo(TestEntity.ExpoTest.expoDto1, List.of(1L, 2L));
-        System.out.println(exposition);
-
-
-        //Assertions.assertEquals("sky-champions",);
+        Assertions.assertNotEquals(0,expoService.addExpo(ExpoTest.expoDto1, new ArrayList<>()).getIdExpo());
 
     }
 }

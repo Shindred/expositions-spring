@@ -1,5 +1,6 @@
 package com.myproject.expo.expositions.service.impl;
 
+import com.myproject.expo.expositions.TestRunner;
 import com.myproject.expo.expositions.build.Build;
 import com.myproject.expo.expositions.dto.HallDto;
 import com.myproject.expo.expositions.entity.Hall;
@@ -9,26 +10,22 @@ import com.myproject.expo.expositions.service.HallService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.myproject.expo.expositions.generator.TestEntity.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-public class HallServiceLogicTest {
+public class HallServiceLogicTest extends TestRunner {
     private static final Pageable PAGEABLE = PageRequest.of(0, 5, Sort.by("idHall"));
     private final List<Hall> hallList = new ArrayList<>();
     @MockBean
@@ -41,8 +38,8 @@ public class HallServiceLogicTest {
 
     @Before
     public void init(){
-        hallList.add(TestEntity.HallTest.hall1);
-        hallList.add(TestEntity.HallTest.hall2);
+        hallList.add(HallTest.hall1);
+        hallList.add(HallTest.hall2);
     }
 
     @Test
@@ -59,16 +56,16 @@ public class HallServiceLogicTest {
 
     @Test
     public void testSaveHall() {
-        when(build.toModel(TestEntity.HallTest.hallDto)).thenReturn(TestEntity.HallTest.hall1);
-        when(hallRepo.save(TestEntity.HallTest.hall1)).thenReturn(TestEntity.HallTest.hall1);
-        Assertions.assertEquals("AA1",hallservice.save(TestEntity.HallTest.hallDto).getName());
+        when(build.toModel(HallTest.hallDto)).thenReturn(HallTest.hall1);
+        when(hallRepo.save(HallTest.hall1)).thenReturn(HallTest.hall1);
+        Assertions.assertEquals("AA1",hallservice.save(HallTest.hallDto).getName());
     }
 
     @Test
     public void testUpdateHall() {
-        TestEntity.HallTest.hall1.setName("newName");
-        when(hallRepo.save(TestEntity.HallTest.hall1)).thenReturn(TestEntity.HallTest.hall1);
-        Assertions.assertEquals(1,hallservice.update(build.toDto(TestEntity.HallTest.hall1)));
+        HallTest.hall1.setName("newName");
+        when(hallRepo.save(HallTest.hall1)).thenReturn(HallTest.hall1);
+        Assertions.assertEquals(1,hallservice.update(build.toDto(HallTest.hall1)));
     }
 
     @Test

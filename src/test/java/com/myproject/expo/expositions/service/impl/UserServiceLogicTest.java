@@ -1,5 +1,6 @@
 package com.myproject.expo.expositions.service.impl;
 
+import com.myproject.expo.expositions.TestRunner;
 import com.myproject.expo.expositions.build.Build;
 import com.myproject.expo.expositions.dto.ExpoDto;
 import com.myproject.expo.expositions.dto.UserDto;
@@ -15,17 +16,14 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -33,12 +31,11 @@ import java.time.LocalTime;
 import java.time.Month;
 import java.util.Collections;
 
+import static com.myproject.expo.expositions.generator.TestEntity.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-public class UserServiceLogicTest {
+public class UserServiceLogicTest extends TestRunner {
     private static final BigDecimal TOP_UP_BALANCE = new BigDecimal(100);
     private final Exposition exposition = new Exposition();
     @MockBean
@@ -70,30 +67,30 @@ public class UserServiceLogicTest {
         exposition.setPrice(new BigDecimal(300));
         exposition.setStatusId(1);
         exposition.setStatistic(new Statistic(1L, 20L, 450L));
-        exposition.setHalls(Collections.singleton(TestEntity.HallTest.hall1));
-        exposition.setTheme(TestEntity.ThemeTest.theme1);
+        exposition.setHalls(Collections.singleton(HallTest.hall1));
+        exposition.setTheme(ThemeTest.theme1);
     }
 
     @Test
     public void testFindUserByEmail() {
-        when(userRepo.findByEmail("some@gmail.com")).thenReturn(TestEntity.UserTest.user);
+        when(userRepo.findByEmail("some@gmail.com")).thenReturn(UserTest.user);
         Assert.assertEquals(10L, userService.findByEmail("some@gmail.com").getId(), 0.00001);
     }
 
     @Test
     public void testSaveUser() {
-        User user = TestEntity.UserTest.user;
-        when(build.toModel(TestEntity.UserTest.userDto)).thenReturn(user);
+        User user = UserTest.user;
+        when(build.toModel(UserTest.userDto)).thenReturn(user);
         when(passwordEncoder.encode(anyString())).thenReturn(anyString());
         when(userRepo.save(user)).thenReturn(user);
-        when(userServiceFacade.save(TestEntity.UserTest.userDto)).thenReturn(TestEntity.UserTest.user);
-        Assertions.assertNotNull(userService.save(TestEntity.UserTest.userDto));
+        when(userServiceFacade.save(UserTest.userDto)).thenReturn(UserTest.user);
+        Assertions.assertNotNull(userService.save(UserTest.userDto));
     }
 
     @Test
     public void testFindAllUsers() {
-        when(userRepo.findAll(pageable)).thenReturn(new PageImpl<>(Collections.singletonList(TestEntity.UserTest.user)));
-        when(build.toDto(any())).thenReturn(TestEntity.UserTest.userDto);
+        when(userRepo.findAll(pageable)).thenReturn(new PageImpl<>(Collections.singletonList(UserTest.user)));
+        when(build.toDto(any())).thenReturn(UserTest.userDto);
         Assert.assertEquals(1, userService.getAll(pageable).getSize());
     }
 
@@ -105,12 +102,12 @@ public class UserServiceLogicTest {
 
     @Test
     public void testUserTopUpBalance() {
-        User user = TestEntity.UserTest.user;
+        User user = UserTest.user;
         when(userServiceFacade.topUpBalance(user, TOP_UP_BALANCE)).thenReturn(user);
         when(userRepo.changeBalance(17L, TOP_UP_BALANCE)).thenReturn(1);
-        when(build.toDto(user)).thenReturn(TestEntity.UserTest.userDto);
+        when(build.toDto(user)).thenReturn(UserTest.userDto);
         when(userRepo.getBalance(anyLong())).thenReturn(new BigDecimal(600));
-        when(build.toModel(TestEntity.UserTest.userDto)).thenReturn(user);
+        when(build.toModel(UserTest.userDto)).thenReturn(user);
         Assertions.assertNotNull(userService.topUpBalance(user, TOP_UP_BALANCE));
         Assertions.assertNotEquals(BigDecimal.ZERO, userService.topUpBalance(user, TOP_UP_BALANCE).getBalance());
     }
@@ -118,15 +115,15 @@ public class UserServiceLogicTest {
     @Test
     public void testUserBuyExpo() {
         when(expoRepo.save(exposition)).thenReturn(exposition);
-        when(userRepo.save(TestEntity.UserTest.user)).thenReturn(TestEntity.UserTest.user);
-        when(userServiceFacade.buyExposition(exposition, TestEntity.UserTest.user)).thenReturn(true);
-        Assertions.assertTrue(userService.buyExpo(TestEntity.UserTest.user, exposition));
+        when(userRepo.save(UserTest.user)).thenReturn(UserTest.user);
+        when(userServiceFacade.buyExposition(exposition, UserTest.user)).thenReturn(true);
+        Assertions.assertTrue(userService.buyExpo(UserTest.user, exposition));
     }
 
     @Test
     public void testGetUserExpos() {
-        when((buildExpo.toDto(any()))).thenReturn(TestEntity.ExpoTest.expoDto1);
-        Page<ExpoDto> userExpos = userService.getUserExpos(new PageImpl<>(TestEntity.UserTest.user.getExpos()));
+        when((buildExpo.toDto(any()))).thenReturn(ExpoTest.expoDto1);
+        Page<ExpoDto> userExpos = userService.getUserExpos(new PageImpl<>(UserTest.user.getExpos()));
         Assertions.assertNotNull(userExpos);
         Assertions.assertEquals(1, userExpos.getSize());
 
@@ -134,9 +131,9 @@ public class UserServiceLogicTest {
 
     @Test
     public void testGetAllExposByStatusIdAndUser() {
-        when(expoRepo.getAllByStatusIdAndUsers(1, TestEntity.UserTest.user, PageRequest.of(1, 5)))
-                .thenReturn(new PageImpl<>(TestEntity.UserTest.user.getExpos()));
-        Page<Exposition> result = userService.getAllExposByStatusIdAndUser(1, TestEntity.UserTest.user, PageRequest.of(1, 5));
+        when(expoRepo.getAllByStatusIdAndUsers(1, UserTest.user, PageRequest.of(1, 5)))
+                .thenReturn(new PageImpl<>(UserTest.user.getExpos()));
+        Page<Exposition> result = userService.getAllExposByStatusIdAndUser(1, UserTest.user, PageRequest.of(1, 5));
         Assertions.assertNotNull(result);
         Assertions.assertEquals(1, result.getSize());
 

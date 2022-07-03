@@ -1,32 +1,28 @@
 package com.myproject.expo.expositions.controller.util;
 
+import com.myproject.expo.expositions.TestRunner;
 import com.myproject.expo.expositions.build.Build;
 import com.myproject.expo.expositions.dto.ExpoDto;
 import com.myproject.expo.expositions.entity.Exposition;
-import com.myproject.expo.expositions.generator.TestEntity;
 import com.myproject.expo.expositions.service.ExpoService;
 import com.myproject.expo.expositions.service.HallService;
 import com.myproject.expo.expositions.service.ThemeService;
 import com.myproject.expo.expositions.validator.Validate;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
+import static com.myproject.expo.expositions.generator.TestEntity.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-public class ExpoUtilControllerTest {
+public class ExpoUtilControllerTest extends TestRunner {
     @MockBean
     private ExpoService expoService;
     @Mock
@@ -48,14 +44,14 @@ public class ExpoUtilControllerTest {
 
     @Test
     public void getPageToAddExpo() {
-        when(hallService.getAll()).thenReturn(List.of(TestEntity.HallTest.hall1, TestEntity.HallTest.hall2));
-        when(themeService.getAll()).thenReturn(List.of(TestEntity.ThemeTest.theme1, TestEntity.ThemeTest.theme2));
+        when(hallService.getAll()).thenReturn(List.of(HallTest.hall1, HallTest.hall2));
+        when(themeService.getAll()).thenReturn(List.of(ThemeTest.theme1, ThemeTest.theme2));
         assertThat(expoUtilController.getPageToAddExpo(model)).isNotEmpty();
     }
 
     @Test
     public void addExpo() {
-        ExpoDto expoDto1 = TestEntity.ExpoTest.expoDto1;
+        ExpoDto expoDto1 = ExpoTest.expoDto1;
         when(validate.validateProperDate(expoDto1.getExpoDate())).thenReturn(true);
         when(validate.validateProperTime(expoDto1.getExpoTime())).thenReturn(true);
         when(expoService.getAll()).thenReturn(List.of(build.toModel(expoDto1)));
@@ -65,14 +61,14 @@ public class ExpoUtilControllerTest {
 
     @Test
     public void getAllHalls() {
-        when(hallService.getAll()).thenReturn(List.of(TestEntity.HallTest.hall1, TestEntity.HallTest.hall2));
+        when(hallService.getAll()).thenReturn(List.of(HallTest.hall1, HallTest.hall2));
         assertThat(expoUtilController.getAllThemes()).hasSizeGreaterThan(0);
 
     }
 
     @Test
     public void getAllThemes() {
-        when(themeService.getAll()).thenReturn(List.of(TestEntity.ThemeTest.theme1, TestEntity.ThemeTest.theme2));
+        when(themeService.getAll()).thenReturn(List.of(ThemeTest.theme1, ThemeTest.theme2));
         assertThat(expoUtilController.getAllThemes()).hasSizeGreaterThan(0);
     }
 
