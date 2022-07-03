@@ -64,7 +64,7 @@ public class HallController implements ControllerUtils {
             log.warn("Cannot save the hall with name = {}",hallDto.getName());
             return URL.ADMIN_HOME_SLASH;
         }
-        hallUtilController.saveHall(hallDto, bindingResult, model, getResPageable(pageable, ID_HALL));
+        hallUtilController.saveHall(hallDto, model, getResPageable(pageable, ID_HALL));
         return URL.REDIRECT_ADMIN_HOME;
     }
 

@@ -41,13 +41,4 @@ public class UserDto implements DTO {
     private Set<Role> roles;
     private Long status;
 
-//    public static UserDto toDto(User user) {
-//        return UserDto.builder()
-//                .id(user.getId())
-//                .name(user.getName())
-//                .surname(user.getSurname())
-//                .email(user.getEmail())
-//                .balance(user.getBalance())
-//                .build();
-//    }
 }

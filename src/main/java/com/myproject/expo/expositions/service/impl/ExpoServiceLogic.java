@@ -3,7 +3,6 @@ package com.myproject.expo.expositions.service.impl;
 import com.myproject.expo.expositions.build.Build;
 import com.myproject.expo.expositions.dto.ExpoDto;
 import com.myproject.expo.expositions.entity.Exposition;
-import com.myproject.expo.expositions.entity.Hall;
 import com.myproject.expo.expositions.entity.Statistic;
 import com.myproject.expo.expositions.entity.Theme;
 import com.myproject.expo.expositions.exception.custom.ExpoException;
@@ -11,14 +10,12 @@ import com.myproject.expo.expositions.repository.ExpoRepo;
 import com.myproject.expo.expositions.repository.StatisticRepo;
 import com.myproject.expo.expositions.service.ExpoService;
 import com.myproject.expo.expositions.service.ThemeService;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,14 +23,19 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static com.myproject.expo.expositions.util.Constant.DATE;
+import static com.myproject.expo.expositions.util.Constant.THEME;
+
+/**
+ * The ExpoServiceLogic class do transfer operations with Exposition Dto and entity. Do logic and transfer to the repository layer
+ */
 @Service
-@Slf4j
 @Qualifier("userServiceLogic")
 public class ExpoServiceLogic implements ExpoService {
+    private static final Logger log = LogManager.getLogger(ExpoServiceLogic.class);
     private final ExpoRepo expoRepo;
     private final ThemeService themeService;
     private final StatisticRepo statisticRepo;
@@ -41,8 +43,7 @@ public class ExpoServiceLogic implements ExpoService {
 
     @Autowired
     public ExpoServiceLogic(ExpoRepo expoRepo, @Qualifier("expoBuild") Build<ExpoDto, Exposition> build,
-                            ThemeService themeService,
-                            StatisticRepo statisticRepo) {
+                            ThemeService themeService, StatisticRepo statisticRepo) {
         this.expoRepo = expoRepo;
         this.themeService = themeService;
         this.statisticRepo = statisticRepo;
@@ -53,44 +54,32 @@ public class ExpoServiceLogic implements ExpoService {
     @Transactional(readOnly = true)
     public Page<ExpoDto> getAll(Pageable pageable) {
         log.info("Into service expo");
-     //   Pageable pageable1 = PageRequest.of(pageable.getPageNumber(),pageable.getPageSize(), Sort.by("price"));
         Page<Exposition> all = expoRepo.findAll(pageable);
-        all.forEach(System.out::println);
         return all.map(build::toDto);
     }
 
     @Transactional
     @Override
     public Exposition addExpo(ExpoDto expoDto, List<Long> hallsIds) {
-        log.info("INTO SERVICE EXPO ADD");
-        setRequiredFieldsForExpo(expoDto, hallsIds);
+        setRequiredFieldsForExpo(expoDto);
         Exposition expo;
         try {
             expo = build.toModel(expoDto);
             expo = expoRepo.save(expo);
         } catch (Exception e) {
+            log.warn("Cannot add the exposition {}.Some problem.Probably already exists", expoDto.getName());
             throw new RuntimeException("{err.add_expo}");
         }
         return expo;
     }
 
-    private void setRequiredFieldsForExpo(ExpoDto expoDto, List<Long> hallsIds) {
+    private void setRequiredFieldsForExpo(ExpoDto expoDto) {
         setThemeToDto(expoDto);
         setStatisticToDto(expoDto, addStatisticFirst(expoDto));
-       // expoDto.setHalls(buildSetHalls(hallsIds));
     }
 
     private Statistic addStatisticFirst(ExpoDto expoDto) {
         return statisticRepo.save(expoDto.getStatistic());
-    }
-
-    private Set<Hall> buildSetHalls(List<Long> hallsIds) {
-        return hallsIds.stream()
-                .map(id -> {
-                    Hall hall = new Hall();
-                    hall.setIdHall(id);
-                    return hall;
-                }).collect(Collectors.toSet());
     }
 
     private void setThemeToDto(ExpoDto expoDto) {
@@ -127,10 +116,7 @@ public class ExpoServiceLogic implements ExpoService {
     @Override
     public boolean changeStatus(Long id, Integer statusId) {
         int res = expoRepo.changeStatus(statusId, id);
-        if (res > 0) {
-            return true;
-        }
-        return false;
+        return res > 0;
     }
 
     @Override
@@ -142,12 +128,8 @@ public class ExpoServiceLogic implements ExpoService {
     public List<ExpoDto> getSearchedExpos(String searchItem, String selected) {
         checkInputNotNull(searchItem);
         List<Exposition> resList = null;
-        if (selected.equals("theme")) {
-            resList = getByThemeName(searchItem);
-        } else if (selected.equals("date")) {
-            resList = getByExpoDate(searchItem);
-        }
-        if (resList.size() == 0){
+        resList = getResList(searchItem, selected, resList);
+        if (resList.size() == 0) {
             throw new ExpoException("err.nothing_found");
         }
         return resList.stream()
@@ -155,10 +137,13 @@ public class ExpoServiceLogic implements ExpoService {
                 .collect(Collectors.toList());
     }
 
-    private void checkSearchedResNotEmpty(List<Exposition> searchedResByTheme, List<Exposition> searchedResByDate) {
-        if ((searchedResByTheme == null) && (searchedResByDate == null)) {
-            throw new ExpoException("err.nothing_found");
+    private List<Exposition> getResList(String searchItem, String selected, List<Exposition> resList) {
+        if (selected.equals(THEME)) {
+            resList = getByThemeName(searchItem);
+        } else if (selected.equals(DATE)) {
+            resList = getByExpoDate(searchItem);
         }
+        return resList;
     }
 
     private List<Exposition> getByExpoDate(String searchItem) {
@@ -184,6 +169,7 @@ public class ExpoServiceLogic implements ExpoService {
             localDate = LocalDate.parse(date, Pattern.compile("\\d{1,2}/\\d{1,2}/\\d{2}").matcher(date).matches()
                     ? datePatternEng : datePatternUkr);
         } catch (DateTimeParseException e) {
+            log.warn("The date {} input was incorrect",date);
             throw new ExpoException("err.date_input");
         }
         return localDate;

@@ -33,6 +33,8 @@ public class Constant {
     public static final String THEME_OBJ = "themeObj";
     public static final String STATUS = "status";
     public static final String ADD_HALLS = "addHalls";
+    public static final String THEME = "theme";
+    public static final String DATE = "date";
 
     public static class URL {
         public static final String INDEX = "/index";
@@ -48,6 +50,11 @@ public class Constant {
         public static final String ADMIN_UPDATE_URL = "/admin/update";
         public static final String ADMIN_ADD_EXPO_URL = "/admin/addExpo";
         public static final String REDIRECT_ADMIN_EXPOS = "redirect:/admin/expos";
+        public static final String ADMIN_HALLS = "/admin/halls";
+        public static final String REGISTER = "/register";
+        public static final String LOGIN = "/login";
+        public static final String REDIRECT_LOGIN = "redirect:/login";
+
 
     }
 

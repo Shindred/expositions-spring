@@ -57,7 +57,7 @@ public class HallUtilControllerTest {
     @Test
     public void saveHall() {
         when(hallService.save(TestEntity.HallTest.hallDto)).thenReturn(TestEntity.HallTest.hall1);
-        assertThat(hallUtilController.saveHall(TestEntity.HallTest.hallDto, bindingResult,
+        assertThat(hallUtilController.saveHall(TestEntity.HallTest.hallDto,
                 model, PageRequest.of(PAGE, SIZE))).isNotNull();
     }
 

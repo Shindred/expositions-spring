@@ -13,6 +13,8 @@ import com.myproject.expo.expositions.repository.UserRepo;
 import com.myproject.expo.expositions.service.UserService;
 import com.myproject.expo.expositions.service.facade.UserServiceFacade;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -23,10 +25,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
+/**
+ * The UserServiceLogic class do transfer operations for user requests,do logic with requests
+ */
 @Service
-@Slf4j
 @Qualifier("userServiceLogic")
 public class UserServiceLogic implements UserService {
+    private static final Logger log = LogManager.getLogger(UserServiceLogic.class);
     private final UserRepo userRepo;
     private final ExpoRepo expoRepo;
     private final Build<ExpoDto, Exposition> buildExpos;
@@ -34,9 +39,8 @@ public class UserServiceLogic implements UserService {
     private final Build<UserDto, User> build;
 
     @Autowired
-    public UserServiceLogic(UserRepo userRepo, ExpoRepo expoRepo,
-                            @Qualifier("expoBuild") Build<ExpoDto, Exposition> buildExpos,
-                            UserServiceFacade userServiceFacade,
+    public UserServiceLogic(UserRepo userRepo, ExpoRepo expoRepo, @Qualifier("expoBuild") Build<ExpoDto,
+            Exposition> buildExpos, UserServiceFacade userServiceFacade,
                             @Qualifier("getUserBuild") Build<UserDto, User> build) {
         this.userRepo = userRepo;
         this.expoRepo = expoRepo;
@@ -84,6 +88,7 @@ public class UserServiceLogic implements UserService {
         try {
             userServiceFacade.buyExposition(expo, user);
         } catch (Exception e) {
+            log.warn("User {} cannot buy expo id {} = {}",user.getEmail(),expo.getIdExpo(),expo.getName());
             throw new ExpoException("err.buy_expo");
         }
         return true;
@@ -120,6 +125,7 @@ public class UserServiceLogic implements UserService {
     public int changeEmail(String oldEmail, String newEmail) {
         int res = userRepo.changeEmail(oldEmail, newEmail);
         if (res <= 0) {
+            log.warn("Cannot change user old email {} to new one {}",oldEmail,newEmail);
             throw new UserException("err.change_user_email");
         }
         return res;
@@ -129,6 +135,7 @@ public class UserServiceLogic implements UserService {
     public User getByEmail(String email) {
         User userByEmail = userRepo.getByEmail(email);
         if (userByEmail == null) {
+            log.warn("User {} not found",email);
             throw new UserException("err.no_such_user");
         }
         return userByEmail;

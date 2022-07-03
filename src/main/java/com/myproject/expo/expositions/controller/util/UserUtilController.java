@@ -5,7 +5,8 @@ import com.myproject.expo.expositions.dto.ExpoDto;
 import com.myproject.expo.expositions.entity.User;
 import com.myproject.expo.expositions.exception.custom.UserException;
 import com.myproject.expo.expositions.service.UserService;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,8 +20,8 @@ import java.util.regex.Pattern;
  * The UserUtilController class validates the income data and transmits the data to the service layer
  */
 @Component
-@Slf4j
 public class UserUtilController implements ControllerUtils {
+    private static final Logger log = LogManager.getLogger(UserUtilController.class);
     private final UserService userService;
 
     @Autowired
@@ -47,9 +48,9 @@ public class UserUtilController implements ControllerUtils {
     }
 
     public Page<ExpoDto> getUserExpos(User user, String status) {
-        log.info("input   status {}", status);
+        log.info("input  status {}", status);
         Integer statusId = defineStatusId(status);
-         return userService.getUserExpos(userService
-                 .getAllExposByStatusIdAndUser(statusId,user, PageRequest.of(0,5)));
+        return userService.getUserExpos(userService
+                .getAllExposByStatusIdAndUser(statusId, user, PageRequest.of(0, 5)));
     }
 }

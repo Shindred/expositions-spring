@@ -18,7 +18,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 /**
- * The MainController class
+ * The MainController class receive main operations for user. Register,i18n,change email
  */
 @Controller
 public class MainController implements ControllerUtils {
@@ -92,10 +92,5 @@ public class MainController implements ControllerUtils {
     @GetMapping("*/home")
     public String getBackPage(HttpServletRequest req) {
         return getPathBackForUser(req);
-    }
-
-    @GetMapping("/test")
-    public String test(){
-        return "test";
     }
 }

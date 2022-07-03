@@ -7,6 +7,8 @@ import com.myproject.expo.expositions.exception.custom.HallException;
 import com.myproject.expo.expositions.repository.HallRepo;
 import com.myproject.expo.expositions.service.HallService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -16,9 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * The HallServiceLogic class do transfer operations with Hall entity. Do logic. Transfer data to the repository layer
+ */
 @Service
-@Slf4j
 public class HallServiceLogic implements HallService {
+    private static final Logger log = LogManager.getLogger(HallServiceLogic.class);
     private final HallRepo hallRepo;
     private final Build<HallDto,Hall> build;
 
@@ -34,6 +39,7 @@ public class HallServiceLogic implements HallService {
         try{
             halls = hallRepo.findAll(pageable);
         }catch (Exception e){
+            log.warn("Cannot get all halls");
             throw new HallException("cant_get_halls");
         }
         return halls;
@@ -54,6 +60,7 @@ public class HallServiceLogic implements HallService {
         try{
             save = hallRepo.save(hall);
         }catch (Exception e){
+            log.warn("Cannot add the new hall {}. Already exists",hallDto.getName());
             throw new HallException("err.hall_exist");
         }
         return save;

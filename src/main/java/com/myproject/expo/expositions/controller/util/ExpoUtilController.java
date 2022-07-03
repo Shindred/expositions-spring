@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -69,25 +68,17 @@ public class ExpoUtilController implements ControllerUtils {
     }
 
     public String addExpo(@ModelAttribute("expo") @Valid ExpoDto expoDto, BindingResult bindingResult, Model model) {
-        log.info("Expo income {}", expoDto);
         model.addAttribute(HALLS, hallService.getAll());
         model.addAttribute(THEMES, themeService.getAll());
         if (inputHasErrors(bindingResult)) {
             return URL.ADMIN_ADD_EXPO;
         }
         Exposition exposition = parseDateTimeToLocalDateTimeExpo(expoDto);
-
-        if (!returnBackThemeOrHallNotValid(expoDto, model, URL.ADMIN_ADD_EXPO).isEmpty()) {
+        if (caseThemeHallNotValid(expoDto, model))
             return returnBackThemeOrHallNotValid(expoDto, model, URL.ADMIN_ADD_EXPO);
-        }
-        if (!validateDateTime(exposition)) {
+        if (dateTimeValidation(exposition))
             return setErrMsgAndPathBack(model, "err.date_time_input", URL.ADMIN_ADD_EXPO);
-        }
-
-        if (isHallBusyAtTheTimeAndDate(expoService.getAll(), expoDto)) {
-            log.info("HALL IS BUSY ALREADY");
-            throw new ExpoException("err.already_busy_hall");
-        }
+        caseCheckHallNotBusyForDate(expoDto);
         try {
             expoService.addExpo(expoDto, new ArrayList<>());
         } catch (Exception e) {
@@ -97,7 +88,22 @@ public class ExpoUtilController implements ControllerUtils {
         return URL.REDIRECT_ADMIN_EXPOS;
     }
 
-    public String show(@PathVariable(ID) Long id, Model model) {
+    private boolean caseThemeHallNotValid(@ModelAttribute("expo") @Valid ExpoDto expoDto, Model model) {
+        return !returnBackThemeOrHallNotValid(expoDto, model, URL.ADMIN_ADD_EXPO).isEmpty();
+    }
+
+    private boolean dateTimeValidation(Exposition exposition) {
+        return !validateDateTime(exposition);
+    }
+
+    private void caseCheckHallNotBusyForDate(ExpoDto expoDto) {
+        if (isHallBusyAtTheTimeAndDate(expoService.getAll(), expoDto)) {
+            log.info("HALL IS BUSY ALREADY");
+            throw new ExpoException("err.already_busy_hall");
+        }
+    }
+
+    public String show(Long id, Model model) {
         showOneExpoSetDataToTheModel(id, model, hallService.getAll(), themeService.getAll());
         setDateTimeFormatterToModel(model);
         return URL.ADMIN_SHOW_URL;
@@ -122,27 +128,36 @@ public class ExpoUtilController implements ControllerUtils {
     }
 
 
-    public String update(@PathVariable(ID) Long id, @ModelAttribute(EXPO) ExpoDto expoDto, Model model) {
+    public String update(Long id, ExpoDto expoDto, Model model) {
         Pageable pageable = getPageable(0, 5);
         setPageableAndExposToTheModel(model, pageable, expoDto);
         ExpoDto foundExpoFromDb = expoService.getById(expoDto.getId());
         try {
             Exposition exposition = parseDateTimeToLocalDateTimeExpo(expoDto);
             setAllExposToTheModel(model, pageable, "");
-            if (!returnBackThemeOrHallNotValid(expoDto, model, URL.ADMIN_UPDATE_URL).isEmpty()) {
+            if (caseThemeHallInvalidInput(expoDto, model))
                 return returnBackThemeOrHallNotValid(expoDto, model, URL.ADMIN_UPDATE_URL);
-            }
-            if (validateDateTime(exposition, foundExpoFromDb)) {
-                expoService.update(id, exposition);
-            } else {
+            if (validateDateTime(id, foundExpoFromDb, exposition))
                 return setErrMsgAndPathBack(model, "err.date_time_input", URL.ADMIN_UPDATE_URL);
-            }
         } catch (Exception e) {
             log.warn("Cannot update the expo with id {}", expoDto.getId());
             return setErrMsgAndPathBack(model,
                     setExpoToTheModel(foundExpoFromDb, model, "err.expo_update"), URL.ADMIN_UPDATE_URL);
         }
         return URL.REDIRECT_ADMIN_EXPOS;
+    }
+
+    private boolean validateDateTime(Long id, ExpoDto foundExpoFromDb, Exposition exposition) {
+        if (validateDateTime(exposition, foundExpoFromDb)) {
+            expoService.update(id, exposition);
+        } else {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean caseThemeHallInvalidInput(@ModelAttribute(EXPO) ExpoDto expoDto, Model model) {
+        return !returnBackThemeOrHallNotValid(expoDto, model, URL.ADMIN_UPDATE_URL).isEmpty();
     }
 
     private Exposition parseDateTimeToLocalDateTimeExpo(ExpoDto expoDto) {

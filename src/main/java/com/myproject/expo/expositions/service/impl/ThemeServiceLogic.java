@@ -9,6 +9,8 @@ import com.myproject.expo.expositions.exception.custom.ThemeException;
 import com.myproject.expo.expositions.repository.ThemeRepo;
 import com.myproject.expo.expositions.service.ThemeService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -18,15 +20,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * The ThemeServiceLogic class do transfer operations for Theme entity and logic. Transfer data to repository layer
+ */
 @Service
-@Slf4j
 public class ThemeServiceLogic implements ThemeService {
+    private static final Logger log = LogManager.getLogger(ThemeServiceLogic.class);
     private final ThemeRepo themeRepo;
     private final Build<ThemeDto,Theme> build;
 
     @Autowired
-    public ThemeServiceLogic(ThemeRepo themeRepo,
-                             @Qualifier("themeBuild") Build<ThemeDto,Theme> build) {
+    public ThemeServiceLogic(ThemeRepo themeRepo, @Qualifier("themeBuild") Build<ThemeDto,Theme> build) {
         this.themeRepo = themeRepo;
         this.build = build;
     }
@@ -37,9 +41,9 @@ public class ThemeServiceLogic implements ThemeService {
         try{
            themes = themeRepo.findAll(pageable);
         }catch (Exception e){
+            log.warn("Cannot get all themes");
             throw new ThemeException("err.cant_get_expos");
         }
-        themes.forEach(System.out::println);
         return themes;
     }
 
@@ -55,6 +59,7 @@ public class ThemeServiceLogic implements ThemeService {
          try{
             theme = themeRepo.save(build.toModel(themeDto));
          }catch (Exception e){
+             log.warn("Some problem cannot add the new theme.Already exists");
              throw new ThemeException("err.add_new_theme");
          }
         return theme;
@@ -78,6 +83,7 @@ public class ThemeServiceLogic implements ThemeService {
         try{
             themeRepo.deleteById(id);
         }catch (Exception e){
+            log.warn("Cannot delete the theme with id {}",id);
             throw new ThemeException("err.delete_theme");
         }
         return 1;
@@ -85,7 +91,6 @@ public class ThemeServiceLogic implements ThemeService {
 
     @Override
     public Theme getById(Long id) {
-        return themeRepo.findById(id)
-                .orElseGet(Theme::new);
+        return themeRepo.findById(id).orElseGet(Theme::new);
     }
 }
