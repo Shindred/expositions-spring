@@ -63,7 +63,7 @@ public class ExpoUtilController implements ControllerUtils {
         expoDto.setStatistic(new Statistic());
         model.addAttribute(EXPO, expoDto);
         model.addAttribute(HALLS, halls);
-        model.addAttribute(ADD_HALLS, new ArrayList<Hall>());
+        model.addAttribute(ADD_HALLS, new ArrayList<Hall>().add(Hall.builder().idHall(4L).name("name").build()));
         model.addAttribute(THEMES, themes);
     }
 
@@ -74,10 +74,13 @@ public class ExpoUtilController implements ControllerUtils {
             return URL.ADMIN_ADD_EXPO;
         }
         Exposition exposition = parseDateTimeToLocalDateTimeExpo(expoDto);
-        if (caseThemeHallNotValid(expoDto, model))
+        if (caseThemeHallNotValid(expoDto, model)){
             return returnBackThemeOrHallNotValid(expoDto, model, URL.ADMIN_ADD_EXPO);
-        if (dateTimeValidation(exposition))
+
+        }
+        if (!dateTimeValidation(exposition)){
             return setErrMsgAndPathBack(model, "err.date_time_input", URL.ADMIN_ADD_EXPO);
+        }
         caseCheckHallNotBusyForDate(expoDto);
         try {
             expoService.addExpo(expoDto, new ArrayList<>());
@@ -88,12 +91,12 @@ public class ExpoUtilController implements ControllerUtils {
         return URL.REDIRECT_ADMIN_EXPOS;
     }
 
-    private boolean caseThemeHallNotValid(@ModelAttribute("expo") @Valid ExpoDto expoDto, Model model) {
+    private boolean caseThemeHallNotValid(ExpoDto expoDto, Model model) {
         return !returnBackThemeOrHallNotValid(expoDto, model, URL.ADMIN_ADD_EXPO).isEmpty();
     }
 
     private boolean dateTimeValidation(Exposition exposition) {
-        return !validateDateTime(exposition);
+        return validateDateTime(exposition);
     }
 
     private void caseCheckHallNotBusyForDate(ExpoDto expoDto) {
@@ -167,7 +170,7 @@ public class ExpoUtilController implements ControllerUtils {
     }
 
     private String returnBackThemeOrHallNotValid(ExpoDto expo, Model model, String pathBack) {
-        if (!validate.validateThemeHasIdFromInput(expo)) {
+        if (validate.validateThemeHasIdFromInput(expo)) {
             return setErrMsgAndPathBack(model,
                     setExpoToTheModel(expo, model, "err.theme_input_expo_update"), pathBack);
         }
