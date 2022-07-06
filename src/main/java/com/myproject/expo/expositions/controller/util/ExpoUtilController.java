@@ -170,7 +170,7 @@ public class ExpoUtilController implements ControllerUtils {
     }
 
     private String returnBackThemeOrHallNotValid(ExpoDto expo, Model model, String pathBack) {
-        if (validate.validateThemeHasIdFromInput(expo)) {
+        if (!validate.validateThemeHasIdFromInput(expo)) {
             return setErrMsgAndPathBack(model,
                     setExpoToTheModel(expo, model, "err.theme_input_expo_update"), pathBack);
         }

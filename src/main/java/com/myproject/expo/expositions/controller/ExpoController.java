@@ -85,12 +85,16 @@ public class ExpoController implements ControllerUtils {
     @PostMapping("/admin/update/{id}")
     public String update(@PathVariable("id") Long id, @ModelAttribute("expo") @Valid ExpoDto expoDto,
                          BindingResult bindingResult, Model model) {
+        log.info("Updating expo {}",expoDto);
         List<Hall> halls = expoUtilController.getAllHalls();
         List<Theme> themes = expoUtilController.getAllThemes();
         model.addAttribute(HALLS_SHOW, halls);
         model.addAttribute(THEMES_SHOW, themes);
+        model.addAttribute("expoDate",expoDto.getExpoDate());
+        model.addAttribute("expoTime",expoDto.getExpoTime());
         if (inputHasErrors(bindingResult)) {
             log.info("Updating the exposition {} was failed",expoDto.getId());
+            model.addAttribute("expo",expoDto);
             return URL.ADMIN_UPDATE;
         }
         model.addAttribute(HALLS, halls);

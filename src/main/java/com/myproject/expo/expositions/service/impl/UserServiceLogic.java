@@ -18,6 +18,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -118,7 +119,9 @@ public class UserServiceLogic implements UserService {
 
     @Override
     public Page<Exposition> getAllExposByStatusIdAndUser(Integer statusId, User user, Pageable pageable) {
-        return expoRepo.getAllByStatusIdAndUsers(statusId, user, pageable);
+        System.out.println("res result found user expos : ");
+       expoRepo.getAllByStatusIdAndUsers(statusId, user).forEach(System.out::println);
+       return expoRepo.getAllByStatusIdAndUsers(statusId, user);
     }
 
     @Override

@@ -43,8 +43,8 @@
             <td th:text="${expo.name}"></td>
         </div>
 
-        <td th:text="${expo.expoDate.format(dateFormat)}"></td>
-        <td th:text="${expo.expoTime.format(timeFormat)}"></td>
+        <td th:text="${expo.expoDate.format(session.dateFormat)}"></td>
+        <td th:text="${expo.expoTime.format(session.timeFormat)}"></td>
         <td th:text="${expo.price}"></td>
         <td th:text="${expo.statistic.sold}"></td>
         <td>

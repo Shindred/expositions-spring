@@ -130,4 +130,10 @@ public interface ControllerUtils {
         model.addAttribute(DATE_FORMAT, setDateFormat(locale));
         model.addAttribute(TIME_FORMAT, setTimeFormat(locale));
     }
+
+    default void setDateTimeFormatterToSession(HttpServletRequest req) {
+        Locale locale = LocaleContextHolder.getLocale();
+        req.getSession().setAttribute(DATE_FORMAT,setDateFormat(locale));
+        req.getSession().setAttribute(TIME_FORMAT,setTimeFormat(locale));
+    }
 }

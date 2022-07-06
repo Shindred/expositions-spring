@@ -67,10 +67,11 @@ public class UserController implements ControllerUtils {
     }
 
     @PostMapping("/expos/buy/{id}")
-    public String buyExpo(@AuthenticationPrincipal User user,
+    public String buyExpo(@AuthenticationPrincipal CustomUserDetails user,
                           @PathVariable(ID) Long id, Model model) {
+        log.info("user {} buy expo {}",user,id);
         try {
-            userUtilController.buyExpo(user, id);
+            userUtilController.buyExpo(user.getUser(), id);
         } catch (UserException e) {
             log.warn("Cannot buy expo");
             model.addAttribute(ERR_MSG, e.getMessage());

@@ -47,6 +47,7 @@ public class GetAllExposController implements ControllerUtils {
         model.addAttribute(PAGE, pageableRes);
         Page<ExpoDto> expos = getAllExpos(pageableRes);
         model.addAttribute(EXPOS, expos);
+        setDateTimeFormatterToSession(req);
         return defineBackPathToUser(req);
     }
 
@@ -68,7 +69,6 @@ public class GetAllExposController implements ControllerUtils {
         model.addAttribute(CURR_PAGE, offset);
         model.addAttribute(SIZE, size);
         model.addAttribute(SORT_BY, sortBy);
-        setDateTimeFormatterToModel(model);
         model.addAttribute(EXPO_OBJ, new ExpoDto());
     }
 

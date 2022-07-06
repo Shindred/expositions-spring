@@ -17,7 +17,7 @@ import java.util.List;
 @Repository
 public interface ExpoRepo extends JpaRepository<Exposition, Long> {
 
-    Page<Exposition> getAllByStatusIdAndUsers(Integer statusId, User user, Pageable pageable);
+    Page<Exposition> getAllByStatusIdAndUsers(Integer statusId, User user);
 
     @Modifying
     @Query("update Exposition expo set expo.statusId= ?1 where expo.idExpo= ?2")
