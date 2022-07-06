@@ -17,6 +17,8 @@ public  class TestEntity {
         public static BigDecimal NEW_BALANCE = new BigDecimal(1100);
         public static User user = User.builder()
                 .id(10L)
+                .name("user")
+                .surname("surname")
                 .email("some@gmail.com")
                 .balance(NEW_BALANCE)
                 .status(1L)

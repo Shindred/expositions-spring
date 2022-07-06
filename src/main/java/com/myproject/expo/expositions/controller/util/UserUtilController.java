@@ -2,6 +2,7 @@ package com.myproject.expo.expositions.controller.util;
 
 import com.myproject.expo.expositions.config.userdetails.CustomUserDetails;
 import com.myproject.expo.expositions.dto.ExpoDto;
+import com.myproject.expo.expositions.entity.Exposition;
 import com.myproject.expo.expositions.entity.User;
 import com.myproject.expo.expositions.exception.custom.UserException;
 import com.myproject.expo.expositions.service.UserService;
@@ -44,7 +45,8 @@ public class UserUtilController implements ControllerUtils {
     }
 
     public boolean buyExpo(User user, Long id) {
-        return userService.buyExpo(user, userService.getExpoById(id));
+        Exposition exposition = userService.getExpoById(id);
+        return userService.buyExpo(user, exposition);
     }
 
     public Page<ExpoDto> getUserExpos(User user, String status) {

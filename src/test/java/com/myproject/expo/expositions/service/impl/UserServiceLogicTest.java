@@ -7,7 +7,6 @@ import com.myproject.expo.expositions.dto.UserDto;
 import com.myproject.expo.expositions.entity.Exposition;
 import com.myproject.expo.expositions.entity.Statistic;
 import com.myproject.expo.expositions.entity.User;
-import com.myproject.expo.expositions.generator.TestEntity;
 import com.myproject.expo.expositions.repository.ExpoRepo;
 import com.myproject.expo.expositions.repository.UserRepo;
 import com.myproject.expo.expositions.service.UserService;

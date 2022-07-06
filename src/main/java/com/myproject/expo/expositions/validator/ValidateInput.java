@@ -55,7 +55,7 @@ public class ValidateInput implements Validate {
 
     @Override
     public boolean validateThemeHasIdFromInput(ExpoDto expoDto){
-        return expoDto.getTheme().getIdTheme() ==0;
+        return expoDto.getTheme().getIdTheme() !=0;
     }
 
     @Override

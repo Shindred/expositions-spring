@@ -2,11 +2,9 @@ package com.myproject.expo.expositions.controller.util;
 
 import com.myproject.expo.expositions.TestRunner;
 import com.myproject.expo.expositions.build.Build;
-import com.myproject.expo.expositions.build.ExpoBuild;
 import com.myproject.expo.expositions.dto.ExpoDto;
 import com.myproject.expo.expositions.entity.Exposition;
 import com.myproject.expo.expositions.entity.Statistic;
-import com.myproject.expo.expositions.generator.TestEntity;
 import com.myproject.expo.expositions.service.ExpoService;
 import com.myproject.expo.expositions.service.HallService;
 import com.myproject.expo.expositions.service.ThemeService;
@@ -24,17 +22,16 @@ import org.springframework.validation.BindingResult;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.Month;
 import java.util.Collections;
 import java.util.List;
 
 import static com.myproject.expo.expositions.generator.TestEntity.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+
 public class ExpoUtilControllerTest extends TestRunner {
-    @MockBean
+    @Mock
     private ExpoService expoService;
     @Mock
     private HallService hallService;
@@ -53,14 +50,12 @@ public class ExpoUtilControllerTest extends TestRunner {
     @Mock
     @Qualifier("expoBuild")
     private Build<ExpoDto, Exposition> buildExpo;
+    @Mock
+    @Qualifier("validateInput")
+    private Validate validate;
 
     @Before
     public void init() {
-        initializeExpo();
-
-    }
-
-    private void initializeExpo() {
         exposition.setIdExpo(17L);
         exposition.setName("sky-champions");
         exposition.setExpoDate(LocalDate.now());
@@ -70,6 +65,19 @@ public class ExpoUtilControllerTest extends TestRunner {
         exposition.setStatistic(new Statistic(1L, 20L, 450L));
         exposition.setHalls(Collections.singleton(HallTest.hall1));
         exposition.setTheme(ThemeTest.theme1);
+
+    }
+
+    private void whenWhen(){
+        when(exposition.getIdExpo()).thenReturn(17L);
+        when(exposition.getName()).thenReturn("sky-champions");
+        when(exposition.getExpoDate()).thenReturn(LocalDate.now());
+        when(exposition.getExpoTime()).thenReturn(LocalTime.of(13,30));
+        when(exposition.getPrice()).thenReturn(new BigDecimal(300));
+        when(exposition.getStatusId()).thenReturn(1);
+        when(exposition.getStatistic()).thenReturn(new Statistic(1L,20L,450L));
+        when(exposition.getHalls()).thenReturn(Collections.singleton(HallTest.hall1));
+        when(exposition.getTheme()).thenReturn(ThemeTest.theme1);
     }
 
     @Test
@@ -79,11 +87,14 @@ public class ExpoUtilControllerTest extends TestRunner {
         assertThat(expoUtilController.getPageToAddExpo(model)).isNotEmpty();
     }
 
+
     @Test
     public void addExpo() {
         ExpoDto expoDto1 = ExpoTest.expoDto1;
         when(expoService.addExpo(expoDto1, List.of(1L, 2L))).thenReturn(build.toModel(expoDto1));
         when(buildExpo.toModel(expoDto1)).thenReturn(exposition);
+        when(validate.validateThemeHasIdFromInput(expoDto1)).thenReturn(true);
+        when(validate.validateHallNotEmpty(expoDto1)).thenReturn(false);
         assertThat(expoUtilController.addExpo(expoDto1, bindingResult, model)).isNotEmpty();
     }
 

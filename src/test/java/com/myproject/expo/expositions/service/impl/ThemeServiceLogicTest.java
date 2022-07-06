@@ -4,7 +4,6 @@ import com.myproject.expo.expositions.TestRunner;
 import com.myproject.expo.expositions.build.Build;
 import com.myproject.expo.expositions.dto.ThemeDto;
 import com.myproject.expo.expositions.entity.Theme;
-import com.myproject.expo.expositions.generator.TestEntity;
 import com.myproject.expo.expositions.repository.ThemeRepo;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.myproject.expo.expositions.generator.TestEntity.*;
+import static com.myproject.expo.expositions.generator.TestEntity.ThemeTest;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;

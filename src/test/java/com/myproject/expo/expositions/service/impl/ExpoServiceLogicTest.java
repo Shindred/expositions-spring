@@ -104,7 +104,7 @@ public class ExpoServiceLogicTest extends TestRunner {
     public void testAddExposition() {
         when(build.toModel(ExpoTest.expoDto1)).thenReturn(exposition);
         when(expoRepo.save(exposition)).thenReturn(exposition);
-        Assertions.assertNotEquals(0,expoService.addExpo(ExpoTest.expoDto1, new ArrayList<>()).getIdExpo());
+        Assertions.assertNotEquals(0, expoService.addExpo(ExpoTest.expoDto1, new ArrayList<>()).getIdExpo());
 
     }
 }

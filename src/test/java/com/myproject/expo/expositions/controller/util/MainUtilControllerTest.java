@@ -27,11 +27,12 @@ public class MainUtilControllerTest extends TestRunner {
     private BindingResult bindingResult;
 
     @Before
-    public void init(){
+    public void init() {
         when(userService.save(UserTest.userDto)).thenReturn(UserTest.user);
         when(userService.changeEmail(OLD_EMAIL, NEW_EMAIL)).thenReturn(1);
 
     }
+
     @Test
     public void register() {
         assertEquals("/register", mainUtilController.register(UserTest.userDto, model, bindingResult));

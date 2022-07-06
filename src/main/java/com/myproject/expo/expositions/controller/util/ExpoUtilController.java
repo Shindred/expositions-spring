@@ -78,7 +78,7 @@ public class ExpoUtilController implements ControllerUtils {
             return returnBackThemeOrHallNotValid(expoDto, model, URL.ADMIN_ADD_EXPO);
 
         }
-        if (!dateTimeValidation(exposition)){
+        if (dateTimeValidation(exposition)){
             return setErrMsgAndPathBack(model, "err.date_time_input", URL.ADMIN_ADD_EXPO);
         }
         caseCheckHallNotBusyForDate(expoDto);

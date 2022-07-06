@@ -6,10 +6,12 @@ import com.myproject.expo.expositions.entity.Exposition;
 import com.myproject.expo.expositions.entity.Statistic;
 import com.myproject.expo.expositions.exception.custom.UserException;
 import com.myproject.expo.expositions.service.UserService;
+import com.myproject.expo.expositions.service.facade.UserServiceFacade;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
@@ -26,7 +28,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class UserUtilControllerTest extends TestRunner {
-    private final Exposition exposition = new Exposition();
+    @Mock
+    private Exposition exposition;
     @Mock
     private UserService userService;
     @InjectMocks
@@ -65,8 +68,10 @@ public class UserUtilControllerTest extends TestRunner {
     @Test
     public void testBuyExpo() {
         when(userService.getExpoById(17L)).thenReturn(exposition);
+        when(exposition.getIdExpo()).thenReturn(17L);
         when(userService.buyExpo(UserTest.user, exposition)).thenReturn(true);
         assertThat(userUtilController.buyExpo(UserTest.user, exposition.getIdExpo())).isTrue();
+        verify(userService).getExpoById(17L);
         verify(userService).buyExpo(UserTest.user, exposition);
     }
 

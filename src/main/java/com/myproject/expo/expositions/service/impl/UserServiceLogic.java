@@ -103,7 +103,7 @@ public class UserServiceLogic implements UserService {
         if (Status.CANCELED.getStatusId() == expo.getStatusId()) {
             throw new UserException("err.canceled_expo");
         }
-        if (user.getBalance().compareTo(expo.getPrice()) < 0) {
+        if (user.getBalance().compareTo(expo.getPrice()) <= 0) {
             throw new UserException("err.not_enough_balance");
         }
     }
