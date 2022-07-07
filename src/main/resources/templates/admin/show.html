@@ -6,7 +6,7 @@
 </head>
 <body>
 <div class="container">
-    <span th:if="${errMsg}"  th:text="#{${errMsg}}">Error</span>
+    <span  class="text-center" style="color: red" th:if="${errMsg}"  th:text="#{${errMsg}}">Error</span>
 
     <div class="input-group mb-3" th:object="${expo}">
         <h6 style="color: red" class="text-center"

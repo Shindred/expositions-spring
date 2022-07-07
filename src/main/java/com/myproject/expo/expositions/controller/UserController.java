@@ -7,8 +7,11 @@ import com.myproject.expo.expositions.entity.User;
 import com.myproject.expo.expositions.exception.custom.UserException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.assertj.core.internal.bytebuddy.implementation.bind.annotation.Default;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -81,13 +84,14 @@ public class UserController implements ControllerUtils {
     }
 
     @GetMapping("/myExpos")
-    public String getUserExpos(@AuthenticationPrincipal User user,
+    public String getUserExpos(@AuthenticationPrincipal CustomUserDetails user,
                                @RequestParam(defaultValue = "active") String status,
+                               @PageableDefault(size = 25) Pageable pageable,
                                Model model) {
         Locale locale = LocaleContextHolder.getLocale();
         model.addAttribute(Common.DATE_FORMAT, setDateFormat(locale));
         model.addAttribute(Common.TIME_FORMAT, setTimeFormat(locale));
-        model.addAttribute(Common.MY_EXPOS, userUtilController.getUserExpos(user, status));
+        model.addAttribute(Common.MY_EXPOS, userUtilController.getUserExpos(user.getUser(), status,pageable));
         return URL.USER_HOME;
     }
 

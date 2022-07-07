@@ -3,7 +3,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Expositions</title>
+    <title th:text="#{Expos}"></title>
 </head>
 <div th:insert="common/fragments.html :: headerExpos"></div>
 <body th:fragment="allExpos">
@@ -75,8 +75,6 @@
         </td>
         <td th:if="${expo.statusId eq 2}" th:text="#{cancel}">
         </td>
-
-        <!--            <c:if test="${role.equals('user')}">-->
         <td sec:authorize="hasAuthority('USER')">
             <form method="post" th:action="@{/user/expos/buy/{id}(id=${expo.id})}">
                 <input type="hidden" th:name="expo" th:value="${expo}">

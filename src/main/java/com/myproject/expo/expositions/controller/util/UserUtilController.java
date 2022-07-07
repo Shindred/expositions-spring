@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -49,10 +50,10 @@ public class UserUtilController implements ControllerUtils {
         return userService.buyExpo(user, exposition);
     }
 
-    public Page<ExpoDto> getUserExpos(User user, String status) {
+    public Page<ExpoDto> getUserExpos(User user, String status, Pageable pageable) {
         log.info("input  status {}", status);
         Integer statusId = defineStatusId(status);
         return userService.getUserExpos(userService
-                .getAllExposByStatusIdAndUser(statusId, user, PageRequest.of(0, 5)));
+                .getAllExposByStatusIdAndUser(statusId, user, pageable));
     }
 }

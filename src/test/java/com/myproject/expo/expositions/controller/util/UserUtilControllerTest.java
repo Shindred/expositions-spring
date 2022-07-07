@@ -82,7 +82,7 @@ public class UserUtilControllerTest extends TestRunner {
                 .thenReturn(new PageImpl<>(List.of(exposition, exposition)));
         when(userService.getUserExpos(new PageImpl<>(List.of(exposition, exposition))))
                 .thenReturn(new PageImpl<>(List.of(ExpoTest.expoDto1, ExpoTest.expoDto2)));
-        assertThat(userUtilController.getUserExpos(UserTest.user, "active")).isNull();
+        assertThat(userUtilController.getUserExpos(UserTest.user, "active",PageRequest.of(0,5))).isNull();
 
     }
 }

@@ -89,7 +89,7 @@ public class UserServiceLogic implements UserService {
         try {
             userServiceFacade.buyExposition(expo, user);
         } catch (Exception e) {
-            log.warn("User {} cannot buy expo id {} = {}",user.getEmail(),expo.getIdExpo(),expo.getName());
+            log.warn("User {} cannot buy expo id {} = {}", user.getEmail(), expo.getIdExpo(), expo.getName());
             throw new ExpoException("err.buy_expo");
         }
         return true;
@@ -119,16 +119,14 @@ public class UserServiceLogic implements UserService {
 
     @Override
     public Page<Exposition> getAllExposByStatusIdAndUser(Integer statusId, User user, Pageable pageable) {
-        System.out.println("res result found user expos : ");
-       expoRepo.getAllByStatusIdAndUsers(statusId, user).forEach(System.out::println);
-       return expoRepo.getAllByStatusIdAndUsers(statusId, user);
+        return expoRepo.findExpositionsByUsersAndStatusId(user, statusId, pageable);
     }
 
     @Override
     public int changeEmail(String oldEmail, String newEmail) {
         int res = userRepo.changeEmail(oldEmail, newEmail);
         if (res <= 0) {
-            log.warn("Cannot change user old email {} to new one {}",oldEmail,newEmail);
+            log.warn("Cannot change user old email {} to new one {}", oldEmail, newEmail);
             throw new UserException("err.change_user_email");
         }
         return res;
@@ -138,7 +136,7 @@ public class UserServiceLogic implements UserService {
     public User getByEmail(String email) {
         User userByEmail = userRepo.getByEmail(email);
         if (userByEmail == null) {
-            log.warn("User {} not found",email);
+            log.warn("User {} not found", email);
             throw new UserException("err.no_such_user");
         }
         return userByEmail;

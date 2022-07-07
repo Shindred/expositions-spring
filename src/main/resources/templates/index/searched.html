@@ -1,11 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
->
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title th:text="#{Expos}"></title>
-<!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">-->
-
 </head>
 <div th:insert="common/fragments.html :: headerExpos"></div>
 <body>
@@ -61,8 +58,6 @@
         </td>
         <td th:if="${expo.statusId eq 2}" th:text="#{my_canceled}">
         </td>
-
-        <!--            <c:if test="${role.equals('user')}">-->
         <div sec:authorize="hasAuthority('USER')">
             <td>
                 <form method="post" th:action="@{/user/expos/buy/{id}(id=${expo.id})}">
@@ -71,14 +66,9 @@
                 </form>
             </td>
         </div>
-        <!--            </c:if>-->
     </tr>
-    <!--    </c:forEach>-->
     </tbody>
 </table>
 <div th:insert="common/fragments.html :: scriptsExpos"></div>
-<!--<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>-->
-
-<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>-->
 </body>
 </html>

@@ -2,30 +2,28 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>My Expos</title>
+    <title th:text="#{Expos}"></title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <body>
 <table class="table table-info table-hover" th:fragment="myExpos">
-    <h4 class="text-center">Expositions</h4>
+    <h4 class="text-center" th:text="#{Expos}"></h4>
     <thead>
     <tr>
-        <th scope="col">Expos</th>
-        <th scope="col">Expo_date</th>
-        <th scope="col">Expo_time</th>
-        <th scope="col">Price</th>
-        <th scope="col">Sold</th>
-        <th scope="col">Halls</th>
-        <th scope="col">Theme</th>
-        <th scope="col">Tickets</th>
-        <th scope="col">Status</th>
+        <th scope="col" th:text="#{expo_name}"></th>
+        <th scope="col" th:text="#{expo_date}"></th>
+        <th scope="col" th:text="#{expo_time}"></th>
+        <th scope="col" th:text="#{expo_price}"></th>
+        <th scope="col" th:text="#{sold_tickets}"></th>
+        <th scope="col" th:text="#{halls}"></th>
+        <th scope="col" th:text="#{theme}"></th>
+        <th scope="col" th:text="#{sold_tickets}"></th>
+        <th scope="col" th:text="#{status}"></th>
     </tr>
     </thead>
     <tbody th:each="expo : ${myExpos}">
     <tr>
-        <td>
-            <a th:href="@{/user/show/{id}(id=${expo.id})}" th:text="${expo.name}"></a>
-        </td>
+        <td th:text="${expo.name}"></td>
         <td th:text="${expo.expoDate.format(dateFormat)}"></td>
         <td th:text="${expo.expoTime.format(timeFormat)}"></td>
         <td th:text="${expo.price}"></td>
@@ -37,23 +35,12 @@
         </td>
         <td th:text="${expo.theme.name}"></td>
         <td th:switch="${expo.statistic.tickets}">
-            <p th:case="0">sold out</p>
-            <p th:default>have</p>
+            <p th:case="0" th:text="#{sold_out}"></p>
+            <p th:default th:text="#{have}"></p>
         </td>
-        <td th:if="${expo.statusId eq 1}">
-            active
+        <td th:if="${expo.statusId eq 1}" th:text="#{active}">
         </td>
-
-        <!--            <c:if test="${role.equals('user')}">-->
-<!--        <td>-->
-<!--            <form method="post" th:action="@{/user/expos/buy/{id}(id=${expo.id})}">-->
-<!--                <input type="hidden" th:name="expo" th:value="${expo}">-->
-<!--                <button type="submit" class="btn btn-success btn-sm">buy</button>-->
-<!--            </form>-->
-<!--        </td>-->
-        <!--            </c:if>-->
     </tr>
-    <!--    </c:forEach>-->
     </tbody>
 </table>
 </body>

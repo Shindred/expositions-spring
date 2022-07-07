@@ -13,17 +13,15 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.util.List;
 
-
 @Repository
 public interface ExpoRepo extends JpaRepository<Exposition, Long> {
-
-    Page<Exposition> getAllByStatusIdAndUsers(Integer statusId, User user);
+    Page<Exposition> findExpositionsByUsersAndStatusId(User user, Integer statusId, Pageable pageable);
 
     @Modifying
     @Query("update Exposition expo set expo.statusId= ?1 where expo.idExpo= ?2")
-    int changeStatus(@Param("statusId") Integer statusId,@Param("idExpo") Long idExpo);
+    int changeStatus(@Param("statusId") Integer statusId, @Param("idExpo") Long idExpo);
 
-     List<Exposition> findByThemeName(@Param("theme_name") String theme_name);
+    List<Exposition> findByThemeName(@Param("theme_name") String theme_name);
 
-     List<Exposition> findByExpoDate(@Param("expoDate")LocalDate expoDate);
+    List<Exposition> findByExpoDate(@Param("expoDate") LocalDate expoDate);
 }

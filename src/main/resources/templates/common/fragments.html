@@ -50,7 +50,7 @@
                     <a class="page-link" th:href="@{${'/user/expos'}(page=${(page.getPageNumber)  - 1},size=${size},sortBy=${sortBy})}" tabindex="-1"
                        aria-disabled="true" th:text="#{Prev}"></a>
                 </li>
-                <li class="page-item"><a class="page-link" th:href="@{${'/index/expos'}(size=${size},sortBy=${sortBy})}">1</a></li>
+                <li class="page-item"><a class="page-link" th:href="@{${'/user/expos'}(size=${size},sortBy=${sortBy})}">1</a></li>
                 <li class="page-item" aria-current="page">
                     <a class="page-link" th:href="@{${'/user/expos'}(page=2,size=${size},sortBy=${sortBy})}">2</a>
                 </li>

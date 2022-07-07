@@ -130,9 +130,9 @@ public class UserServiceLogicTest extends TestRunner {
 
     @Test
     public void testGetAllExposByStatusIdAndUser() {
-        when(expoRepo.getAllByStatusIdAndUsers(1, UserTest.user))
+        when(expoRepo.findExpositionsByUsersAndStatusId(UserTest.user, 1, PageRequest.of(0, 3)))
                 .thenReturn(new PageImpl<>(UserTest.user.getExpos()));
-        Page<Exposition> result = userService.getAllExposByStatusIdAndUser(1, UserTest.user, PageRequest.of(1, 5));
+        Page<Exposition> result = userService.getAllExposByStatusIdAndUser(1, UserTest.user, PageRequest.of(0, 3));
         Assertions.assertNotNull(result);
         Assertions.assertEquals(1, result.getSize());
 

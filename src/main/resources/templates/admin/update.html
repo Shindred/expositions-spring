@@ -6,7 +6,7 @@
 </head>
 <body>
 <div th:insert="common/fragments.html :: scriptUpdateHead"></div>
-<div th:if="${errMsg}" th:text="#{${errMsg}}"></div>
+<div class="text-center" style="color: red" th:if="${errMsg}" th:text="#{${errMsg}}"></div>
 <form method="post" th:action="@{/admin/update/{id}(id=${expo.id})}" th:object="${expo}">
     <div class="card-body">
         <h5 class="card-title" th:text="#{expo_name}"></h5>

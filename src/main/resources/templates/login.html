@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head >
+<head>
     <meta charset="UTF-8">
     <title th:text="#{Login}"></title>
     <link rel="stylesheet"
@@ -11,7 +11,6 @@
 <body>
 <div class="container">
     <div class="col-md-6 col-lg-4 offset-lg-4 offset-md-3 mt-5">
-<!--        <jsp:include page="/WEB-INF/views/general/informMsg.jsp"/>-->
         <!-- Pills navs -->
         <ul class="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
 
@@ -24,8 +23,6 @@
                    aria-controls="pills-register" aria-selected="false" th:text="#{Register}"></a>
             </li>
         </ul>
-        <!-- Pills navs -->
-
         <!-- Pills content -->
         <div class="tab-content">
             <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
@@ -36,13 +33,13 @@
                     </div>
                     <!-- Email input -->
                     <div class="form-outline mb-4">
-                        <input type="text" id="loginName" th:name="username" class="form-control" />
+                        <input type="text" id="loginName" th:name="username" class="form-control"/>
                         <label class="form-label" for="loginName" th:text="#{your_email}">your_email</label>
                     </div>
 
                     <!-- Password input -->
                     <div class="form-outline mb-4">
-                        <input type="password" id="loginPassword" th:name="password" class="form-control" />
+                        <input type="password" id="loginPassword" th:name="password" class="form-control"/>
                         <label class="form-label" for="loginPassword" th:text="#{password}"></label>
                     </div>
 
@@ -53,10 +50,6 @@
                             <!-- Simple link -->
                             <a href="/change_email" th:text="#{change_email}"></a>
                         </div>
-<!--                        <div class="col-md-6 d-flex justify-content-center">-->
-<!--                            &lt;!&ndash; Simple link &ndash;&gt;-->
-<!--                            <a href="/change_pass" th:text="#{forgot_pass}">?</a>-->
-<!--                        </div>-->
                     </div>
 
                     <!-- Submit button -->
@@ -73,25 +66,25 @@
 
                     <!-- Name input -->
                     <div class="form-outline mb-4">
-                        <input type="text" id="registerName" class="form-control" />
+                        <input type="text" id="registerName" class="form-control"/>
                         <label class="form-label" for="registerName">your_name</label>
                     </div>
 
                     <!-- Username input -->
                     <div class="form-outline mb-4">
-                        <input type="text" id="registerUsername" class="form-control" />
+                        <input type="text" id="registerUsername" class="form-control"/>
                         <label class="form-label" for="registerUsername">your_surname}</label>
                     </div>
 
                     <!-- Email input -->
                     <div class="form-outline mb-4">
-                        <input type="email" id="registerEmail" class="form-control" />
+                        <input type="email" id="registerEmail" class="form-control"/>
                         <label class="form-label" for="registerEmail">your_email</label>
                     </div>
 
                     <!-- Password input -->
                     <div class="form-outline mb-4">
-                        <input type="password" id="registerPassword" class="form-control" />
+                        <input type="password" id="registerPassword" class="form-control"/>
                         <label class="form-label" for="registerPassword">Password</label>
                     </div>
 
