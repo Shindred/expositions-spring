@@ -39,6 +39,7 @@
             <p th:default th:text="#{have}"></p>
         </td>
         <td th:if="${expo.statusId eq 1}" th:text="#{active}">
+        <td th:if="${expo.statusId eq 2}" th:text="#{my_canceled}">
         </td>
     </tr>
     </tbody>

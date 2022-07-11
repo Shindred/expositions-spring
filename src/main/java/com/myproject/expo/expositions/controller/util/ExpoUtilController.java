@@ -87,6 +87,7 @@ public class ExpoUtilController implements ControllerUtils {
         } catch (Exception e) {
             log.warn("Cannot add Exposition with name {}", expoDto.getName());
             setErrMsgAndPathBack(model, e.getMessage(), URL.ADMIN_ADD_EXPO);
+            return URL.ADMIN_ADD_EXPO;
         }
         return URL.REDIRECT_ADMIN_EXPOS;
     }

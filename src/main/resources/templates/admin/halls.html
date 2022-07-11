@@ -13,13 +13,15 @@
         <thead>
         <tr>
             <th scope="col" th:text="#{hall}"></th>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert" th:if="${errMsg}">
+                <p th:text="#{${errMsg}}"></p>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
             <th scope="col">
                 <div class="input-group mb-3" th:object="${hallObj}">
                     <h6 style="color: red" class="text-center"
                         th:if="${#fields.hasErrors('name')}" th:errorclass="error" th:errors="*{name}"></h6>
                 </div>
-                <div th:insert="common/fragments.html :: informMsg"></div>
-                <div th:insert="common/fragments.html :: errMsg"></div>
 <!--                 Add hall -->
                 <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#addHall" aria-expanded="false" aria-controls="addHall" th:text="#{add_hall}">
                 </button>
@@ -46,7 +48,7 @@
 <!--                        Update hall -->
                         <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse"  th:attr="data-bs-target='#updateHall'+${hall.idHall}"  aria-expanded="false" th:text="#{update_me}"  >
                         </button>
-                        <div class="collapse" th:attr="id='updateHall'+${hall.idHall}" >
+                        <div class="collapse" th:attr="id='updateHall'+ ${hall.idHall}" >
                             <div class="card card-body">
                                 <form th:method="PATCH" th:action="@{/admin/halls/{id}(id=${hall.idHall})}" th:object="${hallObj}">
                                     <div class="input-group mb-3">

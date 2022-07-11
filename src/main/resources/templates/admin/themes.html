@@ -13,7 +13,6 @@
             <h6 style="color: red" class="text-center"
                 th:if="${#fields.hasErrors('name')}" th:errorclass="error" th:errors="*{name}"></h6>
         </div>
-        <div th:insert="common/fragments.html :: informMsg"></div>
         <div th:insert="common/fragments.html :: errMsg"></div>
         <thead>
         <tr>
@@ -68,7 +67,6 @@
             </tr>
         </tbody>
     </table>
-    <div th:text="${page.getPageNumber}"></div>
     <!--        Pagination halls-->
     <div class="text-center">
         <nav aria-label="...">

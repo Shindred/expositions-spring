@@ -112,6 +112,7 @@ public class ThemeController implements ControllerUtils {
         try{
             themeUtilController.deleteTheme(id);
         }catch (ThemeException e){
+            log.warn("Cannot delete the theme with id {}",id);
             model.addAttribute(ERR_MSG,e.getMessage());
             return URL.ADMIN_HOME_SLASH;
         }

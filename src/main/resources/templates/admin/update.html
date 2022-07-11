@@ -11,7 +11,7 @@
     <div class="card-body">
         <h5 class="card-title" th:text="#{expo_name}"></h5>
         <input type="hidden" th:field="*{id}" th:value="${expo.id}">
-        <input type="text" class="form-control" th:field="*{name}"/>
+        <input type="text" class="form-control"  th:field="*{name}"/>
         <h6 style="color: red" class="text-center"
             th:if="${#fields.hasErrors('name')}" th:errorclass="error" th:errors="*{name}"></h6>
         <h5 class="card-title" th:text="#{expo_date}"></h5>

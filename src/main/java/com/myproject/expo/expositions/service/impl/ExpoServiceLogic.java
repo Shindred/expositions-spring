@@ -68,7 +68,7 @@ public class ExpoServiceLogic implements ExpoService {
             expo = expoRepo.save(expo);
         } catch (Exception e) {
             log.warn("Cannot add the exposition {}.Some problem.Probably already exists", expoDto.getName());
-            throw new RuntimeException("{err.add_expo}");
+            throw new RuntimeException("err.add_expo");
         }
         return expo;
     }

@@ -52,8 +52,11 @@ public class ThemeUtilController implements ControllerUtils {
     }
 
     public boolean deleteTheme(Long id) {
-        return themeService.delete(id) > 0;
-
+        try {
+            return themeService.delete(id) > 0;
+        }catch (Exception e){
+            throw new ThemeException("err.delete_theme");
+        }
     }
 
 }
