@@ -42,13 +42,17 @@ public class GetAllExposController implements ControllerUtils {
                               @PageableDefault(page = 1, size = 5, sort = {"idExpo"}) Pageable pageable,
                               Model model, HttpServletRequest req) {
         Pageable pageableRes = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), defineSortingOrder(sortBy));
-        setDataToTheModel(page, size, sortBy, model);
-        model.addAttribute(NUMBER_OF_PAGES, countNoOfRequiredPagesForPage(expoService.getAll().size(), pageableRes.getPageSize()));
-        model.addAttribute(PAGE, pageableRes);
+        setUpDataToTheModelForGetAllExpos(page, size, sortBy, model, pageableRes);
         Page<ExpoDto> expos = getAllExpos(pageableRes);
         model.addAttribute(EXPOS, expos);
         setDateTimeFormatterToSession(req);
         return defineBackPathToUser(req);
+    }
+
+    private void setUpDataToTheModelForGetAllExpos(Integer page, Integer size, String sortBy, Model model, Pageable pageableRes) {
+        setDataToTheModel(page, size, sortBy, model);
+        model.addAttribute(NUMBER_OF_PAGES, countNoOfRequiredPagesForPage(expoService.getAll().size(), pageableRes.getPageSize()));
+        model.addAttribute(PAGE, pageableRes);
     }
 
     private String defineBackPathToUser(HttpServletRequest req) {

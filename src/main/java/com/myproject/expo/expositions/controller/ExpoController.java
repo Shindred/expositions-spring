@@ -48,9 +48,8 @@ public class ExpoController implements ControllerUtils {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/admin/addExpo")
-    public String addExpo(@ModelAttribute("expo") @Valid ExpoDto expo,
-                          BindingResult bindingResult, Model model) {
-        String url = "/admin/addExpo";
+    public String addExpo(@ModelAttribute("expo") @Valid ExpoDto expo, BindingResult bindingResult, Model model) {
+        String url;
         try {
             url = expoUtilController.addExpo(expo, bindingResult, model);
         } catch (ExpoException e) {
@@ -73,12 +72,16 @@ public class ExpoController implements ControllerUtils {
     public String getUpdatePage(@PathVariable("id") Long id, Model model) {
         ExpoDto expoDto = expoService.getById(id);
         log.info("Show exposition " + expoDto);
+        setUpDataToModelForUpdateExpoPage(model, expoDto);
+        return URL.ADMIN_UPDATE;
+    }
+
+    private void setUpDataToModelForUpdateExpoPage(Model model, ExpoDto expoDto) {
         model.addAttribute(HALLS_SHOW, expoUtilController.getAllHalls());
         model.addAttribute(THEMES_SHOW, expoUtilController.getAllThemes());
         model.addAttribute(EXPO, expoDto);
         model.addAttribute(FORM, new ExpoDto());
         setDateTimeFormatterToModel(model);
-        return URL.ADMIN_UPDATE;
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -88,10 +91,7 @@ public class ExpoController implements ControllerUtils {
         log.info("Updating expo {}",expoDto);
         List<Hall> halls = expoUtilController.getAllHalls();
         List<Theme> themes = expoUtilController.getAllThemes();
-        model.addAttribute(HALLS_SHOW, halls);
-        model.addAttribute(THEMES_SHOW, themes);
-        model.addAttribute("expoDate",expoDto.getExpoDate());
-        model.addAttribute("expoTime",expoDto.getExpoTime());
+        setRequiredDataToModel(expoDto, model, halls, themes);
         if (inputHasErrors(bindingResult)) {
             log.info("Updating the exposition {} was failed",expoDto.getId());
             model.addAttribute("expo",expoDto);
@@ -101,6 +101,13 @@ public class ExpoController implements ControllerUtils {
         model.addAttribute(THEMES, themes);
         return expoUtilController.update(id, expoDto, model);
 
+    }
+
+    private void setRequiredDataToModel(ExpoDto expoDto, Model model, List<Hall> halls, List<Theme> themes) {
+        model.addAttribute(HALLS_SHOW, halls);
+        model.addAttribute(THEMES_SHOW, themes);
+        model.addAttribute("expoDate", expoDto.getExpoDate());
+        model.addAttribute("expoTime", expoDto.getExpoTime());
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")

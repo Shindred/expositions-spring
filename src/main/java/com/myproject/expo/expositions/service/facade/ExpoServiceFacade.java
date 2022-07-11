@@ -32,8 +32,6 @@ public class ExpoServiceFacade {
     }
 
     public String update(@PathVariable("id") Long id, @ModelAttribute("expo") ExpoDto expoDto) {
-        Pageable pageable = PageRequest.of(0, 5);
-        ExpoDto foundExpoFromDb = expoService.getById(expoDto.getId());
         log.info("income expodto {}", expoDto);
 
         try {
@@ -62,7 +60,8 @@ public class ExpoServiceFacade {
     }
 
     private boolean validateDateTime(Long id, Exposition exposition) {
-        if ((validate.isDateValid(exposition.getExpoDate()) && validate.isTimeInReqDiapason(exposition.getExpoTime()))) {
+        if ((validate.isDateValid(exposition.getExpoDate())
+                && validate.isTimeInReqDiapason(exposition.getExpoTime()))) {
             expoService.update(id, exposition);
         } else {
             return true;

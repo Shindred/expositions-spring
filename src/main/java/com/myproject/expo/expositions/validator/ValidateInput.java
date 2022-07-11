@@ -11,8 +11,8 @@ import java.util.regex.Pattern;
  * The ValidateInput class validates the input data
  */
 public class ValidateInput implements Validate {
-    private final String TIME_CHECK = "^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$";
-    private final String DATE_CHECK = "^([0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]))$";
+    private static final String TIME_CHECK = "^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$";
+    private static final String DATE_CHECK = "^([0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]))$";
 
     @Override
     public boolean isProperDateTimeInput(LocalDate date, LocalTime time) {

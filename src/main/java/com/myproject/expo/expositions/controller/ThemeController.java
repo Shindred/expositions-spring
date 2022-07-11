@@ -104,12 +104,6 @@ public class ThemeController implements ControllerUtils {
         return URL.REDIRECT_ADMIN_HOME;
     }
 
-    private void setDataToTheModel(ThemeDto themeDto, Model model, Pageable pageable) {
-        model.addAttribute(PAGE, pageable);
-        model.addAttribute(THEME_OBJ, themeDto);
-        model.addAttribute(THEMES,themeUtilController.getAllThemes(pageable));
-    }
-
     @DeleteMapping("/themes/{id}")
     public String delete(@PathVariable(ID) Long id, Model model,
                          @PageableDefault(sort = {ID_THEME},

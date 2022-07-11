@@ -11,5 +11,4 @@ public interface HallRepo extends JpaRepository<Hall, Long> {
     @Override
     Page<Hall> findAll(Pageable pageable);
 
-
 }

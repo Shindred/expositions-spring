@@ -38,10 +38,7 @@ public class HallController implements ControllerUtils {
     @GetMapping("/halls")
     public String getHalls(Model model, @PageableDefault(sort = {ID_HALL}, page = 1,
             direction = Sort.Direction.DESC) Pageable pageable) {
-        model.addAttribute(HALL_OBJ, new HallDto());
-        model.addAttribute(NUMBER_OF_PAGES,
-                hallUtilController.countTotalNoOfRequiredPages(hallUtilController.getAllHalls(), pageable));
-        model.addAttribute(PAGE, pageable);
+        setUpDataToModel(model, pageable);
         try {
             model.addAttribute(HALLS, hallUtilController.getHalls(pageable));
         } catch (HallException e) {
@@ -52,20 +49,31 @@ public class HallController implements ControllerUtils {
         return URL.ADMIN_HOME_SLASH;
     }
 
+    private void setUpDataToModel(Model model, Pageable pageable) {
+        model.addAttribute(HALL_OBJ, new HallDto());
+        model.addAttribute(NUMBER_OF_PAGES,
+                hallUtilController.countTotalNoOfRequiredPages(hallUtilController.getAllHalls(), pageable));
+        model.addAttribute(PAGE, pageable);
+    }
+
     @PostMapping("/halls")
     public String saveHall(@ModelAttribute(HALL_OBJ) @Valid HallDto hallDto,
                            BindingResult bindingResult, Model model,
                            @PageableDefault(sort = {ID_HALL}, page = 0,
                                    direction = Sort.Direction.DESC) Pageable pageable) {
-        model.addAttribute(HALLS, hallUtilController.getHalls(pageable));
-        model.addAttribute(PAGE, pageable);
-        model.addAttribute(HALL_OBJ, hallDto);
+        setUpDataToModel(hallDto, model, pageable);
         if (inputHasErrors(bindingResult)) {
             log.warn("Cannot save the hall with name = {}",hallDto.getName());
             return URL.ADMIN_HOME_SLASH;
         }
         hallUtilController.saveHall(hallDto, model, getResPageable(pageable, ID_HALL));
         return URL.REDIRECT_ADMIN_HOME;
+    }
+
+    private void setUpDataToModel(HallDto hallDto, Model model, Pageable pageable) {
+        model.addAttribute(HALLS, hallUtilController.getHalls(pageable));
+        model.addAttribute(PAGE, pageable);
+        model.addAttribute(HALL_OBJ, hallDto);
     }
 
     @PatchMapping(path = "/halls/{id}")

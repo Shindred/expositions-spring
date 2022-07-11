@@ -10,13 +10,14 @@ import java.io.IOException;
 @Component
 public class EncodingFilter implements Filter {
     private static final Logger logger = LogManager.getLogger(EncodingFilter.class);
+    private static final String UTF = "UTF-8";
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
                          FilterChain filterChain) throws IOException, ServletException {
         servletResponse.setContentType("text/html");
-        servletResponse.setCharacterEncoding("UTF-8");
-        servletRequest.setCharacterEncoding("UTF-8");
+        servletResponse.setCharacterEncoding(UTF);
+        servletRequest.setCharacterEncoding(UTF);
         logger.info("encoding filter working now");
         filterChain.doFilter(servletRequest, servletResponse);
     }

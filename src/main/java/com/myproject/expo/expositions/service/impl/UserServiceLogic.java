@@ -131,15 +131,4 @@ public class UserServiceLogic implements UserService {
         }
         return res;
     }
-
-    @Override
-    public User getByEmail(String email) {
-        User userByEmail = userRepo.getByEmail(email);
-        if (userByEmail == null) {
-            log.warn("User {} not found", email);
-            throw new UserException("err.no_such_user");
-        }
-        return userByEmail;
-
-    }
 }

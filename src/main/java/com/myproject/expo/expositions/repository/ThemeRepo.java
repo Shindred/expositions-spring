@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ThemeRepo extends JpaRepository<Theme,Long> {
-
     @Override
     Page<Theme> findAll(Pageable pageable);
 

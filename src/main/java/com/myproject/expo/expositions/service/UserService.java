@@ -24,8 +24,6 @@ public interface UserService extends GetAll<User, UserDto>, Savable<User, UserDt
 
     int changeEmail(String oldEmail, String newEmail);
 
-    User getByEmail(String email);
-
     Page<Exposition> getAllExposByStatusIdAndUser(Integer statusId, User user, Pageable pageable);
 
     Exposition getExpoById(Long id);

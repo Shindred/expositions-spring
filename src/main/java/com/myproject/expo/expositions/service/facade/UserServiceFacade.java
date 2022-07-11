@@ -58,11 +58,11 @@ public class UserServiceFacade {
     }
 
     public User topUpBalance(User user, BigDecimal amount) {
-        BigDecimal res = user.getBalance().add(amount);
-        userRepo.changeBalance(user.getId(), res);
+        BigDecimal resUserBalance = user.getBalance().add(amount);
+        userRepo.changeBalance(user.getId(), resUserBalance);
         UserDto userDto = build.toDto(user);
-        BigDecimal money = userRepo.getBalance(user.getId());
-        userDto.setBalance(money);
+        BigDecimal balance = userRepo.getBalance(user.getId());
+        userDto.setBalance(balance);
         return build.toModel(userDto);
     }
 
