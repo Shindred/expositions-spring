@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-                xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title th:text="#{user_page}"></title>
@@ -22,8 +21,8 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <form method="post" th:action="@{/user/topup}">
-                            <input type="text" class="form-control" th:name="amount">
-                            <button type="submit" class="btn btn-info btn-sm">ok</button>
+                            <input type="text" class="form-control" th:name="amount" $>
+                            <button type="submit" class="btn btn-info btn-sm" th:text="#{top_up_balance}"></button>
                         </form>
                     </div>
                 </li>
