@@ -31,6 +31,7 @@ import static org.mockito.Mockito.when;
 
 
 public class ExpoUtilControllerTest extends TestRunner {
+    private final Exposition exposition = new Exposition();
     @Mock
     private ExpoService expoService;
     @Mock
@@ -44,15 +45,14 @@ public class ExpoUtilControllerTest extends TestRunner {
     @Autowired
     @Qualifier("expoBuild")
     private Build<ExpoDto, Exposition> build;
-    @InjectMocks
-    private ExpoUtilController expoUtilController;
-    private final Exposition exposition = new Exposition();
     @Mock
     @Qualifier("expoBuild")
     private Build<ExpoDto, Exposition> buildExpo;
     @Mock
     @Qualifier("validateInput")
     private Validate validate;
+    @InjectMocks
+    private ExpoUtilController expoUtilController;
 
     @Before
     public void init() {
@@ -68,25 +68,12 @@ public class ExpoUtilControllerTest extends TestRunner {
 
     }
 
-    private void whenWhen(){
-        when(exposition.getIdExpo()).thenReturn(17L);
-        when(exposition.getName()).thenReturn("sky-champions");
-        when(exposition.getExpoDate()).thenReturn(LocalDate.now());
-        when(exposition.getExpoTime()).thenReturn(LocalTime.of(13,30));
-        when(exposition.getPrice()).thenReturn(new BigDecimal(300));
-        when(exposition.getStatusId()).thenReturn(1);
-        when(exposition.getStatistic()).thenReturn(new Statistic(1L,20L,450L));
-        when(exposition.getHalls()).thenReturn(Collections.singleton(HallTest.hall1));
-        when(exposition.getTheme()).thenReturn(ThemeTest.theme1);
-    }
-
     @Test
     public void getPageToAddExpo() {
         when(hallService.getAll()).thenReturn(List.of(HallTest.hall1, HallTest.hall2));
         when(themeService.getAll()).thenReturn(List.of(ThemeTest.theme1, ThemeTest.theme2));
         assertThat(expoUtilController.getPageToAddExpo(model)).isNotEmpty();
     }
-
 
     @Test
     public void addExpo() {

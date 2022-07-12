@@ -20,14 +20,14 @@ import static org.mockito.Mockito.when;
 public class HallUtilControllerTest extends TestRunner {
     private static final int PAGE = 0;
     private static final int SIZE = 1;
-    @Autowired
-    private HallUtilController hallUtilController;
     @Mock
     private HallService hallService;
     @Mock
     private BindingResult bindingResult;
     @Mock
     private Model model;
+    @Autowired
+    private HallUtilController hallUtilController;
 
     @Test
     public void getHalls() {

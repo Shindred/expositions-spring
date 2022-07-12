@@ -17,14 +17,14 @@ import static org.mockito.Mockito.when;
 public class MainUtilControllerTest extends TestRunner {
     private static final String OLD_EMAIL = "some@gmail.com";
     private static final String NEW_EMAIL = "new@gmail.com";
-    @Autowired
-    private MainUtilController mainUtilController;
     @Mock
     private UserService userService;
     @Mock
     private Model model;
     @Mock
     private BindingResult bindingResult;
+    @Autowired
+    private MainUtilController mainUtilController;
 
     @Before
     public void init() {
