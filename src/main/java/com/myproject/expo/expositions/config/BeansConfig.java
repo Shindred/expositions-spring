@@ -68,7 +68,7 @@ public class BeansConfig {
     }
 
     @Bean
-    public MainUtilController getMainUtilController(@Qualifier("userServiceLogic") UserService userService) {
+    public MainUtilController getMainUtilController(@Qualifier("userServiceImpl") UserService userService) {
         return new MainUtilController(userService);
     }
 
@@ -78,7 +78,7 @@ public class BeansConfig {
     }
 
     @Bean
-    public AdminUtilController getAdminUtilController(@Qualifier("userServiceLogic") UserService userService) {
+    public AdminUtilController getAdminUtilController(@Qualifier("userServiceImpl") UserService userService) {
         return new AdminUtilController(userService);
     }
 

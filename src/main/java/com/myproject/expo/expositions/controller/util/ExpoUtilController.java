@@ -21,6 +21,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
@@ -107,10 +108,10 @@ public class ExpoUtilController implements ControllerUtils {
         }
     }
 
-    public String show(Long id, Model model) {
+    public String show(Long id, Model model, HttpServletRequest req) {
         showOneExpoSetDataToTheModel(id, model, hallService.getAll(), themeService.getAll());
         setDateTimeFormatterToModel(model);
-        return URL.ADMIN_SHOW_URL;
+        return defineBackPathToUser(req);
     }
 
 

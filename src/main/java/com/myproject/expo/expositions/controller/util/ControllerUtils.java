@@ -136,4 +136,14 @@ public interface ControllerUtils {
         req.getSession().setAttribute(DATE_FORMAT,setDateFormat(locale));
         req.getSession().setAttribute(TIME_FORMAT,setTimeFormat(locale));
     }
+
+    default String defineBackPathToUser(HttpServletRequest req) {
+        if (req.getServletPath().contains(ADMIN)) {
+            return URL.ADMIN_HOME_SLASH;
+        } else if (req.getServletPath().contains(USER)) {
+            return URL.USER_HOME;
+        } else {
+            return URL.INDEX;
+        }
+    }
 }

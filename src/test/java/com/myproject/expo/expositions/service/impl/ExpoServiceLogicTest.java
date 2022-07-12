@@ -35,7 +35,7 @@ public class ExpoServiceLogicTest extends TestRunner {
     private final List<Exposition> exposList = new ArrayList<>();
     private final Exposition exposition = new Exposition();
     @Autowired
-    private ExpoServiceLogic expoService;
+    private ExpoServiceImpl expoService;
     @Autowired
     @Qualifier("expoBuild")
     private Build<ExpoDto, Exposition> buildExpo;

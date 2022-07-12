@@ -55,16 +55,6 @@ public class GetAllExposController implements ControllerUtils {
         model.addAttribute(PAGE, pageableRes);
     }
 
-    private String defineBackPathToUser(HttpServletRequest req) {
-        if (req.getServletPath().contains(ADMIN)) {
-            return URL.ADMIN_HOME_SLASH;
-        } else if (req.getServletPath().contains(USER)) {
-            return URL.USER_HOME;
-        } else {
-            return URL.INDEX;
-        }
-    }
-
     private Page<ExpoDto> getAllExpos(Pageable pageable) {
         return expoService.getAll(getPageableFromPageSize(pageable));
     }

@@ -12,13 +12,11 @@ import com.myproject.expo.expositions.repository.ExpoRepo;
 import com.myproject.expo.expositions.repository.UserRepo;
 import com.myproject.expo.expositions.service.UserService;
 import com.myproject.expo.expositions.service.facade.UserServiceFacade;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,8 +29,8 @@ import java.util.Arrays;
  */
 @Service
 @Qualifier("userServiceLogic")
-public class UserServiceLogic implements UserService {
-    private static final Logger log = LogManager.getLogger(UserServiceLogic.class);
+public class UserServiceImpl implements UserService {
+    private static final Logger log = LogManager.getLogger(UserServiceImpl.class);
     private final UserRepo userRepo;
     private final ExpoRepo expoRepo;
     private final Build<ExpoDto, Exposition> buildExpos;
@@ -40,9 +38,9 @@ public class UserServiceLogic implements UserService {
     private final Build<UserDto, User> build;
 
     @Autowired
-    public UserServiceLogic(UserRepo userRepo, ExpoRepo expoRepo, @Qualifier("expoBuild") Build<ExpoDto,
+    public UserServiceImpl(UserRepo userRepo, ExpoRepo expoRepo, @Qualifier("expoBuild") Build<ExpoDto,
             Exposition> buildExpos, UserServiceFacade userServiceFacade,
-                            @Qualifier("getUserBuild") Build<UserDto, User> build) {
+                           @Qualifier("getUserBuild") Build<UserDto, User> build) {
         this.userRepo = userRepo;
         this.expoRepo = expoRepo;
         this.buildExpos = buildExpos;

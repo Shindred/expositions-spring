@@ -4,7 +4,7 @@ import com.myproject.expo.expositions.config.userdetails.CustomUserDetails;
 import com.myproject.expo.expositions.entity.User;
 import com.myproject.expo.expositions.handler.SimpleAuthenticationSuccessHandler;
 import com.myproject.expo.expositions.service.UserService;
-import com.myproject.expo.expositions.service.impl.UserServiceLogic;
+import com.myproject.expo.expositions.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -30,7 +30,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public WebSecurityConfig(@Qualifier("userServiceLogic") UserServiceLogic userService,
+    public WebSecurityConfig(@Qualifier("userServiceImpl") UserServiceImpl userService,
                              PasswordEncoder passwordEncoder,
                              SimpleAuthenticationSuccessHandler successHandler) {
         this.userService = userService;

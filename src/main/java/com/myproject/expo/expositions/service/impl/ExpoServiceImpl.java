@@ -34,16 +34,16 @@ import static com.myproject.expo.expositions.util.Constant.THEME;
  */
 @Service
 @Qualifier("userServiceLogic")
-public class ExpoServiceLogic implements ExpoService {
-    private static final Logger log = LogManager.getLogger(ExpoServiceLogic.class);
+public class ExpoServiceImpl implements ExpoService {
+    private static final Logger log = LogManager.getLogger(ExpoServiceImpl.class);
     private final ExpoRepo expoRepo;
     private final ThemeService themeService;
     private final StatisticRepo statisticRepo;
     private final Build<ExpoDto, Exposition> build;
 
     @Autowired
-    public ExpoServiceLogic(ExpoRepo expoRepo, @Qualifier("expoBuild") Build<ExpoDto, Exposition> build,
-                            ThemeService themeService, StatisticRepo statisticRepo) {
+    public ExpoServiceImpl(ExpoRepo expoRepo, @Qualifier("expoBuild") Build<ExpoDto, Exposition> build,
+                           ThemeService themeService, StatisticRepo statisticRepo) {
         this.expoRepo = expoRepo;
         this.themeService = themeService;
         this.statisticRepo = statisticRepo;
@@ -88,14 +88,16 @@ public class ExpoServiceLogic implements ExpoService {
     }
 
     private void setStatisticToDto(ExpoDto expoDto, Statistic savedStat) {
-        expoDto.getStatistic().setId(savedStat.getId());
-        expoDto.getStatistic().setSold(savedStat.getSold());
-        expoDto.getStatistic().setTickets(savedStat.getTickets());
+        Statistic statistic = expoDto.getStatistic();
+        statistic.setId(savedStat.getId());
+        statistic.setSold(savedStat.getSold());
+        statistic.setTickets(savedStat.getTickets());
     }
 
     @Override
     public ExpoDto getById(Long id) {
-        return build.toDto(expoRepo.getById(id));
+        Exposition expoId = expoRepo.getById(id);
+        return build.toDto(expoId);
     }
 
     @Transactional
@@ -156,7 +158,7 @@ public class ExpoServiceLogic implements ExpoService {
     }
 
     private void checkInputNotNull(String searchItem) {
-        if (searchItem.isEmpty() || (searchItem == null)) {
+        if ((searchItem == null) || searchItem.isEmpty()) {
             throw new ExpoException("err.search_input");
         }
     }

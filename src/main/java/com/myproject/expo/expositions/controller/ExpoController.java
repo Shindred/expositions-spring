@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.List;
@@ -62,9 +63,8 @@ public class ExpoController implements ControllerUtils {
 
     @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
     @GetMapping(value = {"*/expos/{id}", "*/search/{id}"})
-    public String show(@PathVariable("id") Long id, Model model) {
-        expoUtilController.show(id, model);
-        return URL.ADMIN_HOME_SLASH;
+    public String show(@PathVariable("id") Long id, Model model, HttpServletRequest req) {
+        return expoUtilController.show(id, model,req);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")

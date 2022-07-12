@@ -1,14 +1,11 @@
 package com.myproject.expo.expositions.service.impl;
 
 import com.myproject.expo.expositions.build.Build;
-import com.myproject.expo.expositions.dto.DTO;
 import com.myproject.expo.expositions.dto.ThemeDto;
 import com.myproject.expo.expositions.entity.Theme;
-import com.myproject.expo.expositions.exception.custom.ExpoException;
 import com.myproject.expo.expositions.exception.custom.ThemeException;
 import com.myproject.expo.expositions.repository.ThemeRepo;
 import com.myproject.expo.expositions.service.ThemeService;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +21,13 @@ import java.util.List;
  * The ThemeServiceLogic class do transfer operations for Theme entity and logic. Transfer data to repository layer
  */
 @Service
-public class ThemeServiceLogic implements ThemeService {
-    private static final Logger log = LogManager.getLogger(ThemeServiceLogic.class);
+public class ThemeServiceImpl implements ThemeService {
+    private static final Logger log = LogManager.getLogger(ThemeServiceImpl.class);
     private final ThemeRepo themeRepo;
     private final Build<ThemeDto,Theme> build;
 
     @Autowired
-    public ThemeServiceLogic(ThemeRepo themeRepo, @Qualifier("themeBuild") Build<ThemeDto,Theme> build) {
+    public ThemeServiceImpl(ThemeRepo themeRepo, @Qualifier("themeBuild") Build<ThemeDto,Theme> build) {
         this.themeRepo = themeRepo;
         this.build = build;
     }

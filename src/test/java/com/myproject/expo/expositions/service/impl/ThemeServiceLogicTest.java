@@ -34,7 +34,7 @@ public class ThemeServiceLogicTest extends TestRunner {
     @Qualifier("themeBuild")
     private Build<ThemeDto, Theme> build;
     @Autowired
-    private ThemeServiceLogic themeService;
+    private ThemeServiceImpl themeService;
 
     @Before
     public void init() {
