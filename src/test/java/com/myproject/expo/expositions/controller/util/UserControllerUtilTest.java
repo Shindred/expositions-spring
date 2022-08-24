@@ -31,7 +31,7 @@ public class UserControllerUtilTest extends TestRunner {
     @Mock
     private UserService userService;
     @InjectMocks
-    private UserUtilController userUtilController;
+    private UserControllerUtil userUtilController;
 
     @Before
     public void init() {

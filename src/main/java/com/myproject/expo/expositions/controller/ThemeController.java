@@ -1,7 +1,7 @@
 package com.myproject.expo.expositions.controller;
 
 import com.myproject.expo.expositions.controller.util.ControllerUtil;
-import com.myproject.expo.expositions.controller.util.ThemeUtilController;
+import com.myproject.expo.expositions.controller.util.ThemeControllerUtil;
 import com.myproject.expo.expositions.dto.ThemeDto;
 import com.myproject.expo.expositions.exception.custom.ThemeException;
 import lombok.extern.slf4j.Slf4j;
@@ -27,10 +27,10 @@ import static com.myproject.expo.expositions.util.Constant.*;
 @PreAuthorize("hasAuthority('ADMIN')")
 @Slf4j
 public class ThemeController implements ControllerUtil {
-    private final ThemeUtilController themeUtilController;
+    private final ThemeControllerUtil themeUtilController;
 
     @Autowired
-    public ThemeController(ThemeUtilController themeUtilController) {
+    public ThemeController(ThemeControllerUtil themeUtilController) {
         this.themeUtilController = themeUtilController;
     }
 

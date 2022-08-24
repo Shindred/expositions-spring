@@ -2,7 +2,7 @@ package com.myproject.expo.expositions.controller;
 
 import com.myproject.expo.expositions.config.userdetails.CustomUserDetails;
 import com.myproject.expo.expositions.controller.util.ControllerUtil;
-import com.myproject.expo.expositions.controller.util.UserUtilController;
+import com.myproject.expo.expositions.controller.util.UserControllerUtil;
 import com.myproject.expo.expositions.exception.custom.UserException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,10 +33,10 @@ import static com.myproject.expo.expositions.util.Constant.*;
 @PreAuthorize("hasAuthority('USER')")
 public class UserController implements ControllerUtil {
     private static final Logger log = LogManager.getLogger(UserController.class);
-    private final UserUtilController userUtilController;
+    private final UserControllerUtil userUtilController;
 
     @Autowired
-    public UserController(UserUtilController userUtilController) {
+    public UserController(UserControllerUtil userUtilController) {
         this.userUtilController = userUtilController;
     }
 

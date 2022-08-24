@@ -50,7 +50,7 @@ public class ExpoControllerUtilTest extends TestRunner {
     @Qualifier("validateInput")
     private Validate validate;
     @InjectMocks
-    private ExpoUtilController expoUtilController;
+    private ExpoControllerUtil expoUtilController;
 
     @Before
     public void init() {

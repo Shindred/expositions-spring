@@ -1,7 +1,7 @@
 package com.myproject.expo.expositions.controller;
 
 import com.myproject.expo.expositions.controller.util.ControllerUtil;
-import com.myproject.expo.expositions.controller.util.HallUtilController;
+import com.myproject.expo.expositions.controller.util.HallControllerUtil;
 import com.myproject.expo.expositions.dto.HallDto;
 import com.myproject.expo.expositions.exception.custom.HallException;
 import org.apache.logging.log4j.LogManager;
@@ -28,10 +28,10 @@ import static com.myproject.expo.expositions.util.Constant.*;
 @PreAuthorize("hasAuthority('ADMIN')")
 public class HallController implements ControllerUtil {
     private static final Logger log = LogManager.getLogger(MainController.class);
-    private final HallUtilController hallUtilController;
+    private final HallControllerUtil hallUtilController;
 
     @Autowired
-    public HallController(HallUtilController hallUtilController) {
+    public HallController(HallControllerUtil hallUtilController) {
         this.hallUtilController = hallUtilController;
     }
 

@@ -27,7 +27,7 @@ public class HallControllerUtilTest extends TestRunner {
     @Mock
     private Model model;
     @Autowired
-    private HallUtilController hallUtilController;
+    private HallControllerUtil hallUtilController;
 
     @Test
     public void getHalls() {

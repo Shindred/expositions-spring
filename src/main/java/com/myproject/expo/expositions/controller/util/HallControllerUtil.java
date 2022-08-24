@@ -20,17 +20,18 @@ import static com.myproject.expo.expositions.util.Constant.*;
  * The HallUtilController class do transfer operations for Hall Dto entity. Validate data for the service layer
  */
 @Component
-public class HallUtilController implements ControllerUtil {
-    private static final Logger log = LogManager.getLogger(HallUtilController.class);
+public class HallControllerUtil {
+    private static final Logger log = LogManager.getLogger(HallControllerUtil.class);
     private final HallService hallService;
+    private final ControllerHelper controllerHelper;
 
-    @Autowired
-    public HallUtilController(HallService hallService) {
+    public HallControllerUtil(HallService hallService, ControllerHelper controllerHelper) {
         this.hallService = hallService;
+        this.controllerHelper = controllerHelper;
     }
 
     public Page<Hall> getHalls(Pageable pageable) {
-        return hallService.getHalls(getPageableFromPageSize(pageable));
+        return hallService.getHalls(controllerHelper.getPageableFromPageSize(pageable));
     }
 
     public List<Hall> getAllHalls() {
@@ -38,8 +39,7 @@ public class HallUtilController implements ControllerUtil {
     }
 
     public int countTotalNoOfRequiredPages(List<Hall> allHalls, Pageable pageable) {
-        System.out.println("all halls size " + allHalls.size());
-        return countNoOfRequiredPagesForPage(allHalls.size(), pageable.getPageSize());
+        return controllerHelper.countNoOfRequiredPagesForPage(allHalls.size(), pageable.getPageSize());
     }
 
     public Hall saveHall(HallDto hallDto, Model model, Pageable pageable) {
@@ -51,15 +51,15 @@ public class HallUtilController implements ControllerUtil {
                                 BindingResult bindingResult, Model model, Pageable pageable) {
         hallDto.setId(id);
         setPageableAndHallsToTheModel(model, pageable, hallDto);
-        if (inputHasErrors(bindingResult)) {
+        if (controllerHelper.inputHasErrors(bindingResult)) {
             return URL.ADMIN_HOME_SLASH;
         }
         try {
             hallService.update(hallDto);
         } catch (Exception e) {
-            log.warn("Cannot update the hall with name {} with id {}", hallDto.getName(), hallDto.getId());
+            log.warn("Cannot update the hall with name {} and id {}. The hall with such name already exists.", hallDto.getName(), hallDto.getId());
             setAllHallsToTheModel(model, pageable);
-            return setErrMsgAndPathBack(model, "err.hall_update", URL.ADMIN_HALLS);
+            return controllerHelper.setErrMsgAndPathBack(model, "err.hall_update", URL.ADMIN_HALLS);
         }
         return URL.REDIRECT_ADMIN_HOME;
     }
@@ -78,9 +78,9 @@ public class HallUtilController implements ControllerUtil {
         try {
             hallService.delete(id);
         } catch (Exception e) {
-            log.warn("Cannot delete hall with id {}", id);
+            log.warn("Cannot delete hall with id {}. The hall already occupied for the exposition", id);
             setPageableAndHallsToTheModel(model, pageable, new HallDto());
-            return setErrMsgAndPathBack(model, "hall_delete", URL.ADMIN_HOME_SLASH);
+            return controllerHelper.setErrMsgAndPathBack(model, "hall_delete", URL.ADMIN_HOME_SLASH);
         }
         return URL.REDIRECT_ADMIN_HOME;
     }

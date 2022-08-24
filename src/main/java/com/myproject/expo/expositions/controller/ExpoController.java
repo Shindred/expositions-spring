@@ -1,7 +1,7 @@
 package com.myproject.expo.expositions.controller;
 
 import com.myproject.expo.expositions.controller.util.ControllerUtil;
-import com.myproject.expo.expositions.controller.util.ExpoUtilController;
+import com.myproject.expo.expositions.controller.util.ExpoControllerUtil;
 import com.myproject.expo.expositions.dto.ExpoDto;
 import com.myproject.expo.expositions.entity.Hall;
 import com.myproject.expo.expositions.entity.Theme;
@@ -28,11 +28,11 @@ import static com.myproject.expo.expositions.util.Constant.*;
 @Controller
 public class ExpoController implements ControllerUtil {
     private static final Logger log = LogManager.getLogger(ExpoController.class);
-    private final ExpoUtilController expoUtilController;
+    private final ExpoControllerUtil expoUtilController;
     private final ExpoService expoService;
 
     @Autowired
-    public ExpoController(ExpoUtilController expoUtilController,
+    public ExpoController(ExpoControllerUtil expoUtilController,
                           ExpoService expoService) {
         this.expoUtilController = expoUtilController;
         this.expoService = expoService;

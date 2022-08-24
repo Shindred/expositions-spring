@@ -25,7 +25,8 @@ public class CleanCacheFilter implements Filter {
         response.setHeader(Constant.CACHE_CONTROL, Constant.NO_STORE_MUST_REVALIDATE);
         response.setHeader(Constant.PRAGMA, Constant.NO_CACHE);
         response.setDateHeader(Constant.EXPIRES, 0);
-        logger.info("Clean cache filter working");
+        logger.info("Clean cache filter working now");
+
         filterChain.doFilter(request, response);
     }
 

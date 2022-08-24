@@ -68,8 +68,8 @@ public class BeansConfig {
     }
 
     @Bean
-    public MainUtilController getMainUtilController(@Qualifier("userServiceImpl") UserService userService) {
-        return new MainUtilController(userService);
+    public MainUtilController getMainUtilController(@Qualifier("userServiceImpl") UserService userService,ControllerHelper controllerHelper) {
+        return new MainUtilController(userService,controllerHelper);
     }
 
     @Bean
@@ -83,26 +83,26 @@ public class BeansConfig {
     }
 
     @Bean
-    public ExpoUtilController getExpoUtilController(ExpoService expoService, HallService hallService,
-                                                    ThemeService themeService,Validate validate,
+    public ExpoControllerUtil getExpoUtilController(ExpoService expoService, HallService hallService,
+                                                    ThemeService themeService, Validate validate,
                                                     @Qualifier("expoBuild") Build<ExpoDto,Exposition> build,
                                                     ControllerHelper controllerHelper) {
-        return new ExpoUtilController(expoService, hallService, themeService,validate,build,controllerHelper);
+        return new ExpoControllerUtil(expoService, hallService, themeService,validate,build,controllerHelper);
     }
 
     @Bean
-    public HallUtilController getHallUtilController(HallService hallService) {
-        return new HallUtilController(hallService);
+    public HallControllerUtil getHallUtilController(HallService hallService,ControllerHelper controllerHelper) {
+        return new HallControllerUtil(hallService,controllerHelper);
     }
 
     @Bean
-    public ThemeUtilController getThemeUtilController(ThemeService themeService) {
-        return new ThemeUtilController(themeService,new ArrayList<>());
+    public ThemeControllerUtil getThemeUtilController(ThemeService themeService, ControllerHelper controllerHelper) {
+        return new ThemeControllerUtil(themeService,new ArrayList<>(),controllerHelper);
     }
 
     @Bean
-    public UserUtilController getUserUtilController(UserService userService){
-        return new UserUtilController(userService);
+    public UserControllerUtil getUserUtilController(UserService userService,ControllerHelper controllerHelper){
+        return new UserControllerUtil(userService,controllerHelper);
     }
 
     @Bean
