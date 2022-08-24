@@ -2,13 +2,15 @@ package com.myproject.expo.expositions.controller;
 
 import com.myproject.expo.expositions.config.userdetails.CustomUserDetails;
 import com.myproject.expo.expositions.controller.util.ControllerHelper;
-import com.myproject.expo.expositions.controller.util.ControllerUtil;
-import com.myproject.expo.expositions.controller.util.UserControllerUtil;
+import com.myproject.expo.expositions.dto.ExpoDto;
+import com.myproject.expo.expositions.entity.Exposition;
+import com.myproject.expo.expositions.entity.User;
 import com.myproject.expo.expositions.exception.custom.UserException;
+import com.myproject.expo.expositions.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,6 +24,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import java.math.BigDecimal;
 import java.util.Locale;
+import java.util.Optional;
+import java.util.regex.Pattern;
 
 import static com.myproject.expo.expositions.util.Constant.*;
 
@@ -34,12 +38,13 @@ import static com.myproject.expo.expositions.util.Constant.*;
 @PreAuthorize("hasAuthority('USER')")
 public class UserController {
     private static final Logger log = LogManager.getLogger(UserController.class);
-    private final UserControllerUtil userUtilController;
+    private static final String ONLY_DIGITS = "^\\d+$";
     private final ControllerHelper controllerHelper;
+    private final UserService userService;
 
-    public UserController(UserControllerUtil userUtilController,ControllerHelper controllerHelper) {
-        this.userUtilController = userUtilController;
+    public UserController(ControllerHelper controllerHelper, UserService userService) {
         this.controllerHelper = controllerHelper;
+        this.userService = userService;
     }
 
     @GetMapping("/home")
@@ -60,27 +65,46 @@ public class UserController {
     public String topUpBalance(@AuthenticationPrincipal CustomUserDetails user,
                                @RequestParam("amount") String amount, HttpSession session) {
         try {
-            userUtilController.containsOnlyDigits(amount);
+            containsOnlyDigits(amount);
         } catch (UserException e) {
             session.setAttribute("infMsg", e.getMessage());
             return URL.USER_REDIRECT_HOME_PAGE;
         }
-        userUtilController.topUpBalance(user, new BigDecimal(amount));
+        topUpBalance(user, new BigDecimal(amount));
         return URL.USER_REDIRECT_HOME_PAGE;
     }
+
+    public boolean containsOnlyDigits(String str) {
+        return Optional.ofNullable(str)
+                .map(value -> Pattern.compile(ONLY_DIGITS).matcher(value).matches())
+                .filter(value -> value)
+                .orElseThrow(() -> new UserException("err.incorrect_amount"));
+    }
+
+    public User topUpBalance(CustomUserDetails user, BigDecimal amount) {
+        BigDecimal balance = userService.topUpBalance(user.getUser(), amount).getBalance();
+        user.getUser().setBalance(balance);
+        return user.getUser();
+    }
+
 
     @PostMapping("/expos/buy/{id}")
     public String buyExpo(@AuthenticationPrincipal CustomUserDetails user,
                           @PathVariable(ID) Long id, Model model) {
-        log.debug("User  with email {} buying exposition {}",user,id);
+        log.debug("User  with email {} buying exposition {}", user, id);
         try {
-            userUtilController.buyExpo(user.getUser(), id);
+            buyExpo(user.getUser(), id);
         } catch (UserException e) {
             log.warn("Cannot buy expo. User balance issue.");
             model.addAttribute(ERR_MSG, e.getMessage());
             return URL.USER_HOME;
         }
         return URL.USER_REDIRECT_HOME_PAGE;
+    }
+
+    public boolean buyExpo(User user, Long id) {
+        Exposition exposition = userService.getExpoById(id);
+        return userService.buyExpo(user, exposition);
     }
 
     @GetMapping("/myExpos")
@@ -91,8 +115,15 @@ public class UserController {
         Locale locale = LocaleContextHolder.getLocale();
         model.addAttribute(Common.DATE_FORMAT, controllerHelper.setDateFormat(locale));
         model.addAttribute(Common.TIME_FORMAT, controllerHelper.setTimeFormat(locale));
-        model.addAttribute(Common.MY_EXPOS, userUtilController.getUserExpos(user.getUser(), status,pageable));
+        model.addAttribute(Common.MY_EXPOS, getUserExpos(user.getUser(), status, pageable));
         return URL.USER_HOME;
+    }
+
+    public Page<ExpoDto> getUserExpos(User user, String status, Pageable pageable) {
+        log.debug("The status was entered {}", status);
+        Integer statusId = controllerHelper.defineStatusId(status);
+        return userService.getUserExpos(userService
+                .getAllExposByStatusIdAndUser(statusId, user, pageable));
     }
 
 }

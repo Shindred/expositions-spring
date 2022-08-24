@@ -8,7 +8,6 @@ import com.myproject.expo.expositions.exception.custom.UserException;
 import com.myproject.expo.expositions.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -27,7 +26,7 @@ public class UserControllerUtil {
     private final UserService userService;
     private final ControllerHelper controllerHelper;
 
-    public UserControllerUtil(UserService userService,ControllerHelper controllerHelper) {
+    public UserControllerUtil(UserService userService, ControllerHelper controllerHelper) {
         this.userService = userService;
         this.controllerHelper = controllerHelper;
     }

@@ -6,7 +6,6 @@ import com.myproject.expo.expositions.exception.custom.ExpoException;
 import com.myproject.expo.expositions.service.ExpoService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
