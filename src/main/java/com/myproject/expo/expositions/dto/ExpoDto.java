@@ -15,10 +15,8 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 @Builder
-public class ExpoDto implements DTO {
+public class ExpoDto {
     private static final String TIME_CHECK = "^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$";
     private static final String DATE_CHECK = "^([0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]))$";
     private static final String PRICE_REGEX = "\\d+\\.\\d{2}";
@@ -47,22 +45,4 @@ public class ExpoDto implements DTO {
     private Long sold;
     private Long tickets;
 
-    @Override
-    public String toString() {
-        return "ExpoDto{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", expoDate=" + expoDate +
-                ", expoDateStr='" + expoDateStr + '\'' +
-                ", expoTime=" + expoTime +
-                ", expoTimeStr='" + expoTimeStr + '\'' +
-                ", price=" + price +
-                ", statistic=" + statistic +
-                ", theme=" + theme +
-                ", statusId=" + statusId +
-                ", halls=" + halls +
-                ", sold=" + sold +
-                ", tickets=" + tickets +
-                '}';
-    }
 }
