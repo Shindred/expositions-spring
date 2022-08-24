@@ -78,8 +78,8 @@ public class BeansConfig {
     }
 
     @Bean
-    public AdminUtilController getAdminUtilController(@Qualifier("userServiceImpl") UserService userService,ControllerHelper controllerHelper) {
-        return new AdminUtilController(userService,controllerHelper);
+    public AdminControllerUtil getAdminUtilController(@Qualifier("userServiceImpl") UserService userService, ControllerHelper controllerHelper) {
+        return new AdminControllerUtil(userService,controllerHelper);
     }
 
     @Bean

@@ -1,6 +1,7 @@
 package com.myproject.expo.expositions.controller;
 
 import com.myproject.expo.expositions.config.userdetails.CustomUserDetails;
+import com.myproject.expo.expositions.controller.util.ControllerHelper;
 import com.myproject.expo.expositions.controller.util.ControllerUtil;
 import com.myproject.expo.expositions.controller.util.UserControllerUtil;
 import com.myproject.expo.expositions.exception.custom.UserException;
@@ -31,13 +32,14 @@ import static com.myproject.expo.expositions.util.Constant.*;
 @Controller
 @RequestMapping("/user")
 @PreAuthorize("hasAuthority('USER')")
-public class UserController implements ControllerUtil {
+public class UserController {
     private static final Logger log = LogManager.getLogger(UserController.class);
     private final UserControllerUtil userUtilController;
+    private final ControllerHelper controllerHelper;
 
-    @Autowired
-    public UserController(UserControllerUtil userUtilController) {
+    public UserController(UserControllerUtil userUtilController,ControllerHelper controllerHelper) {
         this.userUtilController = userUtilController;
+        this.controllerHelper = controllerHelper;
     }
 
     @GetMapping("/home")
@@ -70,11 +72,11 @@ public class UserController implements ControllerUtil {
     @PostMapping("/expos/buy/{id}")
     public String buyExpo(@AuthenticationPrincipal CustomUserDetails user,
                           @PathVariable(ID) Long id, Model model) {
-        log.info("user {} buy expo {}",user,id);
+        log.debug("User  with email {} buying exposition {}",user,id);
         try {
             userUtilController.buyExpo(user.getUser(), id);
         } catch (UserException e) {
-            log.warn("Cannot buy expo");
+            log.warn("Cannot buy expo. User balance issue.");
             model.addAttribute(ERR_MSG, e.getMessage());
             return URL.USER_HOME;
         }
@@ -87,8 +89,8 @@ public class UserController implements ControllerUtil {
                                @PageableDefault(size = 25) Pageable pageable,
                                Model model) {
         Locale locale = LocaleContextHolder.getLocale();
-        model.addAttribute(Common.DATE_FORMAT, setDateFormat(locale));
-        model.addAttribute(Common.TIME_FORMAT, setTimeFormat(locale));
+        model.addAttribute(Common.DATE_FORMAT, controllerHelper.setDateFormat(locale));
+        model.addAttribute(Common.TIME_FORMAT, controllerHelper.setTimeFormat(locale));
         model.addAttribute(Common.MY_EXPOS, userUtilController.getUserExpos(user.getUser(), status,pageable));
         return URL.USER_HOME;
     }

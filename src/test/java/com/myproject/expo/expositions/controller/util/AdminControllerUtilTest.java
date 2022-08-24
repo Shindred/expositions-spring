@@ -21,7 +21,7 @@ public class AdminControllerUtilTest extends TestRunner {
     @Mock
     private UserService userService;
     @Autowired
-    private AdminUtilController adminUtilController;
+    private AdminControllerUtil adminUtilController;
 
     @Test
     public void getAllUsers() {

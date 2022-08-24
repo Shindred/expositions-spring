@@ -26,7 +26,6 @@ public class ThemeServiceImpl implements ThemeService {
     private final ThemeRepo themeRepo;
     private final Build<ThemeDto,Theme> build;
 
-    @Autowired
     public ThemeServiceImpl(ThemeRepo themeRepo, @Qualifier("themeBuild") Build<ThemeDto,Theme> build) {
         this.themeRepo = themeRepo;
         this.build = build;
@@ -56,7 +55,7 @@ public class ThemeServiceImpl implements ThemeService {
          try{
             theme = themeRepo.save(build.toModel(themeDto));
          }catch (Exception e){
-             log.warn("Some problem cannot add the new theme.Already exists");
+             log.warn("The theme with such name already exists in the system");
              throw new ThemeException("err.add_new_theme");
          }
         return theme;
@@ -80,7 +79,7 @@ public class ThemeServiceImpl implements ThemeService {
         try{
             themeRepo.deleteById(id);
         }catch (Exception e){
-            log.warn("Cannot delete the theme with id {}",id);
+            log.warn("The theme with id {} is in usage.Cannot delete it",id);
             throw new ThemeException("err.delete_theme");
         }
         return 1;

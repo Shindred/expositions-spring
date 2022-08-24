@@ -1,5 +1,6 @@
 package com.myproject.expo.expositions.controller;
 
+import com.myproject.expo.expositions.controller.util.ControllerHelper;
 import com.myproject.expo.expositions.controller.util.ControllerUtil;
 import com.myproject.expo.expositions.controller.util.MainUtilController;
 import com.myproject.expo.expositions.dto.UserDto;
@@ -19,13 +20,14 @@ import javax.validation.Valid;
  * The MainController class receive main operations for user. Register,i18n,change email
  */
 @Controller
-public class MainController implements ControllerUtil {
+public class MainController  {
     private static final Logger log = LogManager.getLogger(MainController.class);
     private final MainUtilController mainUtilController;
+    private final ControllerHelper controllerHelper;
 
-    @Autowired
-    public MainController(MainUtilController mainUtilController) {
+    public MainController(MainUtilController mainUtilController,ControllerHelper controllerHelper) {
         this.mainUtilController = mainUtilController;
+        this.controllerHelper = controllerHelper;
     }
 
     @RequestMapping(value = "/")
@@ -36,7 +38,7 @@ public class MainController implements ControllerUtil {
     @GetMapping("/international")
     public String locale(@RequestParam(value = "localeData", required = false) String localeData,
                          HttpServletRequest req) {
-        log.info("locale " + localeData + " url " + req.getServletPath());
+        log.debug("locale =  {}  and url = {}",localeData,req.getServletPath());
         return "index";
     }
 
@@ -89,6 +91,6 @@ public class MainController implements ControllerUtil {
 
     @GetMapping("*/home")
     public String getBackPage(HttpServletRequest req) {
-        return getPathBackForUser(req);
+        return controllerHelper.getPathBackForUser(req);
     }
 }

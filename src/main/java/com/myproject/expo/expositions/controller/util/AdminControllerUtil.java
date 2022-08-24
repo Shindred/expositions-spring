@@ -4,7 +4,6 @@ import com.myproject.expo.expositions.dto.UserDto;
 import com.myproject.expo.expositions.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
@@ -14,12 +13,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import static com.myproject.expo.expositions.util.Constant.*;
 
 @Component
-public class AdminUtilController implements ControllerUtil {
-    private static final Logger log = LogManager.getLogger(AdminUtilController.class);
+public class AdminControllerUtil implements ControllerUtil {
+    private static final Logger log = LogManager.getLogger(AdminControllerUtil.class);
     private final UserService userService;
     private final ControllerHelper controllerHelper;
 
-    public AdminUtilController(UserService userService, ControllerHelper controllerHelper) {
+    public AdminControllerUtil(UserService userService, ControllerHelper controllerHelper) {
         this.userService = userService;
         this.controllerHelper = controllerHelper;
     }

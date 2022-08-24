@@ -1,6 +1,6 @@
 package com.myproject.expo.expositions.controller;
 
-import com.myproject.expo.expositions.controller.util.ControllerUtil;
+import com.myproject.expo.expositions.controller.util.ControllerHelper;
 import com.myproject.expo.expositions.controller.util.ThemeControllerUtil;
 import com.myproject.expo.expositions.dto.ThemeDto;
 import com.myproject.expo.expositions.exception.custom.ThemeException;
@@ -26,19 +26,20 @@ import static com.myproject.expo.expositions.util.Constant.*;
 @RequestMapping("/admin")
 @PreAuthorize("hasAuthority('ADMIN')")
 @Slf4j
-public class ThemeController implements ControllerUtil {
+public class ThemeController {
     private final ThemeControllerUtil themeUtilController;
+    private final ControllerHelper controllerHelper;
 
-    @Autowired
-    public ThemeController(ThemeControllerUtil themeUtilController) {
+    public ThemeController(ThemeControllerUtil themeUtilController,ControllerHelper controllerHelper) {
         this.themeUtilController = themeUtilController;
+        this.controllerHelper = controllerHelper;
     }
 
     @GetMapping("/themes")
     public String getThemes(Model model, @PageableDefault(sort = {ID_THEME},page = 1,direction = Sort.Direction.DESC) Pageable pageable) {
         model.addAttribute(THEME_OBJ, new ThemeDto());
         model.addAttribute(NUMBER_OF_PAGES, themeUtilController.countNoRequiredPages(pageable));
-        log.info("PAGE {} number pages {} ",pageable,themeUtilController.countNoRequiredPages(pageable));
+        log.info("The PAGE number is {} and the amount of pages {} ",pageable,themeUtilController.countNoRequiredPages(pageable));
         model.addAttribute(PAGE, pageable);
 
         try {
@@ -56,14 +57,14 @@ public class ThemeController implements ControllerUtil {
                             Model model, @PageableDefault(sort = {ID_THEME}, page = 0,
                                     direction = Sort.Direction.DESC) Pageable pageable) {
         setDataToTheModelAfterCrud(themeDto, model, pageable);
-        if (inputHasErrors(bindingResult)) {
-            log.warn("theme name was input incorrect");
+        if (controllerHelper.inputHasErrors(bindingResult)) {
+            log.warn("Theme name was input incorrect");
             return URL.ADMIN_HOME_SLASH;
         }
         try{
             themeUtilController.saveTheTheme(themeDto);
         }catch (ThemeException e){
-            log.warn("cannot save the theme with name {}",themeDto.getName());
+            log.warn("Cannot save the theme with name {}. te theme with such name already exists.",themeDto.getName());
             model.addAttribute(ERR_MSG,e.getMessage());
             return URL.ADMIN_HOME_SLASH;
         }
@@ -88,14 +89,14 @@ public class ThemeController implements ControllerUtil {
                               @PageableDefault(sort = {ID_THEME},
                                       direction = Sort.Direction.DESC) Pageable pageable) {
 
-        if (inputHasErrors(bindingResult)) {
+        if (controllerHelper.inputHasErrors(bindingResult)) {
             return URL.ADMIN_HOME_SLASH;
         }
         setDataToTheModelAfterCrud(themeDto, model, pageable);
         try{
             themeUtilController.updateTheTheme(id, themeDto);
         }catch (ThemeException e){
-            log.warn("CONTROLLER FAILED UPDATE THEME");
+            log.warn("CONTROLLER FAILED. Cannot update the theme. Please recheck the input data");
             model.addAttribute(ERR_MSG,e.getMessage());
             return URL.ADMIN_HOME_SLASH;
         }
@@ -110,7 +111,7 @@ public class ThemeController implements ControllerUtil {
         try{
             themeUtilController.deleteTheme(id);
         }catch (ThemeException e){
-            log.warn("Cannot delete the theme with id {}",id);
+            log.warn("The theme with id {} is in usage.Cannot delete it",id);
             model.addAttribute(ERR_MSG,e.getMessage());
             return URL.ADMIN_HOME_SLASH;
         }

@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserService {
         try {
             userServiceFacade.buyExposition(expo, user);
         } catch (Exception e) {
-            log.warn("User {} cannot buy expo id {} = {}", user.getEmail(), expo.getIdExpo(), expo.getName());
+            log.warn("User with email {} cannot buy expo id {} = {}", user.getEmail(), expo.getIdExpo(), expo.getName());
             throw new ExpoException("err.buy_expo");
         }
         return true;

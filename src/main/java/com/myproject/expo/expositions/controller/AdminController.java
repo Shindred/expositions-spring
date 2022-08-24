@@ -1,6 +1,6 @@
 package com.myproject.expo.expositions.controller;
 
-import com.myproject.expo.expositions.controller.util.AdminUtilController;
+import com.myproject.expo.expositions.controller.util.AdminControllerUtil;
 import com.myproject.expo.expositions.util.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,10 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @PreAuthorize("hasAuthority('ADMIN')")
 public class AdminController {
-    private final AdminUtilController adminUtilController;
+    private final AdminControllerUtil adminUtilController;
 
-    @Autowired
-    public AdminController(AdminUtilController adminUtilController) {
+    public AdminController(AdminControllerUtil adminUtilController) {
         this.adminUtilController = adminUtilController;
     }
 

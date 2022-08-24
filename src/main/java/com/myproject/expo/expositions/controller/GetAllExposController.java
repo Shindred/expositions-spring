@@ -1,6 +1,6 @@
 package com.myproject.expo.expositions.controller;
 
-import com.myproject.expo.expositions.controller.util.ControllerUtil;
+import com.myproject.expo.expositions.controller.util.ControllerHelper;
 import com.myproject.expo.expositions.dto.ExpoDto;
 import com.myproject.expo.expositions.exception.custom.ExpoException;
 import com.myproject.expo.expositions.service.ExpoService;
@@ -27,13 +27,14 @@ import static com.myproject.expo.expositions.util.Constant.*;
  * Search the element by search value and its option
  */
 @Controller
-public class GetAllExposController implements ControllerUtil {
+public class GetAllExposController {
     private static final Logger log = LogManager.getLogger(GetAllExposController.class);
     private final ExpoService expoService;
+    private final ControllerHelper controllerHelper;
 
-    @Autowired
-    public GetAllExposController(ExpoService expoService) {
+    public GetAllExposController(ExpoService expoService, ControllerHelper controllerHelper) {
         this.expoService = expoService;
+        this.controllerHelper = controllerHelper;
     }
 
     @GetMapping(value = {"/admin/expos", "/user/expos", "/index/**"})
@@ -41,22 +42,22 @@ public class GetAllExposController implements ControllerUtil {
                               @RequestParam(defaultValue = "idExpo") String sortBy,
                               @PageableDefault(page = 1, size = 5, sort = {"idExpo"}) Pageable pageable,
                               Model model, HttpServletRequest req) {
-        Pageable pageableRes = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), defineSortingOrder(sortBy));
+        Pageable pageableRes = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), controllerHelper.defineSortingOrder(sortBy));
         setUpDataToTheModelForGetAllExpos(page, size, sortBy, model, pageableRes);
         Page<ExpoDto> expos = getAllExpos(pageableRes);
         model.addAttribute(EXPOS, expos);
-        setDateTimeFormatterToSession(req);
-        return defineBackPathToUser(req);
+        controllerHelper.setDateTimeFormatterToSession(req);
+        return controllerHelper.defineBackPathToUser(req);
     }
 
     private void setUpDataToTheModelForGetAllExpos(Integer page, Integer size, String sortBy, Model model, Pageable pageableRes) {
         setDataToTheModel(page, size, sortBy, model);
-        model.addAttribute(NUMBER_OF_PAGES, countNoOfRequiredPagesForPage(expoService.getAll().size(), pageableRes.getPageSize()));
+        model.addAttribute(NUMBER_OF_PAGES, controllerHelper.countNoOfRequiredPagesForPage(expoService.getAll().size(), pageableRes.getPageSize()));
         model.addAttribute(PAGE, pageableRes);
     }
 
     private Page<ExpoDto> getAllExpos(Pageable pageable) {
-        return expoService.getAll(getPageableFromPageSize(pageable));
+        return expoService.getAll(controllerHelper.getPageableFromPageSize(pageable));
     }
 
     private void setDataToTheModel(Integer offset, Integer size, String sortBy, Model model) {
@@ -69,15 +70,15 @@ public class GetAllExposController implements ControllerUtil {
     @GetMapping("*/search")
     public String search(@RequestParam("search") String search, @RequestParam("selected") String selected, Model model, HttpServletRequest req) {
         Locale locale = LocaleContextHolder.getLocale();
-        model.addAttribute(DATE_FORMAT, setDateFormat(locale));
-        model.addAttribute(TIME_FORMAT, setTimeFormat(locale));
+        model.addAttribute(DATE_FORMAT, controllerHelper.setDateFormat(locale));
+        model.addAttribute(TIME_FORMAT, controllerHelper.setTimeFormat(locale));
         try {
             model.addAttribute(SEARCHED_EXPOS, expoService.getSearchedExpos(search, selected));
         } catch (ExpoException e) {
-            log.info("Searching element {} by selected option {} was failed", search, selected);
+            log.info("Searching element {} by selected option {} was failed. Nothing was found.", search, selected);
             model.addAttribute(ERR_MSG, e.getMessage());
-            return defineBackPathToUser(req);
+            return controllerHelper.defineBackPathToUser(req);
         }
-        return defineBackPathToUser(req);
+        return controllerHelper.defineBackPathToUser(req);
     }
 }

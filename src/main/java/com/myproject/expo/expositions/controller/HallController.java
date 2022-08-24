@@ -1,5 +1,6 @@
 package com.myproject.expo.expositions.controller;
 
+import com.myproject.expo.expositions.controller.util.ControllerHelper;
 import com.myproject.expo.expositions.controller.util.ControllerUtil;
 import com.myproject.expo.expositions.controller.util.HallControllerUtil;
 import com.myproject.expo.expositions.dto.HallDto;
@@ -26,13 +27,14 @@ import static com.myproject.expo.expositions.util.Constant.*;
 @Controller
 @RequestMapping("/admin")
 @PreAuthorize("hasAuthority('ADMIN')")
-public class HallController implements ControllerUtil {
-    private static final Logger log = LogManager.getLogger(MainController.class);
+public class HallController {
+    private static final Logger log = LogManager.getLogger(HallController.class);
     private final HallControllerUtil hallUtilController;
+    private final ControllerHelper controllerHelper;
 
-    @Autowired
-    public HallController(HallControllerUtil hallUtilController) {
+    public HallController(HallControllerUtil hallUtilController,ControllerHelper controllerHelper) {
         this.hallUtilController = hallUtilController;
+        this.controllerHelper = controllerHelper;
     }
 
     @GetMapping("/halls")
@@ -62,12 +64,12 @@ public class HallController implements ControllerUtil {
                            @PageableDefault(sort = {ID_HALL}, page = 0,
                                    direction = Sort.Direction.DESC) Pageable pageable) {
         setUpDataToModel(hallDto, model, pageable);
-        if (inputHasErrors(bindingResult)) {
-            log.warn("Cannot save the hall with name = {}",hallDto.getName());
+        if (controllerHelper.inputHasErrors(bindingResult)) {
+            log.warn("Cannot save the hall with name = {}. The hall with such name is already exists in the system.",hallDto.getName());
             return URL.ADMIN_HOME_SLASH;
         }
         try{
-            hallUtilController.saveHall(hallDto, model, getResPageable(pageable, ID_HALL));
+            hallUtilController.saveHall(hallDto, model, controllerHelper.getResPageable(pageable, ID_HALL));
         }catch (HallException e){
             model.addAttribute(ERR_MSG,e.getMessage());
             return URL.ADMIN_HALLS;
@@ -88,13 +90,13 @@ public class HallController implements ControllerUtil {
                              @PageableDefault(sort = {ID_HALL}, page = 0,
                                      direction = Sort.Direction.DESC) Pageable pageable) {
         return hallUtilController.updateTheHall(id, hallDto, bindingResult,
-                model, getResPageable(pageable, ID_HALL));
+                model, controllerHelper.getResPageable(pageable, ID_HALL));
     }
 
     @DeleteMapping("/halls/{id}")
     public String delete(@PathVariable(ID) Long id, Model model,
                          @PageableDefault(sort = {ID_HALL}, page = 0,
                                  direction = Sort.Direction.DESC) Pageable pageable) {
-        return hallUtilController.deleteTheHall(id, model, getResPageable(pageable, ID_HALL));
+        return hallUtilController.deleteTheHall(id, model, controllerHelper.getResPageable(pageable, ID_HALL));
     }
 }
