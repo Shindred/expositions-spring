@@ -78,15 +78,16 @@ public class BeansConfig {
     }
 
     @Bean
-    public AdminUtilController getAdminUtilController(@Qualifier("userServiceImpl") UserService userService) {
-        return new AdminUtilController(userService);
+    public AdminUtilController getAdminUtilController(@Qualifier("userServiceImpl") UserService userService,ControllerHelper controllerHelper) {
+        return new AdminUtilController(userService,controllerHelper);
     }
 
     @Bean
     public ExpoUtilController getExpoUtilController(ExpoService expoService, HallService hallService,
                                                     ThemeService themeService,Validate validate,
-                                                    @Qualifier("expoBuild") Build<ExpoDto,Exposition> build) {
-        return new ExpoUtilController(expoService, hallService, themeService,validate,build);
+                                                    @Qualifier("expoBuild") Build<ExpoDto,Exposition> build,
+                                                    ControllerHelper controllerHelper) {
+        return new ExpoUtilController(expoService, hallService, themeService,validate,build,controllerHelper);
     }
 
     @Bean

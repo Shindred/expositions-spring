@@ -12,7 +12,7 @@ import java.time.LocalTime;
 import java.time.Month;
 import java.util.Collections;
 
-public  class TestEntity {
+public  class EntityStorage {
     public static class UserTest{
         public static BigDecimal NEW_BALANCE = new BigDecimal(1100);
         public static User user = User.builder()
@@ -25,7 +25,7 @@ public  class TestEntity {
                 .expos(Collections.singletonList(new Exposition(
                         10L,"sky-champions",LocalDate.of(2022, Month.AUGUST, 12),
                         LocalTime.of(13, 30),new BigDecimal(300),1,
-                        Collections.singleton(HallTest.hall1),TestEntity.ThemeTest.theme1,
+                        Collections.singleton(HallTest.hall1), EntityStorage.ThemeTest.theme1,
                         null,new Statistic(1L, 20L, 450L)
                 )))
                 .build();
@@ -71,7 +71,7 @@ public  class TestEntity {
                 .statistic(new Statistic(1L, 20L, 450L))
                 .expoDateStr("2022-08-09")
                 .expoTimeStr("13:00")
-                .halls(Collections.singleton(TestEntity.HallTest.hall1))
+                .halls(Collections.singleton(EntityStorage.HallTest.hall1))
                 .theme(new Theme(1L, "weather"))
                 .build();
 
@@ -83,8 +83,8 @@ public  class TestEntity {
                 .price(new BigDecimal(400))
                 .statusId(1)
                 .statistic(new Statistic(2L, 300L, 700L))
-                .halls(Collections.singleton(TestEntity.HallTest.hall2))
-                .theme(TestEntity.ThemeTest.theme2)
+                .halls(Collections.singleton(EntityStorage.HallTest.hall2))
+                .theme(EntityStorage.ThemeTest.theme2)
                 .build();
 
     }

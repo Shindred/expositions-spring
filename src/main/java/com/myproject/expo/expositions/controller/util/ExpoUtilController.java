@@ -33,23 +33,24 @@ import static com.myproject.expo.expositions.util.Constant.*;
  * The ExpoUtilController class validate the input data and redirects the request to the service or back to the user
  */
 @Component
-public class ExpoUtilController implements ControllerUtils {
+public class ExpoUtilController implements ControllerUtil {
     private static final Logger log = LogManager.getLogger(ExpoUtilController.class);
     private final ExpoService expoService;
     private final HallService hallService;
     private final ThemeService themeService;
     private final Validate validate;
     private final Build<ExpoDto, Exposition> build;
-
+    private final ControllerHelper controllerHelper;
     @Autowired
     public ExpoUtilController(ExpoService expoService, HallService hallService,
                               ThemeService themeService, Validate validate,
-                              @Qualifier("expoBuild") Build<ExpoDto, Exposition> build) {
+                              @Qualifier("expoBuild") Build<ExpoDto, Exposition> build,ControllerHelper controllerHelper) {
         this.expoService = expoService;
         this.hallService = hallService;
         this.themeService = themeService;
         this.validate = validate;
         this.build = build;
+        this.controllerHelper = controllerHelper;
     }
 
     public String getPageToAddExpo(Model model) {

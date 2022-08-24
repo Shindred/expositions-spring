@@ -1,6 +1,6 @@
 package com.myproject.expo.expositions.controller;
 
-import com.myproject.expo.expositions.controller.util.ControllerUtils;
+import com.myproject.expo.expositions.controller.util.ControllerUtil;
 import com.myproject.expo.expositions.controller.util.ExpoUtilController;
 import com.myproject.expo.expositions.dto.ExpoDto;
 import com.myproject.expo.expositions.entity.Hall;
@@ -17,7 +17,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -27,7 +26,7 @@ import static com.myproject.expo.expositions.util.Constant.*;
  * The ExpoController class do CRUD operations with exposition
  */
 @Controller
-public class ExpoController implements ControllerUtils {
+public class ExpoController implements ControllerUtil {
     private static final Logger log = LogManager.getLogger(ExpoController.class);
     private final ExpoUtilController expoUtilController;
     private final ExpoService expoService;

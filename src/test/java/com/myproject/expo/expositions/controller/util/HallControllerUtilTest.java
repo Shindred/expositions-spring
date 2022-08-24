@@ -13,11 +13,11 @@ import org.springframework.validation.BindingResult;
 import java.util.Collections;
 import java.util.List;
 
-import static com.myproject.expo.expositions.generator.TestEntity.HallTest;
+import static com.myproject.expo.expositions.generator.EntityStorage.HallTest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-public class HallUtilControllerTest extends TestRunner {
+public class HallControllerUtilTest extends TestRunner {
     private static final int PAGE = 0;
     private static final int SIZE = 1;
     @Mock
@@ -33,6 +33,7 @@ public class HallUtilControllerTest extends TestRunner {
     public void getHalls() {
         when(hallService.getHalls(PageRequest.of(PAGE, SIZE)))
                 .thenReturn(new PageImpl<>(Collections.singletonList(HallTest.hall1)));
+
         assertThat(hallUtilController.getHalls(PageRequest.of(PAGE, SIZE))).isNotNull();
         assertThat(hallUtilController.getHalls(PageRequest.of(PAGE, SIZE))).hasSizeGreaterThan(0);
     }
@@ -40,6 +41,7 @@ public class HallUtilControllerTest extends TestRunner {
     @Test
     public void getAllHalls() {
         when(hallService.getAll()).thenReturn(Collections.singletonList(HallTest.hall2));
+
         assertThat(hallUtilController.getAllHalls()).hasSizeGreaterThan(1);
     }
 
@@ -53,6 +55,7 @@ public class HallUtilControllerTest extends TestRunner {
     @Test
     public void saveHall() {
         when(hallService.save(HallTest.hallDto)).thenReturn(HallTest.hall1);
+
         assertThat(hallUtilController.saveHall(HallTest.hallDto,
                 model, PageRequest.of(PAGE, SIZE))).isNotNull();
     }
@@ -60,6 +63,7 @@ public class HallUtilControllerTest extends TestRunner {
     @Test
     public void updateTheHall() {
         when(hallService.update(HallTest.hallDto)).thenReturn(1);
+
         assertThat(hallUtilController.updateTheHall(17L, HallTest.hallDto,
                 bindingResult, model, PageRequest.of(PAGE, SIZE))).isNotEmpty();
     }
@@ -67,6 +71,7 @@ public class HallUtilControllerTest extends TestRunner {
     @Test
     public void deleteTheHall() {
         when(hallService.delete(17L)).thenReturn(1);
+
         assertThat(hallUtilController.deleteTheHall(17L, model, PageRequest.of(PAGE, SIZE))).isNotEmpty();
     }
 }

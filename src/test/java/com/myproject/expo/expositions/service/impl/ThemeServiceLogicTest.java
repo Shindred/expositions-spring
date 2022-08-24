@@ -7,7 +7,6 @@ import com.myproject.expo.expositions.entity.Theme;
 import com.myproject.expo.expositions.repository.ThemeRepo;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -20,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.myproject.expo.expositions.generator.TestEntity.ThemeTest;
-import static org.junit.Assert.assertEquals;
+import static com.myproject.expo.expositions.generator.EntityStorage.ThemeTest;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -45,39 +44,45 @@ public class ThemeServiceLogicTest extends TestRunner {
     @Test
     public void testGetAllThemesWithPageable() {
         when(themeRepo.findAll(PAGEABLE)).thenReturn(new PageImpl<>(themeList));
-        Assertions.assertEquals(2, themeService.getAll(PAGEABLE).getSize());
+
+        assertThat(themeService.getAll(PAGEABLE).getSize()).isEqualTo(2);
     }
 
     @Test
     public void testGetAllThemesWithoutPageable() {
         when(themeRepo.findAll()).thenReturn(themeList);
-        Assertions.assertEquals(2, themeService.getAll().size());
+
+        assertThat(themeService.getAll()).hasSize(2);
     }
 
     @Test
     public void testSaveTheme() {
         when(build.toModel(ThemeTest.themeDto)).thenReturn(ThemeTest.theme1);
         when(themeRepo.save(ThemeTest.theme1)).thenReturn(ThemeTest.theme1);
-        Assertions.assertNotNull(themeService.save(ThemeTest.themeDto));
+
+        assertThat(themeService.save(ThemeTest.themeDto)).isNotNull();
     }
 
     @Test
     public void testUpdateTheme() {
         when(build.toModel(ThemeTest.themeDto)).thenReturn(ThemeTest.theme2);
         when(themeRepo.save(ThemeTest.theme2)).thenReturn(ThemeTest.theme2);
-        Assertions.assertEquals(1, themeService.update(ThemeTest.themeDto));
+
+        assertThat(themeService.update(ThemeTest.themeDto)).isEqualTo(1);
     }
 
     @Test
     public void testDeleteTheme() {
         doNothing().when(themeRepo).deleteById(1L);
-        Assertions.assertEquals(1, themeService.delete(1L));
+
+        assertThat(themeService.delete(1L)).isEqualTo(1);
     }
 
     @Test
     public void testGetThemeById() {
         when(themeRepo.findById(2L)).thenReturn(Optional.ofNullable(ThemeTest.theme2));
-        assertEquals(2L, themeService.getById(2L).getIdTheme(), 0.00001);
+
+        assertThat(themeService.getById(2L).getIdTheme()).isEqualTo(2L);
 
     }
 }

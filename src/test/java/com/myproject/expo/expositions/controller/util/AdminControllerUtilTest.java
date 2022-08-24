@@ -12,12 +12,11 @@ import org.springframework.data.domain.PageRequest;
 
 import java.util.Collections;
 
-import static com.myproject.expo.expositions.generator.TestEntity.UserTest;
+import static com.myproject.expo.expositions.generator.EntityStorage.UserTest;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
-public class AdminUtilControllerTest extends TestRunner {
+public class AdminControllerUtilTest extends TestRunner {
     private static final String BLOCKED = "blocked";
     @Mock
     private UserService userService;
@@ -28,7 +27,9 @@ public class AdminUtilControllerTest extends TestRunner {
     public void getAllUsers() {
         when(userService.getAll(PageRequest.of(1, 1)))
                 .thenReturn(new PageImpl<>(Collections.singletonList(UserTest.userDto)));
+
         Page<UserDto> allUsers = adminUtilController.getAllUsers(1, 1);
+
         assertThat(allUsers).isNotNull();
         assertThat(allUsers.getSize()).isEqualTo(1);
     }
@@ -36,6 +37,7 @@ public class AdminUtilControllerTest extends TestRunner {
     @Test
     public void changeStatus() {
         when(userService.blockUnblock(12L, BLOCKED)).thenReturn(true);
-        assertEquals("redirect:/admin/home", adminUtilController.changeStatus(12L, BLOCKED));
+
+        assertThat(adminUtilController.changeStatus(12L, BLOCKED)).isEqualTo("redirect:/admin/home");
     }
 }

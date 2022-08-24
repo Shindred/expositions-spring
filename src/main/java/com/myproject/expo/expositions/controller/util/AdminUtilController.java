@@ -14,13 +14,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import static com.myproject.expo.expositions.util.Constant.*;
 
 @Component
-public class AdminUtilController implements ControllerUtils {
+public class AdminUtilController implements ControllerUtil {
     private static final Logger log = LogManager.getLogger(AdminUtilController.class);
     private final UserService userService;
+    private final ControllerHelper controllerHelper;
 
-    @Autowired
-    public AdminUtilController(UserService userService) {
+    public AdminUtilController(UserService userService, ControllerHelper controllerHelper) {
         this.userService = userService;
+        this.controllerHelper = controllerHelper;
     }
 
     public Page<UserDto> getAllUsers(Integer offset, Integer size) {
@@ -29,7 +30,7 @@ public class AdminUtilController implements ControllerUtils {
 
     public String changeStatus(@PathVariable(ID) Long id,
                                @RequestParam(STATUS) String status) {
-        log.info("Id to change status " + id + " todo status " + status);
+        log.info("User with id {} changing status to {}",id, status);
         userService.blockUnblock(id, status);
         return URL.REDIRECT_ADMIN_HOME;
     }

@@ -1,13 +1,11 @@
 package com.myproject.expo.expositions.controller;
 
-import com.myproject.expo.expositions.controller.util.ControllerUtils;
+import com.myproject.expo.expositions.controller.util.ControllerUtil;
 import com.myproject.expo.expositions.controller.util.ThemeUtilController;
 import com.myproject.expo.expositions.dto.ThemeDto;
 import com.myproject.expo.expositions.exception.custom.ThemeException;
-import com.myproject.expo.expositions.util.Constant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -28,7 +26,7 @@ import static com.myproject.expo.expositions.util.Constant.*;
 @RequestMapping("/admin")
 @PreAuthorize("hasAuthority('ADMIN')")
 @Slf4j
-public class ThemeController implements ControllerUtils {
+public class ThemeController implements ControllerUtil {
     private final ThemeUtilController themeUtilController;
 
     @Autowired

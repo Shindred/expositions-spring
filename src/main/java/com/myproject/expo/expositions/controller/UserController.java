@@ -1,13 +1,11 @@
 package com.myproject.expo.expositions.controller;
 
 import com.myproject.expo.expositions.config.userdetails.CustomUserDetails;
-import com.myproject.expo.expositions.controller.util.ControllerUtils;
+import com.myproject.expo.expositions.controller.util.ControllerUtil;
 import com.myproject.expo.expositions.controller.util.UserUtilController;
-import com.myproject.expo.expositions.entity.User;
 import com.myproject.expo.expositions.exception.custom.UserException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.assertj.core.internal.bytebuddy.implementation.bind.annotation.Default;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Pageable;
@@ -33,7 +31,7 @@ import static com.myproject.expo.expositions.util.Constant.*;
 @Controller
 @RequestMapping("/user")
 @PreAuthorize("hasAuthority('USER')")
-public class UserController implements ControllerUtils {
+public class UserController implements ControllerUtil {
     private static final Logger log = LogManager.getLogger(UserController.class);
     private final UserUtilController userUtilController;
 

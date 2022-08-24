@@ -20,7 +20,7 @@ import static com.myproject.expo.expositions.util.Constant.*;
  * The HallUtilController class do transfer operations for Hall Dto entity. Validate data for the service layer
  */
 @Component
-public class HallUtilController implements ControllerUtils {
+public class HallUtilController implements ControllerUtil {
     private static final Logger log = LogManager.getLogger(HallUtilController.class);
     private final HallService hallService;
 

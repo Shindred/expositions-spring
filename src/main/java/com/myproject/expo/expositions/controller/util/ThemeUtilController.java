@@ -17,7 +17,7 @@ import java.util.List;
  * The ThemeUtilController class do transfer operations for Theme Dto. Transfer to service layer
  */
 @Component
-public class ThemeUtilController implements ControllerUtils {
+public class ThemeUtilController implements ControllerUtil {
     private static final Logger log = LogManager.getLogger(ThemeUtilController.class);
     private final ThemeService themeService;
     private List<Theme> list;

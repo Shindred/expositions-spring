@@ -10,7 +10,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +21,7 @@ import java.util.regex.Pattern;
  * The UserUtilController class validates the income data and transmits the data to the service layer
  */
 @Component
-public class UserUtilController implements ControllerUtils {
+public class UserUtilController implements ControllerUtil {
     private static final Logger log = LogManager.getLogger(UserUtilController.class);
     private final UserService userService;
 

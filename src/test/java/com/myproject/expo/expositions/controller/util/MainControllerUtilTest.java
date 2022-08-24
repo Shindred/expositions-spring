@@ -10,11 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
-import static com.myproject.expo.expositions.generator.TestEntity.UserTest;
-import static org.junit.Assert.assertEquals;
+import static com.myproject.expo.expositions.generator.EntityStorage.UserTest;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-public class MainUtilControllerTest extends TestRunner {
+public class MainControllerUtilTest extends TestRunner {
     private static final String OLD_EMAIL = "some@gmail.com";
     private static final String NEW_EMAIL = "new@gmail.com";
     @Mock
@@ -35,7 +35,7 @@ public class MainUtilControllerTest extends TestRunner {
 
     @Test
     public void register() {
-        assertEquals("/register", mainUtilController.register(UserTest.userDto, model, bindingResult));
+        assertThat(mainUtilController.register(UserTest.userDto, model, bindingResult)).isEqualTo("/register");
     }
 
     @Test(expected = UserException.class)

@@ -15,7 +15,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
@@ -25,12 +24,11 @@ import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
 
-import static com.myproject.expo.expositions.generator.TestEntity.*;
+import static com.myproject.expo.expositions.generator.EntityStorage.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-
-public class ExpoUtilControllerTest extends TestRunner {
+public class ExpoControllerUtilTest extends TestRunner {
     private final Exposition exposition = new Exposition();
     @Mock
     private ExpoService expoService;
@@ -72,6 +70,7 @@ public class ExpoUtilControllerTest extends TestRunner {
     public void getPageToAddExpo() {
         when(hallService.getAll()).thenReturn(List.of(HallTest.hall1, HallTest.hall2));
         when(themeService.getAll()).thenReturn(List.of(ThemeTest.theme1, ThemeTest.theme2));
+
         assertThat(expoUtilController.getPageToAddExpo(model)).isNotEmpty();
     }
 
@@ -82,12 +81,14 @@ public class ExpoUtilControllerTest extends TestRunner {
         when(buildExpo.toModel(expoDto1)).thenReturn(exposition);
         when(validate.validateThemeHasIdFromInput(expoDto1)).thenReturn(true);
         when(validate.validateHallNotEmpty(expoDto1)).thenReturn(false);
+
         assertThat(expoUtilController.addExpo(expoDto1, bindingResult, model)).isNotEmpty();
     }
 
     @Test
     public void getAllHalls() {
         when(hallService.getAll()).thenReturn(List.of(HallTest.hall1, HallTest.hall2));
+
         assertThat(expoUtilController.getAllHalls()).hasSizeGreaterThan(0);
 
     }
@@ -95,6 +96,7 @@ public class ExpoUtilControllerTest extends TestRunner {
     @Test
     public void getAllThemes() {
         when(themeService.getAll()).thenReturn(List.of(ThemeTest.theme1, ThemeTest.theme2));
+
         assertThat(expoUtilController.getAllThemes()).hasSizeGreaterThan(0);
     }
 

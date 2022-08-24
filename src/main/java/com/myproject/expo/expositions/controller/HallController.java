@@ -1,6 +1,6 @@
 package com.myproject.expo.expositions.controller;
 
-import com.myproject.expo.expositions.controller.util.ControllerUtils;
+import com.myproject.expo.expositions.controller.util.ControllerUtil;
 import com.myproject.expo.expositions.controller.util.HallUtilController;
 import com.myproject.expo.expositions.dto.HallDto;
 import com.myproject.expo.expositions.exception.custom.HallException;
@@ -26,7 +26,7 @@ import static com.myproject.expo.expositions.util.Constant.*;
 @Controller
 @RequestMapping("/admin")
 @PreAuthorize("hasAuthority('ADMIN')")
-public class HallController implements ControllerUtils {
+public class HallController implements ControllerUtil {
     private static final Logger log = LogManager.getLogger(MainController.class);
     private final HallUtilController hallUtilController;
 

@@ -1,6 +1,6 @@
 package com.myproject.expo.expositions.controller;
 
-import com.myproject.expo.expositions.controller.util.ControllerUtils;
+import com.myproject.expo.expositions.controller.util.ControllerUtil;
 import com.myproject.expo.expositions.dto.ExpoDto;
 import com.myproject.expo.expositions.exception.custom.ExpoException;
 import com.myproject.expo.expositions.service.ExpoService;
@@ -27,7 +27,7 @@ import static com.myproject.expo.expositions.util.Constant.*;
  * Search the element by search value and its option
  */
 @Controller
-public class GetAllExposController implements ControllerUtils {
+public class GetAllExposController implements ControllerUtil {
     private static final Logger log = LogManager.getLogger(GetAllExposController.class);
     private final ExpoService expoService;
 

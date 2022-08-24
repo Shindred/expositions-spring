@@ -20,7 +20,7 @@ import static com.myproject.expo.expositions.util.Constant.*;
  * The MainUtilController class do transfer operations with data, transfer data to the service layer if data ok
  */
 @Component
-public class MainUtilController implements ControllerUtils {
+public class MainUtilController implements ControllerUtil {
     private static final Logger log = LogManager.getLogger(MainUtilController.class);
     private final UserService userService;
 
