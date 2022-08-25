@@ -20,28 +20,29 @@ import static com.myproject.expo.expositions.util.Constant.*;
  * The MainUtilController class do transfer operations with data, transfer data to the service layer if data ok
  */
 @Component
-public class MainUtilController implements ControllerUtils {
+public class MainUtilController {
     private static final Logger log = LogManager.getLogger(MainUtilController.class);
     private final UserService userService;
+    private final ControllerHelper controllerHelper;
 
-    @Autowired
-    public MainUtilController(UserService userService) {
+    public MainUtilController(UserService userService,ControllerHelper controllerHelper) {
         this.userService = userService;
+        this.controllerHelper = controllerHelper;
     }
 
     public String register(@ModelAttribute(USER) @Valid UserDto user,
                            Model model, BindingResult bindingResult) {
-        String pathToClientIfErr = checkClientInput(bindingResult, URL.REGISTER);
-        if (isInputHasErrors(pathToClientIfErr)) return pathToClientIfErr;
+        String pathToClientIfErr = controllerHelper.checkClientInput(bindingResult, URL.REGISTER);
+        if (controllerHelper.isInputHasErrors(pathToClientIfErr)) return pathToClientIfErr;
         String pathBack = registerUser(user, model);
-        return isInputHasErrors(pathBack) ? pathBack : URL.REDIRECT_LOGIN;
+        return controllerHelper.isInputHasErrors(pathBack) ? pathBack : URL.REDIRECT_LOGIN;
     }
 
     private String registerUser(UserDto user, Model model) {
         try {
             user.setBalance(BigDecimal.ZERO);
             userService.save(user);
-            log.info("register post " + user.getEmail() + " " + user.getPassword());
+            log.debug("Registered a new user {}",user.getEmail());
         } catch (UserException e) {
             model.addAttribute(ERR_MSG, e.getMessage());
             return URL.REGISTER;

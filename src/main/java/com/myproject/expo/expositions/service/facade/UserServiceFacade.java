@@ -9,7 +9,6 @@ import com.myproject.expo.expositions.repository.ExpoRepo;
 import com.myproject.expo.expositions.repository.UserRepo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +25,6 @@ public class UserServiceFacade {
     private final PasswordEncoder passwordEncoder;
     private final Build<UserDto, User> build;
 
-    @Autowired
     public UserServiceFacade(UserRepo userRepo, ExpoRepo expoRepo,
                              PasswordEncoder passwordEncoder, @Qualifier("userBuild") Build<UserDto, User> build) {
         this.userRepo = userRepo;

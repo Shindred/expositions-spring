@@ -14,11 +14,13 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import static com.myproject.expo.expositions.util.Constant.*;
 
-public interface ControllerUtils {
+public interface ControllerUtil {
     default boolean inputHasErrors(BindingResult bindingResult) {
         return bindingResult.hasErrors();
     }
@@ -55,11 +57,10 @@ public interface ControllerUtils {
     }
 
     default Pageable getResPageable(Pageable pageable, String sortBy) {
-        Pageable pageableRes = null;
+        Pageable pageableRes;
         if (pageable.getPageNumber() >= 2) {
             pageableRes = PageRequest
                     .of(pageable.getPageNumber() - 1, pageable.getPageSize(), defineSortingOrder(sortBy));
-            System.out.println(pageableRes);
         } else if (pageable.getPageNumber() == 1) {
             pageableRes = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize(), defineSortingOrder(sortBy));
         } else {
@@ -70,15 +71,17 @@ public interface ControllerUtils {
     }
 
     default Sort defineSortingOrder(String sortBy) {
-        switch (sortBy) {
-            case "price":
-            case "theme_name":
-            case "expoDate":
-            case "statistic_tickets":
-                return Sort.by(sortBy).ascending();
-            default:
-                return Sort.by(sortBy).descending();
-        }
+        Map<String, Sort> values = new HashMap<>();
+        initMap(sortBy, values);
+        return values.getOrDefault(sortBy, Sort.by(sortBy).descending());
+    }
+
+    private void initMap(String sortBy, Map<String, Sort> values) {
+        Sort sortOrder = Sort.by(sortBy).ascending();
+        values.put("price", sortOrder);
+        values.put("theme_name", sortOrder);
+        values.put("expoDate", sortOrder);
+        values.put("statistic_tickets", sortOrder);
     }
 
     default Pageable getPageableFromPageSize(Pageable pageable) {
@@ -133,8 +136,8 @@ public interface ControllerUtils {
 
     default void setDateTimeFormatterToSession(HttpServletRequest req) {
         Locale locale = LocaleContextHolder.getLocale();
-        req.getSession().setAttribute(DATE_FORMAT,setDateFormat(locale));
-        req.getSession().setAttribute(TIME_FORMAT,setTimeFormat(locale));
+        req.getSession().setAttribute(DATE_FORMAT, setDateFormat(locale));
+        req.getSession().setAttribute(TIME_FORMAT, setTimeFormat(locale));
     }
 
     default String defineBackPathToUser(HttpServletRequest req) {

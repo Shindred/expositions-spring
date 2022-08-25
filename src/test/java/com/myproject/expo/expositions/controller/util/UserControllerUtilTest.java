@@ -6,12 +6,10 @@ import com.myproject.expo.expositions.entity.Exposition;
 import com.myproject.expo.expositions.entity.Statistic;
 import com.myproject.expo.expositions.exception.custom.UserException;
 import com.myproject.expo.expositions.service.UserService;
-import com.myproject.expo.expositions.service.facade.UserServiceFacade;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
@@ -22,18 +20,18 @@ import java.time.Month;
 import java.util.Collections;
 import java.util.List;
 
-import static com.myproject.expo.expositions.generator.TestEntity.*;
+import static com.myproject.expo.expositions.generator.EntityStorage.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class UserUtilControllerTest extends TestRunner {
+public class UserControllerUtilTest extends TestRunner {
     @Mock
     private Exposition exposition;
     @Mock
     private UserService userService;
     @InjectMocks
-    private UserUtilController userUtilController;
+    private UserControllerUtil userUtilController;
 
     @Before
     public void init() {
@@ -60,8 +58,10 @@ public class UserUtilControllerTest extends TestRunner {
 
     @Test
     public void testTopUpBalance() {
-        when(userService.topUpBalance(UserTest.user, new BigDecimal(100))).thenReturn(UserTest.user);
         CustomUserDetails user = new CustomUserDetails(UserTest.user);
+
+        when(userService.topUpBalance(UserTest.user, new BigDecimal(100))).thenReturn(UserTest.user);
+
         assertThat(userUtilController.topUpBalance(user, new BigDecimal(100))).isNotNull();
     }
 
@@ -70,7 +70,9 @@ public class UserUtilControllerTest extends TestRunner {
         when(userService.getExpoById(17L)).thenReturn(exposition);
         when(exposition.getIdExpo()).thenReturn(17L);
         when(userService.buyExpo(UserTest.user, exposition)).thenReturn(true);
+
         assertThat(userUtilController.buyExpo(UserTest.user, exposition.getIdExpo())).isTrue();
+
         verify(userService).getExpoById(17L);
         verify(userService).buyExpo(UserTest.user, exposition);
     }
@@ -82,6 +84,7 @@ public class UserUtilControllerTest extends TestRunner {
                 .thenReturn(new PageImpl<>(List.of(exposition, exposition)));
         when(userService.getUserExpos(new PageImpl<>(List.of(exposition, exposition))))
                 .thenReturn(new PageImpl<>(List.of(ExpoTest.expoDto1, ExpoTest.expoDto2)));
+
         assertThat(userUtilController.getUserExpos(UserTest.user, "active",PageRequest.of(0,5))).isNull();
 
     }

@@ -9,7 +9,6 @@ import com.myproject.expo.expositions.repository.ExpoRepo;
 import com.myproject.expo.expositions.service.ThemeService;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -26,7 +25,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.myproject.expo.expositions.generator.TestEntity.*;
+import static com.myproject.expo.expositions.generator.EntityStorage.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.when;
 
@@ -70,13 +70,15 @@ public class ExpoServiceLogicTest extends TestRunner {
     @Test
     public void testGetAllExposWithPageable() {
         when(expoRepo.findAll(PAGEABLE)).thenReturn(new PageImpl<>(exposList));
-        Assertions.assertEquals(2, expoService.getAll(PAGEABLE).getSize());
+
+        assertThat(expoService.getAll(PAGEABLE)).hasSize(2);
     }
 
     @Test
     public void testGetAllExposWithoutPageable() {
         when(expoRepo.findAll()).thenReturn(exposList);
-        Assertions.assertEquals(2, expoService.getAll().size());
+
+        assertThat(expoService.getAll()).hasSize(2);
     }
 
     @Test
@@ -84,6 +86,7 @@ public class ExpoServiceLogicTest extends TestRunner {
         when(build.toDto(exposList.get(0))).thenReturn(ExpoTest.expoDto1);
         when(expoRepo.getById(17L)).thenReturn(exposList.get(0));
 
+        assertThat(expoService.getById(17L)).isNotNull();
     }
 
     @Test
@@ -91,20 +94,23 @@ public class ExpoServiceLogicTest extends TestRunner {
         when(build.toModel(ExpoTest.expoDto1)).thenReturn(exposition);
         when(themeService.getById(anyLong())).thenReturn(ThemeTest.theme1);
         when(expoRepo.save(exposition)).thenReturn(exposition);
-        Assertions.assertTrue(expoService.update(17L, exposition));
+
+        assertThat(expoService.update(17L, exposition)).isTrue();
     }
 
     @Test
     public void testsChangeExpoStatus() {
         when(expoRepo.changeStatus(1, 26L)).thenReturn(1);
-        Assertions.assertTrue(expoService.changeStatus(26L, 1));
+
+        assertThat(expoService.changeStatus(26L, 1)).isTrue();
     }
 
     @Test
     public void testAddExposition() {
         when(build.toModel(ExpoTest.expoDto1)).thenReturn(exposition);
         when(expoRepo.save(exposition)).thenReturn(exposition);
-        Assertions.assertNotEquals(0, expoService.addExpo(ExpoTest.expoDto1, new ArrayList<>()).getIdExpo());
+
+        assertThat(expoService.addExpo(ExpoTest.expoDto1, new ArrayList<>()).getIdExpo()).isNotEqualTo(0);
 
     }
 }

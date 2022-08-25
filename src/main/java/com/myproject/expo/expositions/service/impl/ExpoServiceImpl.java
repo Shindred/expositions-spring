@@ -12,7 +12,6 @@ import com.myproject.expo.expositions.service.ExpoService;
 import com.myproject.expo.expositions.service.ThemeService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +22,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -41,7 +41,6 @@ public class ExpoServiceImpl implements ExpoService {
     private final StatisticRepo statisticRepo;
     private final Build<ExpoDto, Exposition> build;
 
-    @Autowired
     public ExpoServiceImpl(ExpoRepo expoRepo, @Qualifier("expoBuild") Build<ExpoDto, Exposition> build,
                            ThemeService themeService, StatisticRepo statisticRepo) {
         this.expoRepo = expoRepo;
@@ -53,7 +52,6 @@ public class ExpoServiceImpl implements ExpoService {
     @Override
     @Transactional(readOnly = true)
     public Page<ExpoDto> getAll(Pageable pageable) {
-        log.info("Into service expo");
         Page<Exposition> all = expoRepo.findAll(pageable);
         return all.map(build::toDto);
     }
@@ -131,7 +129,7 @@ public class ExpoServiceImpl implements ExpoService {
         checkInputNotNull(searchItem);
         List<Exposition> resList = null;
         resList = getResList(searchItem, selected, resList);
-        if (resList.size() == 0) {
+        if (Objects.isNull(resList) || resList.isEmpty()) {
             throw new ExpoException("err.nothing_found");
         }
         return resList.stream()
@@ -171,7 +169,7 @@ public class ExpoServiceImpl implements ExpoService {
             localDate = LocalDate.parse(date, Pattern.compile("\\d{1,2}/\\d{1,2}/\\d{2}").matcher(date).matches()
                     ? datePatternEng : datePatternUkr);
         } catch (DateTimeParseException e) {
-            log.warn("The date {} input was incorrect",date);
+            log.warn("The date {} input was incorrect", date);
             throw new ExpoException("err.date_input");
         }
         return localDate;

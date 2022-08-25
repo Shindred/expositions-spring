@@ -8,10 +8,7 @@ import com.myproject.expo.expositions.service.ExpoService;
 import com.myproject.expo.expositions.validator.Validate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,7 +21,6 @@ public class ExpoServiceFacade {
     private final Build<ExpoDto, Exposition> build;
 
 
-    @Autowired
     public ExpoServiceFacade(ExpoService expoService, Validate validate, @Qualifier("expoBuild") Build<ExpoDto, Exposition> build) {
         this.expoService = expoService;
         this.validate = validate;
@@ -32,7 +28,7 @@ public class ExpoServiceFacade {
     }
 
     public String update(@PathVariable("id") Long id, @ModelAttribute("expo") ExpoDto expoDto) {
-        log.info("income expodto {}", expoDto);
+        log.debug("New exposition income data {}", expoDto);
 
         try {
             Exposition exposition = build.toModel(expoDto);
@@ -43,7 +39,8 @@ public class ExpoServiceFacade {
             }
             expoService.update(id, exposition);
         } catch (Exception e) {
-            log.warn("Cannot update the expo with id {}", expoDto.getId());
+            log.warn("Cannot update the expo with id {}. Probably such data for the exposition is stored in the system or the exposition already exists",
+                    expoDto.getId());
         }
         return "redirect:/admin/expos";
     }
@@ -53,7 +50,7 @@ public class ExpoServiceFacade {
             throw new InValidException("err.theme_input_expo_update");
         }
         if (validate.validateHallNotEmpty(expo)) {
-            log.info("Hall empty");
+            log.debug("User don`t pick the hall.");
             throw new InValidException("err.hall_input_expo_update");
         }
         return "";

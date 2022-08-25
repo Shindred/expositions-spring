@@ -15,12 +15,10 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@Getter
-@Setter
 @AllArgsConstructor
 @Builder
 @Validated
-public class UserDto implements DTO {
+public class UserDto {
     private Long id;
     @NotEmpty(message = "The input name is invalid")
     @Size(min = 3, max = 25)

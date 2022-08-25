@@ -11,10 +11,8 @@ import com.myproject.expo.expositions.repository.ExpoRepo;
 import com.myproject.expo.expositions.repository.UserRepo;
 import com.myproject.expo.expositions.service.UserService;
 import com.myproject.expo.expositions.service.facade.UserServiceFacade;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -30,7 +28,8 @@ import java.time.LocalTime;
 import java.time.Month;
 import java.util.Collections;
 
-import static com.myproject.expo.expositions.generator.TestEntity.*;
+import static com.myproject.expo.expositions.generator.EntityStorage.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
@@ -73,42 +72,49 @@ public class UserServiceLogicTest extends TestRunner {
     @Test
     public void testFindUserByEmail() {
         when(userRepo.findByEmail("some@gmail.com")).thenReturn(UserTest.user);
-        Assert.assertEquals(10L, userService.findByEmail("some@gmail.com").getId(), 0.00001);
+
+        assertThat(userService.findByEmail("some@gmail.com").getId()).isEqualTo(10L);
     }
 
     @Test
     public void testSaveUser() {
         User user = UserTest.user;
+
         when(build.toModel(UserTest.userDto)).thenReturn(user);
         when(passwordEncoder.encode(anyString())).thenReturn(anyString());
         when(userRepo.save(user)).thenReturn(user);
         when(userServiceFacade.save(UserTest.userDto)).thenReturn(UserTest.user);
-        Assertions.assertNotNull(userService.save(UserTest.userDto));
+
+        assertThat(userService.save(UserTest.userDto)).isNotNull();
     }
 
     @Test
     public void testFindAllUsers() {
         when(userRepo.findAll(pageable)).thenReturn(new PageImpl<>(Collections.singletonList(UserTest.user)));
         when(build.toDto(any())).thenReturn(UserTest.userDto);
-        Assert.assertEquals(1, userService.getAll(pageable).getSize());
+
+        assertThat(userService.getAll(pageable).getSize()).isEqualTo(1);
     }
 
     @Test
     public void testBlockUnblockUser() {
         when(userRepo.changeStatus(1L, 12L)).thenReturn(1);
-        Assert.assertTrue(userService.blockUnblock(12L, "active"));
+
+        assertThat(userService.blockUnblock(12L, "active")).isTrue();
     }
 
     @Test
     public void testUserTopUpBalance() {
         User user = UserTest.user;
+
         when(userServiceFacade.topUpBalance(user, TOP_UP_BALANCE)).thenReturn(user);
         when(userRepo.changeBalance(17L, TOP_UP_BALANCE)).thenReturn(1);
         when(build.toDto(user)).thenReturn(UserTest.userDto);
         when(userRepo.getBalance(anyLong())).thenReturn(new BigDecimal(600));
         when(build.toModel(UserTest.userDto)).thenReturn(user);
-        Assertions.assertNotNull(userService.topUpBalance(user, TOP_UP_BALANCE));
-        Assertions.assertNotEquals(BigDecimal.ZERO, userService.topUpBalance(user, TOP_UP_BALANCE).getBalance());
+
+        assertThat(userService.topUpBalance(user, TOP_UP_BALANCE)).isNotNull();
+        assertThat(userService.topUpBalance(user, TOP_UP_BALANCE).getBalance()).isNotEqualTo(BigDecimal.ZERO);
     }
 
     @Test
@@ -116,26 +122,29 @@ public class UserServiceLogicTest extends TestRunner {
         when(expoRepo.save(exposition)).thenReturn(exposition);
         when(userRepo.save(UserTest.user)).thenReturn(UserTest.user);
         when(userServiceFacade.buyExposition(exposition, UserTest.user)).thenReturn(true);
-        Assertions.assertTrue(userService.buyExpo(UserTest.user, exposition));
+
+        assertThat(userService.buyExpo(UserTest.user, exposition)).isTrue();
     }
 
     @Test
     public void testGetUserExpos() {
         when((buildExpo.toDto(any()))).thenReturn(ExpoTest.expoDto1);
-        Page<ExpoDto> userExpos = userService.getUserExpos(new PageImpl<>(UserTest.user.getExpos()));
-        Assertions.assertNotNull(userExpos);
-        Assertions.assertEquals(1, userExpos.getSize());
 
+        Page<ExpoDto> userExpos = userService.getUserExpos(new PageImpl<>(UserTest.user.getExpos()));
+
+        assertThat(userExpos).isNotNull();
+        assertThat(userExpos.getSize()).isEqualTo(1);
     }
 
     @Test
     public void testGetAllExposByStatusIdAndUser() {
         when(expoRepo.findExpositionsByUsersAndStatusId(UserTest.user, 1, PageRequest.of(0, 3)))
                 .thenReturn(new PageImpl<>(UserTest.user.getExpos()));
-        Page<Exposition> result = userService.getAllExposByStatusIdAndUser(1, UserTest.user, PageRequest.of(0, 3));
-        Assertions.assertNotNull(result);
-        Assertions.assertEquals(1, result.getSize());
 
+        Page<Exposition> result = userService.getAllExposByStatusIdAndUser(1, UserTest.user, PageRequest.of(0, 3));
+
+        assertThat(result).isNotNull();
+        assertThat(result.getSize()).isEqualTo(1);
     }
 
 }

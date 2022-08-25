@@ -33,23 +33,24 @@ import static com.myproject.expo.expositions.util.Constant.*;
  * The ExpoUtilController class validate the input data and redirects the request to the service or back to the user
  */
 @Component
-public class ExpoUtilController implements ControllerUtils {
-    private static final Logger log = LogManager.getLogger(ExpoUtilController.class);
+public class ExpoControllerUtil  {
+    private static final Logger log = LogManager.getLogger(ExpoControllerUtil.class);
     private final ExpoService expoService;
     private final HallService hallService;
     private final ThemeService themeService;
     private final Validate validate;
     private final Build<ExpoDto, Exposition> build;
+    private final ControllerHelper controllerHelper;
 
-    @Autowired
-    public ExpoUtilController(ExpoService expoService, HallService hallService,
+    public ExpoControllerUtil(ExpoService expoService, HallService hallService,
                               ThemeService themeService, Validate validate,
-                              @Qualifier("expoBuild") Build<ExpoDto, Exposition> build) {
+                              @Qualifier("expoBuild") Build<ExpoDto, Exposition> build, ControllerHelper controllerHelper) {
         this.expoService = expoService;
         this.hallService = hallService;
         this.themeService = themeService;
         this.validate = validate;
         this.build = build;
+        this.controllerHelper = controllerHelper;
     }
 
     public String getPageToAddExpo(Model model) {
@@ -71,7 +72,7 @@ public class ExpoUtilController implements ControllerUtils {
     public String addExpo(@ModelAttribute("expo") @Valid ExpoDto expoDto, BindingResult bindingResult, Model model) {
         model.addAttribute(HALLS, hallService.getAll());
         model.addAttribute(THEMES, themeService.getAll());
-        if (inputHasErrors(bindingResult)) {
+        if (controllerHelper.inputHasErrors(bindingResult)) {
             return URL.ADMIN_ADD_EXPO;
         }
         Exposition exposition = parseDateTimeToLocalDateTimeExpo(expoDto);
@@ -80,14 +81,14 @@ public class ExpoUtilController implements ControllerUtils {
 
         }
         if (dateTimeValidation(exposition)){
-            return setErrMsgAndPathBack(model, "err.date_time_input", URL.ADMIN_ADD_EXPO);
+            return controllerHelper.setErrMsgAndPathBack(model, "err.date_time_input", URL.ADMIN_ADD_EXPO);
         }
         caseCheckHallNotBusyForDate(expoDto);
         try {
             expoService.addExpo(expoDto, new ArrayList<>());
         } catch (Exception e) {
-            log.warn("Cannot add Exposition with name {}", expoDto.getName());
-            setErrMsgAndPathBack(model, e.getMessage(), URL.ADMIN_ADD_EXPO);
+            log.warn("Cannot add Exposition with name {} it`s already exists in the system", expoDto.getName());
+            controllerHelper.setErrMsgAndPathBack(model, e.getMessage(), URL.ADMIN_ADD_EXPO);
             return URL.ADMIN_ADD_EXPO;
         }
         return URL.REDIRECT_ADMIN_EXPOS;
@@ -103,21 +104,20 @@ public class ExpoUtilController implements ControllerUtils {
 
     private void caseCheckHallNotBusyForDate(ExpoDto expoDto) {
         if (isHallBusyAtTheTimeAndDate(expoService.getAll(), expoDto)) {
-            log.info("HALL IS BUSY ALREADY");
+            log.debug("HALL {} IS BUSY ALREADY",expoDto.getName());
             throw new ExpoException("err.already_busy_hall");
         }
     }
 
     public String show(Long id, Model model, HttpServletRequest req) {
         showOneExpoSetDataToTheModel(id, model, hallService.getAll(), themeService.getAll());
-        setDateTimeFormatterToModel(model);
-        return defineBackPathToUser(req);
+        controllerHelper.setDateTimeFormatterToModel(model);
+        return controllerHelper.defineBackPathToUser(req);
     }
 
 
     private void showOneExpoSetDataToTheModel(Long id, Model model, List<Hall> halls, List<Theme> themes) {
         ExpoDto expoDto = expoService.getById(id);
-        log.info("Show exposition " + expoDto);
         model.addAttribute(HALLS_SHOW, halls);
         model.addAttribute(THEMES_SHOW, themes);
         model.addAttribute(EXPO, expoDto);
@@ -134,7 +134,7 @@ public class ExpoUtilController implements ControllerUtils {
 
 
     public String update(Long id, ExpoDto expoDto, Model model) {
-        Pageable pageable = getPageable(0, 5);
+        Pageable pageable = controllerHelper.getPageable(0, 5);
         setPageableAndExposToTheModel(model, pageable, expoDto);
         ExpoDto foundExpoFromDb = expoService.getById(expoDto.getId());
         try {
@@ -143,10 +143,10 @@ public class ExpoUtilController implements ControllerUtils {
             if (caseThemeHallInvalidInput(expoDto, model))
                 return returnBackThemeOrHallNotValid(expoDto, model, URL.ADMIN_UPDATE_URL);
             if (validateDateTime(id, foundExpoFromDb, exposition))
-                return setErrMsgAndPathBack(model, "err.date_time_input", URL.ADMIN_UPDATE_URL);
+                return controllerHelper.setErrMsgAndPathBack(model, "err.date_time_input", URL.ADMIN_UPDATE_URL);
         } catch (Exception e) {
             log.warn("Cannot update the expo with id {}", expoDto.getId());
-            return setErrMsgAndPathBack(model,
+            return controllerHelper.setErrMsgAndPathBack(model,
                     setExpoToTheModel(foundExpoFromDb, model, "err.expo_update"), URL.ADMIN_UPDATE_URL);
         }
         return URL.REDIRECT_ADMIN_EXPOS;
@@ -166,19 +166,19 @@ public class ExpoUtilController implements ControllerUtils {
     }
 
     private Exposition parseDateTimeToLocalDateTimeExpo(ExpoDto expoDto) {
-        expoDto.setExpoDate(parseStrToLocalDate(expoDto.getExpoDateStr()));
-        expoDto.setExpoTime(parseStrToLocalTime(expoDto.getExpoTimeStr()));
+        expoDto.setExpoDate(controllerHelper.parseStrToLocalDate(expoDto.getExpoDateStr()));
+        expoDto.setExpoTime(controllerHelper.parseStrToLocalTime(expoDto.getExpoTimeStr()));
         return build.toModel(expoDto);
     }
 
     private String returnBackThemeOrHallNotValid(ExpoDto expo, Model model, String pathBack) {
         if (!validate.validateThemeHasIdFromInput(expo)) {
-            return setErrMsgAndPathBack(model,
+            return controllerHelper.setErrMsgAndPathBack(model,
                     setExpoToTheModel(expo, model, "err.theme_input_expo_update"), pathBack);
         }
         if (validate.validateHallNotEmpty(expo)) {
-            log.info("Hall empty");
-            return setErrMsgAndPathBack(model,
+            log.debug("Hall is free for this date and time");
+            return controllerHelper.setErrMsgAndPathBack(model,
                     setExpoToTheModel(expo, model, "err.hall_input_expo_update"), pathBack);
         }
         return "";
@@ -186,9 +186,9 @@ public class ExpoUtilController implements ControllerUtils {
 
     private boolean validateDateTime(Exposition expoFromClient, ExpoDto expoFromDB) {
         if ((validate.isDateValid(expoFromClient.getExpoDate()) && validate.isTimeInReqDiapason(expoFromClient.getExpoTime()))
-                || (expoFromClient.getExpoDate().isEqual(expoFromDB.getExpoDate())
-                && expoFromClient.getExpoTime().compareTo(expoFromDB.getExpoTime()) == 0)) {
-            log.warn("CHECK DATE AND TIME");
+                 || Objects.equals(expoFromClient.getExpoDate(),expoFromDB.getExpoDate())
+                && expoFromClient.getExpoTime().compareTo(expoFromDB.getExpoTime()) == 0) {
+            log.warn("CHECK DATE AND TIME. INPUT WAS INCORRECT");
             return true;
         }
         return false;
@@ -196,7 +196,7 @@ public class ExpoUtilController implements ControllerUtils {
 
     private boolean validateDateTime(Exposition expoFromClient) {
         if ((validate.isDateValid(expoFromClient.getExpoDate()) && validate.isTimeInReqDiapason(expoFromClient.getExpoTime()))) {
-            log.warn("CHECK DATE AND TIME");
+            log.warn("CHECK DATE AND TIME. INPUT WAS INCORRECT");
             return true;
         }
         return false;

@@ -8,7 +8,6 @@ import com.myproject.expo.expositions.repository.HallRepo;
 import com.myproject.expo.expositions.service.HallService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +25,6 @@ public class HallServiceImpl implements HallService {
     private final HallRepo hallRepo;
     private final Build<HallDto,Hall> build;
 
-    @Autowired
     public HallServiceImpl(HallRepo hallRepo, @Qualifier("hallBuild") Build<HallDto,Hall> build) {
         this.hallRepo = hallRepo;
         this.build = build;
@@ -54,15 +52,15 @@ public class HallServiceImpl implements HallService {
     @Transactional
     @Override
     public Hall save(HallDto hallDto) {
-        Hall save;
+        Hall savedHall;
         Hall hall = build.toModel(hallDto);
         try{
-            save = hallRepo.save(hall);
+            savedHall = hallRepo.save(hall);
         }catch (Exception e){
-            log.warn("Cannot add the new hall {}. Already exists",hallDto.getName());
+            log.warn("Cannot add the new hall {}. Hall with such name already exists.",hallDto.getName());
             throw new HallException("err.hall_exist");
         }
-        return save;
+        return savedHall;
     }
 
     @Transactional

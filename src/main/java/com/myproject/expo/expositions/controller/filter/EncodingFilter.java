@@ -19,6 +19,7 @@ public class EncodingFilter implements Filter {
         servletResponse.setCharacterEncoding(UTF);
         servletRequest.setCharacterEncoding(UTF);
         logger.info("encoding filter working now");
+
         filterChain.doFilter(servletRequest, servletResponse);
     }
 

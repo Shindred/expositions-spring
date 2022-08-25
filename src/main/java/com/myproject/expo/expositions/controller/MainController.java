@@ -1,10 +1,10 @@
 package com.myproject.expo.expositions.controller;
 
-import com.myproject.expo.expositions.controller.util.ControllerUtils;
+import com.myproject.expo.expositions.controller.util.ControllerHelper;
+import com.myproject.expo.expositions.controller.util.ControllerUtil;
 import com.myproject.expo.expositions.controller.util.MainUtilController;
 import com.myproject.expo.expositions.dto.UserDto;
 import com.myproject.expo.expositions.exception.custom.UserException;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,20 +14,20 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 /**
  * The MainController class receive main operations for user. Register,i18n,change email
  */
 @Controller
-public class MainController implements ControllerUtils {
+public class MainController  {
     private static final Logger log = LogManager.getLogger(MainController.class);
     private final MainUtilController mainUtilController;
+    private final ControllerHelper controllerHelper;
 
-    @Autowired
-    public MainController(MainUtilController mainUtilController) {
+    public MainController(MainUtilController mainUtilController,ControllerHelper controllerHelper) {
         this.mainUtilController = mainUtilController;
+        this.controllerHelper = controllerHelper;
     }
 
     @RequestMapping(value = "/")
@@ -38,7 +38,7 @@ public class MainController implements ControllerUtils {
     @GetMapping("/international")
     public String locale(@RequestParam(value = "localeData", required = false) String localeData,
                          HttpServletRequest req) {
-        log.info("locale " + localeData + " url " + req.getServletPath());
+        log.debug("locale =  {}  and url = {}",localeData,req.getServletPath());
         return "index";
     }
 
@@ -91,6 +91,6 @@ public class MainController implements ControllerUtils {
 
     @GetMapping("*/home")
     public String getBackPage(HttpServletRequest req) {
-        return getPathBackForUser(req);
+        return controllerHelper.getPathBackForUser(req);
     }
 }

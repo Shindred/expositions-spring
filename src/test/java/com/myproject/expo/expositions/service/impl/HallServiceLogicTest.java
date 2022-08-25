@@ -8,7 +8,6 @@ import com.myproject.expo.expositions.repository.HallRepo;
 import com.myproject.expo.expositions.service.HallService;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -20,7 +19,8 @@ import org.springframework.data.domain.Sort;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.myproject.expo.expositions.generator.TestEntity.HallTest;
+import static com.myproject.expo.expositions.generator.EntityStorage.HallTest;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -44,32 +44,37 @@ public class HallServiceLogicTest extends TestRunner {
     @Test
     public void testGetHallsWithPageable() {
         when(hallRepo.findAll(PAGEABLE)).thenReturn(new PageImpl<>(hallList));
-        Assertions.assertEquals(2, hallservice.getHalls(PAGEABLE).getSize());
+
+        assertThat(hallservice.getHalls(PAGEABLE)).hasSize(2);
     }
 
     @Test
     public void testGetAllHallsWithoutPageable() {
         when(hallRepo.findAll()).thenReturn(hallList);
-        Assertions.assertEquals(2, hallservice.getAll().size());
+
+        assertThat(hallservice.getAll()).hasSize(2);
     }
 
     @Test
     public void testSaveHall() {
         when(build.toModel(HallTest.hallDto)).thenReturn(HallTest.hall1);
         when(hallRepo.save(HallTest.hall1)).thenReturn(HallTest.hall1);
-        Assertions.assertEquals("AA1", hallservice.save(HallTest.hallDto).getName());
+
+        assertThat(hallservice.save(HallTest.hallDto).getName()).isEqualTo("AA1");
     }
 
     @Test
     public void testUpdateHall() {
         HallTest.hall1.setName("newName");
         when(hallRepo.save(HallTest.hall1)).thenReturn(HallTest.hall1);
-        Assertions.assertEquals(1, hallservice.update(build.toDto(HallTest.hall1)));
+
+        assertThat(hallservice.update(build.toDto(HallTest.hall1))).isEqualTo(1);
     }
 
     @Test
     public void testDeleteHall() {
         doNothing().when(hallRepo).deleteById(1L);
-        Assertions.assertEquals(1, hallservice.delete(1L));
+
+        assertThat(hallservice.delete(1L)).isEqualTo(1);
     }
 }

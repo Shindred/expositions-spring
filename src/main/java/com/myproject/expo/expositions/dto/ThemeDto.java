@@ -5,11 +5,10 @@ import lombok.*;
 import javax.validation.constraints.Pattern;
 
 @Data
-@Getter
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class ThemeDto implements DTO{
+public class ThemeDto {
     private Long id;
     @Pattern(regexp = "^[a-zA-Z]+$",message = "{err.input}")
     private String name;
